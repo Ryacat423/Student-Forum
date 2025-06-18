@@ -1,8 +1,15 @@
 :root {
     --color-app-background: #f8f9fa;
-    --color-app-sidebar: #fff;
+    --color-app-menu: #fff;
+    --color-app-menu-hover: #f0f4f8;
+    --color-app-menu-active: #e9f2ff;
+    --color-app-breadcrumb-nav-active: #4a66f5;
+    --color-app-nav-items: #495057;
+    --color-app-notif-p: #919191;
+    --color-app-notif-h4: #000;
+    --color-app-notif-hover: #f6f9ff;
 
-    --color-primary: #2563eb;
+    --color-primary: #012970;
     --color-primary-dark: #1d4ed8;
     --color-accent: #3b82f6;
     --color-grey: #f8fafc;
@@ -26,15 +33,15 @@
 }
 
 div.dark {
-    --color-primary: #3b82f6;
-    --color-primary-dark: #2563eb;
-    --color-accent: #60a5fa;
-    --color-grey: #0f172a;
-    --color-text: #f1f5f9;
-    --color-label: #94a3b8;
-    --color-disabled: #334155;
-    --color-border: #334155;
-    --color-sidebar-bg: #1e293b;
-    --color-sidebar-hover: #334155;
-    --color-sidebar-active: #1e40af;
+    --color-app-background: #36393f;
+    --color-app-menu: #2f3136;
+    --color-app-menu-hover: #40444b;
+    --color-app-menu-active: #5e5f6b;
+    --color-app-breadcrumb-nav-active: #d7dce5;
+    --color-app-nav-items: #b9bbbe;
+    --color-app-notif-p: #888b91;
+    --color-app-notif-h4: #ffffff;
+    --color-app-notif-hover: #32353b;
+
+    --color-primary: #a1a7b3;
 }

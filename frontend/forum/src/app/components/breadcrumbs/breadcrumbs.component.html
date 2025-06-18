@@ -1,0 +1,201 @@
+<div class="breadcrumbs {{ user ? 'mt-lg-0' : 'mt-5 mt-lg-0' }}">
+  @for (nav of navs; track nav) {
+  <a [routerLink]="nav.link" class="breadcrumb-item" style="cursor: pointer">{{
+    nav.label
+  }}</a>
+  <span class="separator">›</span>
+  }
+  <span class="current" style="cursor: pointer">{{ current }}</span>
+
+  @if(user == null){
+  <div
+    class="ms-auto d-lg-flex d-md-flex align-items-center gap-3 d-none"
+    style="cursor: pointer"
+  >
+    <a class="login-btn" routerLink="/forum/about-us">
+      <div>About Us</div>
+    </a>
+    <a class="login-btn" routerLink="/forum/contact">
+      <div>Contact Us</div>
+    </a>
+
+    <div>
+      <a class="login-btn me-2" (click)="navigateRegister()">
+        <div class="btn btn-outline-primary btn-sm">Register</div>
+      </a>
+      <a class="login-btn" (click)="navigateLogin()">
+        <div class="btn btn-outline-success btn-sm">Login</div>
+      </a>
+    </div>
+  </div>
+  } @if(!isMobile){ @if(user != null){
+  <nav class="header-nav ms-auto">
+    <ul class="d-flex align-items-center">
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link nav-icon"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <i class="bi bi-bell"></i>
+          <span class="badge bg-primary badge-number">{{ notifs.length }}</span>
+        </a>
+        <ul
+          class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications mt-5"
+        >
+          <li>
+            <hr class="dropdown-divider" />
+          </li>
+          <li class="notification-item">
+            <i class="bi bi-exclamation-circle text-warning"></i>
+            @if(notifs.length > 0){ 
+              @for(n of notifs; track n.messageID){
+                <div [routerLink]="['/forum/messages/body', n.messageID]">
+                  <h4>{{ n?.subject }}</h4>
+                  <p>{{ n?.content }}</p>
+                  <p>{{ n?.date_sent | timeAgo }}</p>
+                </div>
+                } 
+            }@else {
+              <h4>No Notifications</h4>
+            }
+          </li>
+          <li>
+            <hr class="dropdown-divider" />
+          </li>
+          <!-- @if(notifs.length > 0){
+          <li class="dropdown-footer" (click)="clearNotifs()">
+            <a style="cursor: pointer">Clear Notifications</a>
+          </li>
+          } -->
+        </ul>
+      </li>
+
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link nav-icon"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <i class="bi bi-chat-left-text"></i>
+          <span class="badge bg-success badge-number">{{ convo.length }}</span>
+        </a>
+        <ul
+          class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages mt-5"
+        >
+          <li>
+            <hr class="dropdown-divider" />
+          </li>
+          <li class="messages-item">
+            <div class="messages-container">
+              <div class="messages-header">
+                <h5 class="messages-title">Recent Messages</h5>
+              </div>
+              <ul class="message-list">
+                @if(convo.length > 0){ @for(conv of convo; track $index){
+                <li
+                  class="message-item"
+                  [routerLink]="['/forum/messages/body', conv.messageID]"
+                >
+                  <div class="profile-image active-now">
+                    <img src="{{ conv?.profile_pic }}" alt="Anna Smith" />
+                  </div>
+                  <div class="message-content">
+                    <div class="message-sender">
+                      {{ conv?.sender_name }}
+                      <span class="sender-role">{{ conv.role }}</span>
+                    </div>
+                    <div class="message-preview">
+                      {{ conv?.content }}
+                    </div>
+                  </div>
+                </li>
+                } }@else { No recent Messages }
+              </ul>
+            </div>
+          </li>
+          <li>
+            <hr class="dropdown-divider" />
+          </li>
+          <li class="dropdown-footer">
+            <a routerLink="/forum/messages">Show all messages</a>
+          </li>
+        </ul>
+      </li>
+
+      <li class="nav-item dropdown pe-3" style="cursor: pointer">
+        <a
+          class="nav-link nav-profile d-flex align-items-center pe-0"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <img
+            src="{{ userData?.profile_img }}"
+            alt="Profile"
+            class="rounded-circle"
+          />
+          <span class="d-none d-md-block dropdown-toggle ps-2">{{
+            userData?.username
+          }}</span>
+        </a>
+
+        <ul
+          class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile mt-5"
+        >
+          <li class="dropdown-header">
+            <img
+              src="{{ userData?.profile_img }}"
+              alt="Profile"
+              class="rounded-circle"
+            />
+            <h6>{{ userData?.full_name }}</h6>
+            <span>{{ userData?.course_code }} - Student</span>
+          </li>
+          <li>
+            <hr class="dropdown-divider" />
+          </li>
+
+          <li>
+            <a
+              class="dropdown-item d-flex align-items-center"
+              routerLink="/forum/profile"
+            >
+              <i class="bi bi-person"></i>
+              <span>My Profile</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider" />
+          </li>
+
+          <li>
+            <a
+              class="dropdown-item d-flex align-items-center"
+              routerLink="/forum/profile"
+            >
+              <i class="bi bi-gear"></i>
+              <span>My Activities</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider" />
+          </li>
+
+          <li>
+            <a
+              class="dropdown-item d-flex align-items-center"
+              routerLink="/forum/contact"
+            >
+              <i class="bi bi-question-circle"></i>
+              <span>Need Help?</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider" />
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+  } }
+</div>
