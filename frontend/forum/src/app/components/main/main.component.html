@@ -1,4 +1,4 @@
-<div class="layout-container">
+<div class="layout-container" [class.dark]="isDark">
   <nav class="mobile-navbar d-md-none">
     <div class="mobile-navbar-header px-3 py-2">
       <div class="mobile-brand" (click)="navigateProfile()">
@@ -199,6 +199,7 @@
     </div>
     }
 
+    <button (click)="toggleDarkMode()">dark</button>
     <nav>
       <ul class="nav-menu px-0">
         <li class="nav-item" routerLinkActive="active">

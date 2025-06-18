@@ -9,6 +9,8 @@
     --color-app-notif-h4: #000;
     --color-app-notif-hover: #f6f9ff;
 
+    --color-card: #f9f9f9;
+
     --color-primary: #012970;
     --color-primary-dark: #1d4ed8;
     --color-accent: #3b82f6;
@@ -42,6 +44,8 @@ div.dark {
     --color-app-notif-p: #888b91;
     --color-app-notif-h4: #ffffff;
     --color-app-notif-hover: #32353b;
+
+    --color-card: #5d5959;
 
     --color-primary: #a1a7b3;
 }

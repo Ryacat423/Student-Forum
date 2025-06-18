@@ -26,9 +26,15 @@ export class MainComponent implements OnInit {
 
   mobileMenuOpen: boolean = false;
   isMobile: boolean = false;
+  
+  saved: any;
+  isDark: boolean = false;
 
   ngOnInit(): void {
     this.userId = localStorage.getItem('token');
+    this.saved = localStorage.getItem('isDark');
+
+    this.isDark = this.saved === 'true';
 
     if (this.userId) {
       this.getUserData(this.userId);
@@ -122,5 +128,10 @@ export class MainComponent implements OnInit {
 
   closeMobileMenu() {
     this.mobileMenuOpen = false;
+  }
+
+  toggleDarkMode() {
+    this.isDark = !this.isDark;
+    localStorage.setItem('isDark', this.isDark.toString());
   }
 }
