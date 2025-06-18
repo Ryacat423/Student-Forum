@@ -160,6 +160,7 @@
             <span>Logout</span>
           </a>
         </li>
+
         } @else {
         <li class="nav-item" [ngClass]="{ active: current === 'Register' }">
           <a (click)="navigateRegister()" class="nav-link">
@@ -231,12 +232,12 @@
           </a>
         </li>
 
-        <!-- <li class="nav-item">
+        <li class="nav-item">
           <a class="nav-link" (click)="log()">
             <i class="bi bi-box-arrow-right"></i>
             <span>Logout</span>
           </a>
-        </li> -->
+        </li>
         } @else {
         <li class="nav-item" routerLinkActive="active">
           <a [routerLink]="['/forum/register']" class="nav-link">

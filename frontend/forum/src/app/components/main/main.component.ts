@@ -3,6 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user/user.service';
 import { TimeAgoPipe } from '../../Pipe/time/time-ago.pipe';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-main',
@@ -133,5 +134,19 @@ export class MainComponent implements OnInit {
   toggleDarkMode() {
     this.isDark = !this.isDark;
     localStorage.setItem('isDark', this.isDark.toString());
+  }
+
+  log(){
+    Swal.fire({
+      title: 'Are you sure you want to logout?',
+      showCancelButton: true,
+      confirmButtonText: 'Logout',
+      cancelButtonText: 'Close',
+      reverseButtons: true
+    }).then((result: any)=>{
+      if(result.isConfirmed){
+        this.logout();
+      }
+    });
   }
 }
