@@ -12,4 +12,8 @@ export class DataService {
   getCourses(){
     return this.http.get(`${environment.apiUrl}get_courses.php`);
   }
+
+  getCategories() {
+    return this.http.get(`${environment.apiUrl}get_categories.php`)
+  }
 }

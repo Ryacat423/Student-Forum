@@ -1,3 +1,55 @@
 <div class="container-fluid">
-      <app-breadcrumbs [navs]="navs" [current]="current"> </app-breadcrumbs>
+  <app-breadcrumbs [navs]="navs" [current]="current"> </app-breadcrumbs>
+
+  <div class="row align-items-start ">
+    <div class="col-md-12">
+      <div
+        class="welcome-banner mb-4 d-flex flex-column align-items-center justify-content-center"
+      >
+        <h1 class="welcome-title">Welcome to the Student Forum!</h1>
+        <p class="welcome-subtitle">
+          Connect with fellow students, share ideas, and get help with your
+          academic journey.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <section class="categories-section">
+    <div
+      class="section-header d-flex justify-content-between align-items-center"
+    >
+      <h2 class="section-title">Browse Categories</h2>
+
+      <div class="search-container">
+        <div class="search-bar">
+          <input
+            type="text"
+            placeholder="Search Categories..."
+            [(ngModel)]="keyword"
+          />
+          <button><i class="bi bi-search"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="categories-list">
+      @for(categ of categories | searchFilter: keyword; track
+      categ.category_id){
+      <div class="category-card" (click)="select(categ.category_id)">
+        @if(categ?.category_img.startsWith('bi')){
+          <div class="category-icon">
+            <i class="bi {{ categ.category_img }}"></i>
+          </div>
+        }@else {
+          <div class="category-icon">
+            <img src="{{imgurl + categ?.category_img}}" alt="{{categ?.category_name}}" width="100">
+          </div>
+        }
+        <div class="category-name">{{ categ?.category_name }}</div>
+        <p class="category-description">{{ categ?.category_desc }}</p>
+      </div>
+      }
+    </div>
+  </section>
 </div>
