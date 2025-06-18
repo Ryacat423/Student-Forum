@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'http://localhost/forum_api'
+    apiUrl: 'http://localhost/StudentForum/user/'
 };

@@ -1,5 +1,261 @@
 <div class="layout-container">
-    <div class="main-content">
-        <router-outlet></router-outlet>
+  <nav class="mobile-navbar d-md-none">
+    <div class="mobile-navbar-header px-3 py-2">
+      <div class="mobile-brand" (click)="navigateProfile()">
+        <img src="img/logo.jpg" alt="User Avatar" class="mobile-avatar" />
+        <h4 class="mb-0" style="font-family: 'Nunito', sans-serif">
+          Student Forum
+        </h4>
+      </div>
+
+      <div class="d-flex">
+        <nav class="header-nav">
+          <ul class="d-flex align-items-center gap-3">
+            @if(userId != null){
+            <li class="dropdown">
+              <a
+                class="nav-link nav-icon"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="bi bi-bell"></i>
+                <span class="badge bg-primary badge-number">{{
+                  notifs.length
+                }}</span>
+              </a>
+              <ul
+                class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications mt-5"
+              >
+                <li>
+                  <hr class="dropdown-divider" />
+                </li>
+                <li class="notification-item">
+                  <i class="bi bi-exclamation-circle text-warning"></i>
+                  @if(notifs.length > 0){ @for(n of notifs; track n.messageID){
+                  <div [routerLink]="['/forum/messages/body', n.messageID]">
+                    <h4>{{ n?.subject }}</h4>
+                    <p>{{ n?.content }}</p>
+                    <p>{{ n?.date_sent | timeAgo }}</p>
+                  </div>
+                  } }@else {
+                  <h4>No Notifications</h4>
+                  }
+                </li>
+                <li>
+                  <hr class="dropdown-divider" />
+                </li>
+                <!-- @if(notifs.length > 0){
+                <li class="dropdown-footer" (click)="clearNotifs()">
+                  <a style="cursor: pointer">Clear Notifications</a>
+                </li>
+                } -->
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a
+                class="nav-link nav-icon"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="bi bi-chat-left-text"></i>
+                <span class="badge bg-success badge-number">{{
+                  convo.length
+                }}</span>
+              </a>
+              <ul
+                class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages mt-5"
+              >
+                <li>
+                  <hr class="dropdown-divider" />
+                </li>
+                <li class="messages-item">
+                  <div class="messages-container">
+                    <div class="messages-header">
+                      <h5 class="messages-title">Recent Messages</h5>
+                    </div>
+                    <ul class="message-list">
+                      @if(convo.length > 0){ @for(conv of convo; track $index){
+                      <li
+                        class="message-item"
+                        [routerLink]="['/forum/messages/body', conv.messageID]"
+                      >
+                        <div class="profile-image active-now">
+                          <img src="{{ conv.profile_pic }}" alt="Anna Smith" />
+                        </div>
+                        <div class="message-content">
+                          <div class="message-sender">
+                            {{ conv.sender_name }}
+                            <span class="sender-role">{{ conv.role }}</span>
+                          </div>
+                          <div class="message-preview">
+                            {{ conv.content }}
+                          </div>
+                        </div>
+                      </li>
+                      } }@else { No recent Messages }
+                    </ul>
+                  </div>
+                </li>
+                <li>
+                  <hr class="dropdown-divider" />
+                </li>
+                <li class="dropdown-footer">
+                  <a routerLink="/forum/messages">Show all messages</a>
+                </li>
+              </ul>
+            </li>
+            }
+            <button
+              class="navbar-toggler"
+              type="button"
+              (click)="toggleMobileMenu()"
+            >
+              <i
+                class="bi"
+                [ngClass]="{
+                  'bi-x': mobileMenuOpen,
+                  'bi-list': !mobileMenuOpen
+                }"
+              ></i>
+            </button>
+          </ul>
+        </nav>
+      </div>
     </div>
+
+    <div class="mobile-menu" [ngClass]="{ show: mobileMenuOpen }">
+      <ul class="nav-menu px-0 mt-3">
+        <li class="nav-item" [ngClass]="{ active: current === 'Home' }">
+          <a (click)="navigateHome()" class="nav-link">
+            <i class="bi bi-house-door-fill"></i>
+            <span>Home</span>
+          </a>
+        </li>
+
+        <li class="nav-item" [ngClass]="{ active: current === 'About Us' }">
+          <a (click)="navigateAbout()" class="nav-link">
+            <i class="bi bi-info-circle-fill"></i>
+            <span>About Us</span>
+          </a>
+        </li>
+
+        <li class="nav-item" [ngClass]="{ active: current === 'Contact Us' }">
+          <a (click)="navigateContact()" class="nav-link">
+            <i class="bi bi-envelope-fill"></i>
+            <span>Contact</span>
+          </a>
+        </li>
+
+        @if(userId) {
+        <li class="nav-item" [ngClass]="{ active: current === 'Profile' }">
+          <a (click)="navigateProfile()" class="nav-link">
+            <i class="bi bi-people-fill"></i>
+            <span>Profile</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+        } @else {
+        <li class="nav-item" [ngClass]="{ active: current === 'Register' }">
+          <a (click)="navigateRegister()" class="nav-link">
+            <i class="bi bi-person-plus-fill"></i>
+            <span>Register</span>
+          </a>
+        </li>
+        <li class="nav-item" [ngClass]="{ active: current === 'Login' }">
+          <a (click)="navigateLogin()" class="nav-link">
+            <i class="bi bi-person-plus-fill"></i>
+            <span>Login</span>
+          </a>
+        </li>
+        }
+      </ul>
+    </div>
+  </nav>
+
+  @if(userId != null){
+  <aside class="sidebar d-none d-md-block">
+    @if(userId && userData?.profile_img){
+    <div class="user-profile p-3">
+      <div class="avatar">
+        <img src="img/logo.jpg" alt="Forum Logo" />
+      </div>
+      <h1
+        style="
+          font-family: 'Nunito', sans-serif;
+          font-size: 1.2em;
+          text-align: center;
+        "
+        class="name"
+        routerLink="/forum/home"
+      >
+        NLAC<br />Student Forum
+      </h1>
+    </div>
+    }
+
+    <nav>
+      <ul class="nav-menu px-0">
+        <li class="nav-item" routerLinkActive="active">
+          <a routerLink="/forum/home" class="nav-link">
+            <i class="bi bi-house-door-fill"></i>
+            <span>Home</span>
+          </a>
+        </li>
+
+        <li class="nav-item" routerLinkActive="active">
+          <a routerLink="/forum/about-us" class="nav-link">
+            <i class="bi bi-info-circle-fill"></i>
+            <span>About Us</span>
+          </a>
+        </li>
+
+        <li class="nav-item" routerLinkActive="active">
+          <a routerLink="/forum/contact" class="nav-link">
+            <i class="bi bi-telephone-fill"></i>
+            <span>Contact</span>
+          </a>
+        </li>
+
+        @if (userId) {
+        <li class="nav-item" routerLinkActive="active">
+          <a routerLink="/forum/profile" class="nav-link">
+            <i class="bi bi-people-fill"></i>
+            <span>Profile</span>
+          </a>
+        </li>
+
+        <!-- <li class="nav-item">
+          <a class="nav-link" (click)="log()">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Logout</span>
+          </a>
+        </li> -->
+        } @else {
+        <li class="nav-item" routerLinkActive="active">
+          <a [routerLink]="['/forum/register']" class="nav-link">
+            <i class="bi bi-person-plus-fill"></i>
+            <span>Register</span>
+          </a>
+        </li>
+        }
+      </ul>
+    </nav>
+  </aside>
+
+  }
+
+  <div
+    class="main-content"
+    [ngClass]="{ 'full-width': !userId, 'with-mobile-nav': userId && isMobile }"
+  >
+    <div class="mt-2">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>
