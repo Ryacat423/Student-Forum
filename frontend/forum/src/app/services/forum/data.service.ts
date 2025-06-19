@@ -20,4 +20,8 @@ export class DataService {
   getTopics(id: number){
     return this.http.get(`${environment.apiUrl}get_topics.php?id=${id}`)
   }
+
+  sendMessage(data: any){
+    return this.http.post(`${environment.apiUrl}send_message.php`, JSON.stringify(data));
+  }
 }

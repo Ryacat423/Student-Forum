@@ -5,6 +5,7 @@ import { profile } from './Modules/Profile/profile.routes';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { about } from './Modules/About/about.routes';
+import { ContactMainComponent } from './Modules/Contact/contact-main/contact-main.component';
 
 export const routes: Routes = [
     {
@@ -22,6 +23,10 @@ export const routes: Routes = [
             {
                 path: 'about-us',
                 loadChildren: ()=>import('./Modules/About/about.routes').then(a=>about)
+            },
+            {
+                path: 'contact',
+                component: ContactMainComponent
             },
             {
                 path: 'register',
