@@ -1,1 +1,43 @@
-<p>new-topic works!</p>
+<div class="table-container">
+  <form [formGroup]="topicForm" (submit)="addTopic()">
+    <div class="mb-3">
+      <label for="topictitle" class="form-label">Topic Title</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        id="topictitle" 
+        placeholder="Enter topic title"
+        formControlName="title"
+      >
+    </div>
+
+    <div class="mb-3">
+      <label for="topicbody" class="form-label">Topic Body</label>
+      <textarea 
+        formControlName="body" 
+        class="form-control" 
+        id="topicbody"
+        rows="4"
+        placeholder="Enter topic body"
+      ></textarea>
+    </div>
+    
+    <div class="mb-3 file-upload">
+      <label class="file-upload-label">Attachments</label>
+      <div class="file-upload-control">
+        <label class="file-upload-btn">
+          <i class="bi bi-paperclip"></i> Add Files
+          <input type="file" style="display: none;" (change)="onFileSelected($event)">
+        </label>
+        <span class="file-name" *ngIf="selectedFile">{{ selectedFile.name }}</span>
+      </div>
+    </div>
+    
+    <div class="d-grid">
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-plus-square"></i>
+        Create New Topic
+      </button>
+    </div>
+  </form>
+</div>

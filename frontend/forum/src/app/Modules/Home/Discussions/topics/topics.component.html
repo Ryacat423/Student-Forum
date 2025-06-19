@@ -1,1 +1,77 @@
-<p>topics works!</p>
+<div class="topics-section">
+  <div class="topic-filters">
+    <div class="filter-options">
+      <button 
+        class="filter-btn" 
+        [class.active]="active === 'all'"
+        (click)="toggleAll()"
+      >All Topics</button>
+      @if(currentuser){
+      <button 
+        class="filter-btn"
+        [class.active]="active === 'own'"
+        (click)="toggleOwn()"
+      >My Topics</button>
+      }
+    </div>
+    <div class="search-container">
+      <div class="search-bar">
+        <input
+          type="text"
+          placeholder="Search Topics..."
+          [(ngModel)]="keyword"
+        />
+        <button><i class="bi bi-search"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-list">
+    @if(active === 'all' || active === 'own'){
+      @if(filteredTopics.length > 0){ 
+        @for(topic of filteredTopics | searchFilter: keyword; track $index){
+          <div class="topic-card">
+            <div class="topic-avatar">
+              {{ getInitials(topic?.username) }}
+            </div>
+            <div class="topic-content">
+              <div class="topic-header">
+                <a
+                  [routerLink]="[
+                    '/forum/home/discussions',
+                    categoryId,
+                    'topic',
+                    topic.topicID
+                  ]"
+                  class="topic-title"
+                >
+                  {{ topic.topic_title }}
+                </a>
+  
+                <span class="topic-category">{{ categ_data.category_name }}</span>
+              </div>
+              <div class="topic-meta">
+                <span>Posted by: {{ topic.username }}</span>
+                <span>{{ topic.creation_time | date : "MMMM d, y" }}</span>
+              </div>
+              <p class="topic-preview">{{ topic.content }}</p>
+              <div class="topic-stats">
+                <span><i class="bi bi-eye"></i> {{ topic.views }} views</span>
+                <span><i class="bi bi-chat"></i> {{ topic.replies }} replies</span>
+              </div>
+            </div>
+          </div>
+        }
+      }@else {
+        <div class="topic-card empty-state">
+          <div class="topic-content">
+            <img src="/img/cloud.png" alt="" width="100" />
+            <div style="font-weight: 400">
+              {{ active === 'own' ? 'You haven\'t created any topics yet.' : 'No topics yet for this category.' }}
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>

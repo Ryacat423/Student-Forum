@@ -16,4 +16,8 @@ export class DataService {
   getCategories() {
     return this.http.get(`${environment.apiUrl}get_categories.php`)
   }
+
+  getTopics(id: number){
+    return this.http.get(`${environment.apiUrl}get_topics.php?id=${id}`)
+  }
 }

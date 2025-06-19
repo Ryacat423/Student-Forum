@@ -1,0 +1,105 @@
+.table-container {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+form .form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    display: block;
+}
+
+form .form-control {
+    width: 100%;
+    border: 1px solid #dde2e5;
+    border-radius: 6px;
+    padding: 10px 12px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+form .form-control:focus {
+    outline: none;
+    border-color: #4a66f5;
+    box-shadow: 0 0 0 3px rgba(74, 102, 245, 0.1);
+}
+
+form textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.mb-3 {
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background-color: #4a66f5;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #3651d3;
+}
+
+/* Add file attachment field */
+.file-upload {
+    margin-bottom: 20px;
+}
+
+.file-upload-label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.file-upload-control {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    flex-direction: column;
+}
+
+.file-upload-btn {
+    background-color: #e1e5f2;
+    color: #4a66f5;
+    border: 1px solid #dde2e5;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.file-upload-btn:hover {
+    background-color: #d0d7eb;
+}
+
+.file-name {
+    font-size: 13px;
+    color: #555;
+}
+
+@media (max-width: 576px) {
+    .table-container {
+        padding: 1rem;
+    }
+}
