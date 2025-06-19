@@ -29,7 +29,7 @@ export class MainComponent implements OnInit {
   isMobile: boolean = false;
   
   saved: any;
-  isDark: boolean = false;
+  isDark: boolean = true;
 
   ngOnInit(): void {
     this.userId = localStorage.getItem('token');
@@ -44,6 +44,7 @@ export class MainComponent implements OnInit {
     }
 
     this.checkIfMobile();
+    localStorage.setItem('isDark', 'true')
   }
 
   getUserData(userId: number) {

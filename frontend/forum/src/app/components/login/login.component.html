@@ -1,1 +1,41 @@
-<p>login works!</p>
+<div class="container-fluid rounded d-flex justify-content-center flex-column">
+    <app-breadcrumbs
+        [navs]="navs"
+        [current]="current">
+    </app-breadcrumbs>
+
+    <div class="registration-form-container">
+        <form [formGroup]="login" (submit)="loginUser()">
+            <h2 class="form-title">Account Login</h2>
+            <hr>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-field">
+                        <label for="step.name">Email/Username</label>
+                        <div class="input-container">
+                            <i class="bi bi-person"></i>
+                            <input type="text" formControlName="user" placeholder="Enter username or email..." required>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-field">
+                        <label for="step.name">Password</label>
+                        <div class="input-container">
+                            <i class="bi bi-lock"></i>
+                            <input type="password" formControlName="password" placeholder="Enter password..." required>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="d-grid">
+                <button class="btn submit-btn" type="submit">
+                    <span>Login</span>
+                </button>
+            </div>
+            <p class="login-link">Dont have an account? <a routerLink="/forum/register">Register</a></p>
+
+        </form>
+    </div>
+</div>

@@ -10,6 +10,8 @@
     --color-app-notif-hover: #f6f9ff;
 
     --color-card: #f9f9f9;
+    --color-auth-form-text: #4a66f5;
+    --color-auth-form: #f8f9fa;
 
     --color-primary: #012970;
     --color-primary-dark: #1d4ed8;
@@ -48,4 +50,5 @@ div.dark {
     --color-card: #5d5959;
 
     --color-primary: #a1a7b3;
+    --color-auth-form-text: #73747a;
 }
