@@ -44,14 +44,12 @@ export class MainComponent implements OnInit {
     }
 
     this.checkIfMobile();
-    localStorage.setItem('isDark', 'true')
   }
 
   getUserData(userId: number) {
     this.uservice.getUser(userId).subscribe((res: any) => {
       this.userData = res;
       localStorage.setItem('status', this.userData.status);
-      console.log(this.userData);
     });
   }
 

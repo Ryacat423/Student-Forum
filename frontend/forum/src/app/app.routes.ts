@@ -4,6 +4,7 @@ import { home } from './Modules/Home/home.routes';
 import { profile } from './Modules/Profile/profile.routes';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
+import { about } from './Modules/About/about.routes';
 
 export const routes: Routes = [
     {
@@ -17,6 +18,10 @@ export const routes: Routes = [
             {
                 path: 'profile',
                 loadChildren: ()=>import('./Modules/Profile/profile.routes').then(p=>profile)
+            },
+            {
+                path: 'about-us',
+                loadChildren: ()=>import('./Modules/About/about.routes').then(a=>about)
             },
             {
                 path: 'register',

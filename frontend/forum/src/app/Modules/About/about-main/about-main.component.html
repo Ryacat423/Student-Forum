@@ -1,0 +1,48 @@
+
+<div class="container-fluid">
+  <app-breadcrumbs [navs]="navs" [current]="current"> </app-breadcrumbs>
+    <div class="welcome-banner mb-4">
+      <h1 class="welcome-title">Learn More About Our Student Forum!</h1>
+      <p class="welcome-subtitle">
+        Connect with fellow students, share ideas, and get help with your academic
+        journey.
+      </p>
+    </div>
+    
+    <div class="about-container vh-auto">
+      <div class="welcome-banner mb-4 d-flex flex-column">
+        <nav class="align-self-center">
+          <ul class="d-flex">
+            <li
+              [ngClass]="{ active: activeTab === 'history' }"
+              (click)="setActiveTab('history')"
+            >
+              History
+            </li>
+            <li
+              [ngClass]="{ active: activeTab === 'mission' }"
+              (click)="setActiveTab('mission')"
+            >
+              Our Mission
+            </li>
+            <li
+              [ngClass]="{ active: activeTab === 'vision' }"
+              (click)="setActiveTab('vision')"
+            >
+              Our Vision
+            </li>
+          </ul>
+        </nav>
+    
+        <div class="">
+          @switch (activeTab) { @case ('history') {
+          <app-history></app-history>
+          } @case ('mission') {
+          <app-mission></app-mission>
+          } @case ('vision') {
+          <app-vision></app-vision>
+          } }
+        </div>
+      </div>
+    </div>
+</div>

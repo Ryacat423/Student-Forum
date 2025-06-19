@@ -31,7 +31,6 @@ export class BreadcrumbsComponent implements OnInit{
     if (this.user) {
       this.uservice.getUser(this.user).subscribe((res: any) => {
         this.userData = res;
-        console.log(this.userData)
       });
       this.uservice.getConvoList(this.user).subscribe((res: any)=>{
         this.convo = res;

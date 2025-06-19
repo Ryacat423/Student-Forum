@@ -1,0 +1,89 @@
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    padding: 7px 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+nav ul li.active {
+    background-color: var(--color-app-breadcrumb-nav-active);
+    color: var(--color-app-background);
+
+}
+
+.content-area {
+    flex: 1;
+    padding: 40px;
+    background-color: var(--color-app-menu);
+    overflow-y: auto;
+    width: 100%;
+}
+
+.welcome-banner {
+    background-color: var(--color-app-menu);
+    color: var(--color-app-nav-items);
+    padding: 30px;
+    border-radius: 8px;
+    font-family: 'Nunito';
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.welcome-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.welcome-subtitle {
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) { 
+    nav ul li {
+        text-align: center;
+    }
+
+    .content-area {
+        padding: 20px;
+    }
+
+    .welcome-title {
+        font-size: 22px;
+    }
+
+    .welcome-subtitle {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-banner {
+        padding: 20px;
+    }
+
+    .welcome-title {
+        font-size: 20px;
+    }
+
+    .welcome-subtitle {
+        font-size: 14px;
+    }
+
+    nav ul li {
+        padding: 10px;
+        font-size: 14px;
+    }
+}

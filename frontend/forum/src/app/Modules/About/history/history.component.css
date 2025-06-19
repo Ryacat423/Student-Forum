@@ -1,0 +1,17 @@
+.about-title {
+    font-size: 1.5rem;
+    color: #4a66f5;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.about-text {
+    color: var(--color-app-nav-items);
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+.about-text li {
+    margin-bottom: 0.5rem;
+    list-style: none;
+}

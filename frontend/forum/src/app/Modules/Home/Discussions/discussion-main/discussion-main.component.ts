@@ -51,7 +51,6 @@ export class DiscussionMainComponent implements OnInit{
       this.topics = res.data;
       this.categ_topics = res.categ_data[0];
       this.current = this.categ_topics.category_name;
-      console.log(this.categ_topics)
     })
   }
 
