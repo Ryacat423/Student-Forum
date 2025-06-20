@@ -1,4 +1,4 @@
-<div class="breadcrumbs {{ user ? 'mt-lg-0' : 'mt-5 mt-lg-0' }}">
+<div class="breadcrumbs">
   @for (nav of navs; track nav) {
   <a [routerLink]="nav.link" class="breadcrumb-item" style="cursor: pointer">{{
     nav.label
@@ -7,7 +7,7 @@
   }
   <span class="current" style="cursor: pointer">{{ current }}</span>
 
-  @if(user == null){
+  @if(user == null && !isMobile){
   <div
     class="ms-auto d-lg-flex d-md-flex align-items-center gap-3 d-none"
     style="cursor: pointer"

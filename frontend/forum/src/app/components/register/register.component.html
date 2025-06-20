@@ -3,4 +3,48 @@
         [navs]="navs"
         [current]="current">
     </app-breadcrumbs>
+
+    <div class="registration-form-container">
+        <form [formGroup]="register">
+            <h2 class="form-title">Account Registration</h2>
+            <hr>
+            <div class="row">
+                <div class="col-sm-12 col-lg-4">
+                    <div class="form-field">
+                        <label for="step.name">First Name: </label>
+                        <div class="input-container">
+                            <i class="bi bi-person"></i>
+                            <input type="text" placeholder="Enter username or email..." required>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-lg-4">
+                    <div class="form-field">
+                        <label for="step.name">Last Name: </label>
+                        <div class="input-container">
+                            <i class="bi bi-person"></i>
+                            <input type="text" placeholder="Enter username or email..." required>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-lg-4">
+                    <div class="form-field">
+                        <label for="step.name">Middle Name (Optional): </label>
+                        <div class="input-container">
+                            <i class="bi bi-person"></i>
+                            <input type="text" placeholder="Enter username or email..." required>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="d-grid">
+                <button class="btn submit-btn" type="submit">
+                    <span>Register</span>
+                </button>
+            </div>
+            <p class="login-link">Already have an account? <a routerLink="/forum/login">Login</a></p>
+
+        </form>
+    </div>
 </div>

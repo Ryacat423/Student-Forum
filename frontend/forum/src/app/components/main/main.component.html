@@ -1,5 +1,8 @@
 <div class="layout-container" [class.dark]="isDark">
-  <nav class="mobile-navbar d-md-none">
+  <nav 
+    class="mobile-navbar"
+    [class.d-md-none]="userId"
+  >
     <div class="mobile-navbar-header px-3 py-2">
       <div class="mobile-brand" (click)="navigateProfile()">
         <img src="img/logo.jpg" alt="User Avatar" class="mobile-avatar" />
@@ -154,7 +157,7 @@
           </a>
         </li>
 
-        <li class="nav-item">
+        <li class="nav-item" (click)="log()">
           <a class="nav-link">
             <i class="bi bi-box-arrow-right"></i>
             <span>Logout</span>
@@ -254,9 +257,13 @@
 
   <div
     class="main-content"
-    [ngClass]="{ 'full-width': !userId, 'with-mobile-nav': userId && isMobile }"
+    [class.with-mobile-nav]="isMobile"
+    [class.full-width]="!userId"
+    [style.padding-left]="userId && isMedium ? '10px' : '0px'"
   >
-    <div class="mt-2">
+    <div 
+      [class.mt-5]="isMobile"
+    >
       <router-outlet></router-outlet>
     </div>
   </div>

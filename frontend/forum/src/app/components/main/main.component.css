@@ -18,11 +18,12 @@
 .main-content.full-width {
     margin-left: 0;
     width: 100%;
+    padding-top: 70px;
 }
 
 .main-content.with-mobile-nav {
     margin-left: 0;
-    padding-top: 60px;
+    padding-top: 20px;
 }
 
 .sidebar {
@@ -161,9 +162,13 @@
     border-bottom: none;
 }
 
-@media (min-width: 768px) and (max-width: 992px) {
+@media (min-width: 768px) and (max-width: 1023px) {
     .sidebar {
         width: 80px;
+    }
+
+    .user-profile h1 {
+        display: none;
     }
 
     .sidebar .nav-item span {
@@ -188,6 +193,7 @@
 
     .main-content {
         margin-left: 80px;
+
     }
 }
 
