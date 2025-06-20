@@ -1,0 +1,144 @@
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-app-nav-items);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: #64748b;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-icon {
+    font-size: 2rem;
+    opacity: 0.8;
+}
+
+.custom-table {
+    margin: 0;
+}
+
+.custom-table th {
+    background-color: #f8fafc;
+    border: none;
+    padding: 1rem;
+    font-weight: 600;
+    color: var(--color-dark);
+}
+
+.custom-table td {
+    padding: 1rem;
+    border-color: #e2e8f0;
+    vertical-align: middle;
+}
+
+.btn-action {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-approve {
+    background-color: var(--color-success);
+    color: white;
+}
+
+.btn-approve:hover {
+    background-color: #059669;
+    color: white;
+}
+
+.btn-reject {
+    background-color: var(--color-danger);
+    color: white;
+}
+
+.btn-reject:hover {
+    background-color: #dc2626;
+    color: white;
+}
+
+.pagination .page-link {
+    border: 1px solid #e2e8f0;
+    color: var(--color-primary);
+    padding: 0.5rem 0.75rem;
+}
+
+.pagination .page-link:hover {
+    background-color: var(--color-light);
+    border-color: var(--color-primary);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+.search-container {
+  flex: 1 1 300px;
+  max-width: 400px;
+}
+
+.search-bar {
+  display: flex;
+  width: 100%;
+}
+
+.search-bar input:focus {
+  border: 1px solid #4a66f5;
+  border-radius: 4px;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: .875rem;
+  border: 1px solid #ddd;
+  border-radius: 4px 0 0 4px;
+  outline: none;
+}
+
+.search-bar button {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 0 20px;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .stat-card {
+        margin-bottom: 1rem;
+    }
+
+    .custom-table {
+        font-size: 0.85rem;
+    }
+
+    .btn-action {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+}

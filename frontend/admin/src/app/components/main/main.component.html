@@ -1,1 +1,104 @@
-<router-outlet></router-outlet>
+<div class="layout-container">
+  <nav class="mobile-navbar d-md-none">
+    <div class="mobile-navbar-header px-3 py-2">
+      <div class="mobile-brand">
+        <img src="img/logo.jpg" alt="User Avatar" class="mobile-avatar" />
+        <h4 class="mb-0" style="font-family: 'Nunito', sans-serif">
+          Student Forum
+        </h4>
+      </div>
+
+      <div class="d-flex">
+        <nav class="header-nav">
+          <ul class="d-flex align-items-center gap-3">
+            <button
+              class="navbar-toggler"
+              type="button"
+              (click)="toggleMobileMenu()"
+            >
+              <i
+                class="bi"
+                [ngClass]="{
+                  'bi-x': mobileMenuOpen,
+                  'bi-list': !mobileMenuOpen
+                }"
+              ></i>
+            </button>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <div class="mobile-menu" [ngClass]="{ show: mobileMenuOpen }">
+      <ul class="nav-menu px-0 mt-3">
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/admin/home">
+            <i class="bi bi-house-door-fill"></i>
+            <span>Home</span>
+          </a>
+        </li>
+
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link">
+            <i class="bi bi-book-half"></i>
+            <span>Forum</span>
+          </a>
+        </li>
+
+        <li class="nav-item" routerLinkActive="active">
+          <a routerLink="/admin/contact" class="nav-link">
+            <i class="bi bi-flag-fill"></i>
+            <span>Reports</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <aside class="sidebar d-none d-md-block">
+    <div class="user-profile p-3">
+      <div class="avatar">
+        <img src="img/boy.png" alt="Forum Logo" />
+      </div>
+      <h5 class="text-center">Admin</h5>
+    </div>
+
+    <nav>
+      <ul class="nav-menu px-0">
+        <li class="nav-item" routerLinkActive="active">
+          <a routerLink="/admin/home" class="nav-link">
+            <i class="bi bi-house-door-fill"></i>
+            <span>Home</span>
+          </a>
+        </li>
+
+        <li class="nav-item" routerLinkActive="active">
+          <a routerLink="/admin/about-us" class="nav-link">
+            <i class="bi bi-book-half"></i>
+            <span>Forum</span>
+          </a>
+        </li>
+
+        <li class="nav-item" routerLinkActive="active">
+          <a routerLink="/admin/contact" class="nav-link">
+            <i class="bi bi-flag-fill"></i>
+            <span>Reports</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="main-content" [ngClass]="{ 'with-mobile-nav': isMobile }">
+    <div class="mt-2">
+        <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

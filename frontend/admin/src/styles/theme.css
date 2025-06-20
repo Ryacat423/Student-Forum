@@ -1,0 +1,37 @@
+:root {
+    --color-app-background: #f5f7fa;
+    --color-app-menu: #fff;
+    --color-app-menu-hover: #f0f6ff;
+    --color-app-menu-active: #e6f1ff;
+    --color-app-breadcrumb-nav-active: #1e40af;
+    --color-app-nav-items: #374151;
+    --color-app-notif-p: #6b7280;
+    --color-app-notif-h4: #111827;
+    --color-app-notif-hover: #eff6ff;
+
+    --color-card: #ffffff;
+    --color-auth-form-text: #1e40af;
+    --color-auth-form: #f5f7fa;
+
+    --color-primary: #4f46e5;
+    --color-primary-dark: #3730a3;
+    --color-secondary: #06b6d4;
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+    --color-light: #f8fafc;
+    --color-dark: #1e293b;
+    --color-sidebar-bg: #1e40af;
+    --color-sidebar-hover: #1d4ed8;
+    --color-sidebar-active: #1e3a8a;
+
+    --length-sm-1: 0.25rem;
+    --length-sm-2: 0.375rem;
+    --length-sm-3: 0.5rem;
+    --length-md-1: 1rem;
+    --length-md-2: 1.25rem;
+    --length-md-3: 1.5rem;
+    --length-lg-1: 2rem;
+    --length-lg-2: 3rem;
+    --length-lg-3: 4rem;
+}
