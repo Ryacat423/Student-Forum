@@ -30,7 +30,7 @@ export const routes: Routes = [
     },
     {
         path: '',
-        redirectTo: 'login',
+        redirectTo: 'admin',
         pathMatch: 'full'
     }
 ];

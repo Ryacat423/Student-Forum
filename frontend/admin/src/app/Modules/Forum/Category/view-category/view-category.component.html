@@ -1,1 +1,42 @@
-<p>view-category works!</p>
+<div
+  class="table-header text-light p-2"
+  style="background-color: var(--color-app-notif-h4)"
+>
+  <h6>Student Forum: Categories</h6>
+  <div class="search-container">
+    <div class="search-bar">
+      <input type="text" placeholder="Search Categories..." />
+      <button><i class="bi bi-search"></i></button>
+    </div>
+  </div>
+</div>
+<div class="applications-table">
+  <div class="table-responsive">
+    <table class="table custom-table">
+      <thead class="bg-secondary">
+        <tr>
+          <th><i class="fas fa-user me-2"></i>Name</th>
+          <th><i class="fas fa-envelope me-2"></i>Description</th>
+          <th><i class="fas fa-graduation-cap me-2"></i>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(categ of categories; track categ.category_id) {
+            <tr>
+              <td>{{categ.name}}</td>
+              <td>{{categ.description}}</td>
+    
+              <td class="d-flex">
+                <button class="btn btn-action btn-approve me-2" (click)="select(categ)">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-action btn-reject">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

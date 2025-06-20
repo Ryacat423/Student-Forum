@@ -1,1 +1,70 @@
-<p>update-category works!</p>
+<div class="bg-white p-3">
+    <h6 class="text-end">
+        <i class="bi bi-pencil-square"></i>
+        Update Category
+    </h6>
+    
+    <div class="table-container">
+        <form [formGroup]="editForm" (submit)="editCateg()">
+          <div class="mb-3">
+            <div class="d-flex align-items-center gap-2">
+              <label for="name" class="form-label">Category Name</label>
+              @if(editForm.value.name || editForm.value.description || editForm.value.id){
+                <button type="button" class="btn-sm btn btn-outline-primary ms-auto m-2" (click)="resetForm()">Reset</button>
+              }
+            </div>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              placeholder="Enter category name"
+              formControlName="name"
+            >
+          </div>
+    
+          <div class="mb-3">
+            <label for="description" class="form-label">Category Description</label>
+            <textarea
+              class="form-control"
+              id="description"
+              rows="4"
+              placeholder="Enter category description"
+              formControlName="description"
+            ></textarea>
+          </div>
+    
+          <div class="mb-3">
+            <label for="categoryImage" class="form-label">Category Image</label>
+            <input
+              type="file"
+              class="form-control"
+              id="categoryImage"
+              accept="image/*"
+              (change)="onFileSelected($event)"
+            >
+            @if(selectedFile?.name){
+              <div class="mt-2">
+                <span class="text-success">File selected: {{selectedFile?.name}}</span>
+              </div>
+            } @else {
+              <img src="{{img}}" alt="" width="100">
+            }
+            @if(uploadProgress > 0 && uploadProgress < 100){
+              <div class="progress mt-2">
+                <div class="progress-bar" role="progressbar" [style.width.%]="uploadProgress"
+                     [attr.aria-valuenow]="uploadProgress" aria-valuemin="0" aria-valuemax="100">
+                  {{uploadProgress}}%
+                </div>
+              </div>
+            }
+          </div>
+    
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-floppy me-1"></i>
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+</div>
