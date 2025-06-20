@@ -39,14 +39,14 @@
         </li>
 
         <li class="nav-item" routerLinkActive="active">
-          <a class="nav-link">
+          <a class="nav-link" routerLink="/admin/forum">
             <i class="bi bi-book-half"></i>
             <span>Forum</span>
           </a>
         </li>
 
         <li class="nav-item" routerLinkActive="active">
-          <a routerLink="/admin/contact" class="nav-link">
+          <a class="nav-link" routerLink="/admin/reports">
             <i class="bi bi-flag-fill"></i>
             <span>Reports</span>
           </a>
@@ -80,7 +80,7 @@
         </li>
 
         <li class="nav-item" routerLinkActive="active">
-          <a routerLink="/admin/about-us" class="nav-link">
+          <a routerLink="/admin/forum" class="nav-link">
             <i class="bi bi-book-half"></i>
             <span>Forum</span>
           </a>
@@ -97,7 +97,17 @@
   </aside>
 
   <div class="main-content" [ngClass]="{ 'with-mobile-nav': isMobile }">
-    <div class="mt-2">
+    <div class="container-fluid bg-white p-3">
+      <div class="d-flex justify-content-end align-items-center gap-3">
+        <span class="text-muted small">
+
+          June 20, 2025 | 3:38pm
+        </span>
+        <i class="bi bi-chat-left-text fs-5"></i>
+      </div>
+    </div>
+
+    <div class="mt-4">
         <router-outlet></router-outlet>
     </div>
   </div>

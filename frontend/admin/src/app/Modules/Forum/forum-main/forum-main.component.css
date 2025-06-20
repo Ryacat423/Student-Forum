@@ -1,0 +1,47 @@
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-app-nav-items);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: #64748b;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-icon {
+    font-size: 2rem;
+    opacity: 0.8;
+}
+
+.btn-manage {
+    background-color: var(--color-success);
+    color: white;
+}
+
+.btn-manage:hover {
+    background-color: #059669;
+    color: white;
+}
+
+.btn-gear {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.btn-gear:hover {
+    background-color: var(--color-primary-dark);
+    color: white;
+}
+
+

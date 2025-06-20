@@ -54,9 +54,9 @@
     </div>
   </div>
 
-  <div class="p-3 bg-white">
+  <div class="p-4 bg-white">
     <div
-      class="table-header text-light p-2 mt-2 d-flex align-items-center justify-content-between"
+      class="table-header text-light p-2 d-flex align-items-center justify-content-between rounded"
       style="background-color: var(--color-app-notif-h4)"
     >
       <h5>Student Applications</h5>
@@ -64,7 +64,7 @@
           <div class="search-bar">
             <input
               type="text"
-              placeholder="Search Categories..."
+              placeholder="Search Applications..."
               [(ngModel)]="keyword"
             />
             <button><i class="bi bi-search"></i></button>
@@ -74,7 +74,7 @@
     <div class="applications-table">
       <div class="table-responsive">
         <table class="table custom-table">
-          <thead>
+          <thead class="bg-secondary">
             <tr>
               <th><i class="fas fa-user me-2"></i>Student</th>
               <th><i class="fas fa-envelope me-2"></i>Email</th>

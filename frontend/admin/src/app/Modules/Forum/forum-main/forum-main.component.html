@@ -1,0 +1,34 @@
+<div class="container">
+  <div class="row mb-4">
+    <div class="col-lg-6 col-md-6 mb-3">
+      <div class="stat-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="stat-number">8</div>
+            <div class="stat-label">Total Categories</div>
+          </div>
+          <div class="stat-icon text-primary">
+            <i class="bi bi-users"></i>
+          </div>
+          <button routerLink="./category" class="btn btn-manage">Manage Categories</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-6 mb-3">
+      <div class="stat-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="stat-number">543</div>
+            <div class="stat-label">Total Users</div>
+          </div>
+          <div class="stat-icon text-warning">
+            <i class="fas fa-clock"></i>
+          </div>
+          <button routerLink="./members" class="btn btn-gear">Manage Members</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+</div>
