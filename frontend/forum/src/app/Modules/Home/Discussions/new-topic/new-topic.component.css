@@ -1,5 +1,5 @@
 .table-container {
-    background: #fff;
+    background: var(--color-app-menu);
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     padding: 1.5rem;
@@ -9,7 +9,7 @@
 
 form .form-label {
     font-weight: 600;
-    color: #333;
+    color: var(--color-app-breadcrumb-nav-active);
     margin-bottom: 8px;
     display: block;
 }
