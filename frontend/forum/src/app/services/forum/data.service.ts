@@ -10,7 +10,7 @@ export class DataService {
   constructor(private http: HttpClient) { }
 
   getCourses(){
-    return this.http.get(`${environment.apiUrl}get_courses.php`);
+    return this.http.get(`${environment.apiUrl}get_courses`);
   }
 
   getCategories() {

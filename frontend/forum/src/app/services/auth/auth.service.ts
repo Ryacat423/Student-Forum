@@ -9,11 +9,19 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
-  registerUser(userData: any){
-    return this.http.post(`${environment.apiUrl}register.php`, JSON.stringify(userData));
+  // registerUser(userData: any){
+  //   return this.http.post(`${environment.apiUrl}register.php`, JSON.stringify(userData));
+  // }
+
+  // login(data: any){
+  //   return this.http.post(`${environment.apiUrl}login.php`, JSON.stringify(data))
+  // }
+
+  registerUser(data: any){
+    return this.http.post(`${environment.apiUrl}register`, data);
   }
 
   login(data: any){
-    return this.http.post(`${environment.apiUrl}login.php`, JSON.stringify(data))
+    return this.http.post(`${environment.apiUrl}login`, JSON.stringify(data))
   }
 }

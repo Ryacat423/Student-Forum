@@ -1,50 +1,219 @@
 <div class="container-fluid rounded d-flex justify-content-center flex-column">
-    <app-breadcrumbs
-        [navs]="navs"
-        [current]="current">
-    </app-breadcrumbs>
+  <app-breadcrumbs [navs]="navs" [current]="current"> </app-breadcrumbs>
 
-    <div class="registration-form-container">
-        <form [formGroup]="register">
-            <h2 class="form-title">Account Registration</h2>
-            <hr>
-            <div class="row">
-                <div class="col-sm-12 col-lg-4">
-                    <div class="form-field">
-                        <label for="step.name">First Name: </label>
-                        <div class="input-container">
-                            <i class="bi bi-person"></i>
-                            <input type="text" placeholder="Enter username or email..." required>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-12 col-lg-4">
-                    <div class="form-field">
-                        <label for="step.name">Last Name: </label>
-                        <div class="input-container">
-                            <i class="bi bi-person"></i>
-                            <input type="text" placeholder="Enter username or email..." required>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-12 col-lg-4">
-                    <div class="form-field">
-                        <label for="step.name">Middle Name (Optional): </label>
-                        <div class="input-container">
-                            <i class="bi bi-person"></i>
-                            <input type="text" placeholder="Enter username or email..." required>
-                        </div>
-                    </div>
-                </div>
-
+  <div class="registration-form-container">
+    <form [formGroup]="register" (submit)="sendForm()">
+      <h2 class="form-title">Account Registration</h2>
+      <div class="row">
+        <h3 class="section-title">Personal Information</h3>
+        <div class="col-sm-12 col-lg-6">
+          <div class="form-field">
+            <label for="step.name">First Name: </label>
+            <div class="input-container">
+              <i class="bi bi-person"></i>
+              <input 
+                type="text" 
+                placeholder="Enter Firstname" 
+                formControlName="first_name"
+                required 
+            />
             </div>
-            <div class="d-grid">
-                <button class="btn submit-btn" type="submit">
-                    <span>Register</span>
-                </button>
-            </div>
-            <p class="login-link">Already have an account? <a routerLink="/forum/login">Login</a></p>
+          </div>
+        </div>
 
-        </form>
-    </div>
+        <div class="col-sm-12 col-lg-6">
+          <div class="form-field">
+            <label for="step.name">Last Name: </label>
+            <div class="input-container">
+              <i class="bi bi-person"></i>
+              <input
+                type="text"
+                placeholder="Enter Lastname"
+                formControlName="last_name"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+          <div class="form-field">
+            <label for="step.name">Middle Name (Optional): </label>
+            <div class="input-container">
+              <i class="bi bi-person"></i>
+              <input
+                type="text"
+                placeholder="Enter Middlename"
+                formControlName="middle_name"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-field">
+              <label for="bdate"
+                >Date of Birth</label
+              >
+              <div class="input-container">
+                <i class="bi bi-calendar"></i>
+                <input type="date" formControlName="bdate"/>
+              </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-field">
+              <label for="gender">Gender</label>
+              <div class="input-container">
+                <i class="bi bi-gender-ambiguous"></i>
+                <select formControlName="gender">
+                    <option value="" disabled selected>Select Gender</option>
+                    @for(gender of genderOptions; track $index) {
+                    <option [value]="gender">{{ gender }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-field">
+              <label for="gender">Course</label>
+              <div class="input-container">
+                <i class="bi bi-book"></i>
+                <select formControlName="course_id">
+                    <option [value]="0" disabled selected>Select Course</option>
+                    @for(course of courses; track course.course_id) {
+                        <option [value]="course.course_id">{{ course.name }}</option>
+                    }
+                </select>
+              </div>
+            </div>
+        </div>
+
+        @if(register.value.course_id == 7) {
+            <div class="col-sm-12 col-lg-12">
+                <div class="form-field">
+                  <label for="gender">Major</label>
+                  <div class="input-container">
+                    <i class="bi bi-book"></i>
+                    <select formControlName="major_id">
+                        <option [value]="0" disabled selected>Select Course</option>
+                        @for(major of majors; track major.course_id) {
+                            <option [value]="major.course_id">{{ major.name }}</option>
+                        }
+                    </select>
+                  </div>
+                </div>
+            </div>
+        }
+
+        <h3 class="section-title">Contact Information</h3>
+        <div class="col-sm-12 col-lg-6">
+          <div class="form-field">
+            <label for="step.name">Email: </label>
+            <div class="input-container">
+                <i class="bi bi-envelope"></i>
+                <input type="email" formControlName="email" placeholder="Enter email address">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+          <div class="form-field">
+            <label for="step.name">Contact: </label>
+            <div class="input-container">
+                <i class="bi bi-phone"></i>
+                <input type="tel" formControlName="contact" placeholder="Enter phone number">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+          <div class="form-field">
+            <label for="step.name">Barangay: </label>
+            <div class="input-container">
+                <i class="bi bi-geo-alt"></i>
+                <input type="text" formControlName="barangay" placeholder="Enter barangay">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+          <div class="form-field">
+            <label for="step.name">Town: </label>
+            <div class="input-container">
+                <i class="bi bi-geo-alt"></i>
+                <input type="text" formControlName="town" placeholder="Enter town">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-12">
+          <div class="form-field">
+            <label for="step.name">City: </label>
+            <div class="input-container">
+                <i class="bi bi-geo-alt"></i>
+                <input type="text" formControlName="city" placeholder="Enter city">
+            </div>
+          </div>
+        </div>
+
+        <h3 class="section-title">Account Setup</h3>
+        <div class="col-sm-12 col-lg-12">
+          <div class="form-field">
+              <label for="username">Username</label>
+              <div class="input-container">
+                <i class="bi bi-person-badge"></i>
+                <input type="text" formControlName="username" placeholder="Choose a username">
+              </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+          <div class="form-field">
+            <label for="password">Password <span class="required">*</span></label>
+            <div class="input-container" [class.error]="isInvalid('password')">
+              <i class="bi bi-lock"></i>
+              <input type="password" formControlName="password" placeholder="Enter password">
+            </div>
+            
+            <div class="error-message" *ngIf="isInvalid('password')">
+              <span *ngIf="getFieldControl('password').errors?.['required']">Password is required</span>
+              <span *ngIf="getFieldControl('password').errors?.['minlength']">Password must be at least 8 characters</span>
+              <span *ngIf="getFieldControl('password').errors?.['pattern']">
+                Password must contain uppercase, lowercase, number, and special character
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-lg-6">
+          <div class="form-field">
+            <label for="password_confirmation">Confirm Password <span class="required">*</span></label>
+            <div class="input-container" [class.error]="isInvalid('password_confirmation') || register.hasError('passwordMismatch')">
+              <i class="bi bi-lock-fill"></i>
+              <input type="password" formControlName="password_confirmation" placeholder="Confirm password">
+            </div>
+            <div class="error-message" *ngIf="isInvalid('password_confirmation') || register.hasError('passwordMismatch')">
+              <span *ngIf="getFieldControl('password_confirmation').errors?.['required']">Please confirm your password</span>
+              <span *ngIf="register.hasError('passwordMismatch') && !getFieldControl('password_confirmation').errors?.['required']">
+                Passwords do not match
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="d-grid mt-4">
+        <button class="btn submit-btn" type="submit">
+          <span>Register</span>
+        </button>
+      </div>
+      <p class="login-link">
+        Already have an account? <a routerLink="/forum/login">Login</a>
+      </p>
+    </form>
+  </div>
 </div>

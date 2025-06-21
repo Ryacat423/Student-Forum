@@ -16,6 +16,16 @@
     align-self: center;
 }
 
+.section-title {
+  color: var(--color-auth-form-text);
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  border-bottom: .1rem solid var(--color-app-menu-active);
+  border-top: .1rem solid var(--color-app-menu-active);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
 
 .form-header {
     text-align: center;
@@ -41,8 +51,7 @@
 }
 
 .form-field {
-
-    margin: 0 0.75rem 1.25rem 0.75rem;
+    margin-bottom: 15px;
     position: relative;
 }
 
@@ -150,7 +159,7 @@
     color: var(--color-app-breadcrumb-nav-active);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1123px)  {
     .form-field {
         flex: 1 0 100%;
     }
@@ -162,4 +171,15 @@
     .form-title {
         font-size: 1.3rem;
     }
+}
+
+.input-container.error {
+  border-color: #dc3545;
+}
+
+.error-message {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #dc3545;
+  min-height: 1.2rem;
 }

@@ -30,13 +30,13 @@ export class MainComponent implements OnInit {
   isMedium: boolean = false;
   
   saved: any;
-  isDark: boolean = true;
+  isDark: boolean = false;
 
   ngOnInit(): void {
     this.userId = localStorage.getItem('token');
     this.saved = localStorage.getItem('isDark');
 
-    this.isDark = this.saved !== 'true';
+    this.isDark = this.saved === 'true';
 
     if (this.userId) {
       this.getUserData(this.userId);
@@ -122,9 +122,6 @@ export class MainComponent implements OnInit {
   checkIfMobile() {
     this.isMobile = window.innerWidth < 768;
     this.isMedium = window.innerWidth > 768 && window.innerWidth < 992;
-    console.log('sm: '+this.isMobile)
-    console.log('md:' + this.isMedium)
-    console.log('id: ' + this.userId)
   }
 
   toggleMobileMenu() {
