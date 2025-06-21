@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-main',
@@ -9,6 +11,12 @@ import { RouterModule } from '@angular/router';
   styleUrl: './main.component.css',
 })
 export class MainComponent implements OnInit {
+
+  constructor(
+    private auth: AuthService,
+    private router: Router
+  ){}
+
   saved: any;
   
   mobileMenuOpen: boolean = false;
@@ -18,6 +26,31 @@ export class MainComponent implements OnInit {
     this.checkIfMobile();
   }
   
+  logingOut(){
+    Swal.fire({
+      title: 'Are you sure you want to logout?',
+      showCancelButton: true,
+      confirmButtonText: 'Logout',
+      cancelButtonText: 'Close',
+      reverseButtons: true
+    }).then((result: any)=>{
+      if(result.isConfirmed){
+        this.logout();
+      }
+    });
+  }
+
+  logout() {
+    this.auth.logout().subscribe((res: any)=> {
+      if(res.success == 1) {
+        localStorage.clear();
+        this.router.navigate(['/']).then(() => {
+          window.location.reload();
+        });
+      }
+    })
+  }
+
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.checkIfMobile();

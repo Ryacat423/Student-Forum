@@ -18,10 +18,7 @@ export class LoginComponent implements OnInit {
   ){}
 
   ngOnInit(): void {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.router.navigateByUrl('/admin');
-    }
+    localStorage.clear();
   }
 
   login = new FormGroup({
@@ -34,9 +31,7 @@ export class LoginComponent implements OnInit {
       if (res.success === 1) {
         this.showSuccess();
         localStorage.setItem('token', res.access_token);
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        this.router.navigate(['/admin']);
       } else {
         this.showError();
       }
