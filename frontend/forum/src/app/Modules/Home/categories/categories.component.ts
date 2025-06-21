@@ -4,6 +4,7 @@ import { SearchFilterPipe } from '../../../Pipe/search/search-filter.pipe';
 import { DataService } from '../../../services/forum/data.service';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment.prod';
 
 @Component({
   selector: 'app-categories',
@@ -18,7 +19,7 @@ export class CategoriesComponent implements OnInit {
 
   navs = [{ label: 'Home', link: '/forum/home' }];
   current: string = 'Categories';
-  imgurl: string = 'http://localhost/studentforum/admin/media/';
+  imgurl: string = environment.mediaUrl;
 
   keyword: any;
 

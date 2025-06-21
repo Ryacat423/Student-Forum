@@ -34,20 +34,20 @@
     </div>
 
     <div class="categories-list">
-      @for(categ of categories | searchFilter: keyword; track
+      @for(categ of categories?.categories | searchFilter: keyword; track
       categ.category_id){
       <div class="category-card" (click)="select(categ.category_id)">
-        @if(categ?.category_img.startsWith('bi')){
+        @if(categ?.icon.startsWith('bi')){
           <div class="category-icon">
-            <i class="bi {{ categ.category_img }}"></i>
+            <i class="bi {{ categ?.icon }}"></i>
           </div>
         }@else {
           <div class="category-icon">
-            <img src="{{imgurl + categ?.category_img}}" alt="{{categ?.category_name}}" width="100">
+            <img src="{{imgurl + categ?.icon}}" alt="{{categ?.name}}" width="100">
           </div>
         }
-        <div class="category-name">{{ categ?.category_name }}</div>
-        <p class="category-description">{{ categ?.category_desc }}</p>
+        <div class="category-name">{{ categ?.name }}</div>
+        <p class="category-description">{{ categ?.description }}</p>
       </div>
       }
     </div>
