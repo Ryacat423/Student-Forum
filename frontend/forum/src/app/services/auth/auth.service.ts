@@ -7,15 +7,25 @@ import { environment } from '../../../environments/environment.prod';
 })
 export class AuthService {
 
+  private user: any = null;
+
   constructor(private http: HttpClient) { }
 
-  // registerUser(userData: any){
-  //   return this.http.post(`${environment.apiUrl}register.php`, JSON.stringify(userData));
-  // }
+  setUser(data: any) {
+    this.user = data;
+  }
 
-  // login(data: any){
-  //   return this.http.post(`${environment.apiUrl}login.php`, JSON.stringify(data))
-  // }
+  getUser() {
+    return this.user;
+  }
+
+  clearUser() {
+    this.user = null;
+  }
+
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
+  }
 
   registerUser(data: any){
     return this.http.post(`${environment.apiUrl}register`, data);

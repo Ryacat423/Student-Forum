@@ -3,6 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TimeAgoPipe } from '../../Pipe/time/time-ago.pipe';
 import { UserService } from '../../services/user/user.service';
+import { environment } from '../../../environments/environment.prod';
 
 
 @Component({
@@ -18,6 +19,7 @@ export class BreadcrumbsComponent implements OnInit{
 
   user: any = null;
   userData: any;
+  profile: any;
 
   convo: any[] = [];
   notifs: any[] = [];
@@ -27,17 +29,18 @@ export class BreadcrumbsComponent implements OnInit{
     private uservice: UserService
   ){}
   ngOnInit(): void {
-    this.user = localStorage.getItem('token');
+    this.user = localStorage.getItem('u_token');
     if (this.user) {
       this.uservice.getUser(this.user).subscribe((res: any) => {
         this.userData = res;
+        this.profile = environment.mediaUrl + this.userData.profile_pic
       });
-      this.uservice.getConvoList(this.user).subscribe((res: any)=>{
-        this.convo = res;
-      });
-      this.uservice.getNotifs(this.user).subscribe((res: any)=>{
-        this.notifs = res;
-      })
+      // this.uservice.getConvoList(this.user).subscribe((res: any)=>{
+      //   this.convo = res;
+      // });
+      // this.uservice.getNotifs(this.user).subscribe((res: any)=>{
+      //   this.notifs = res;
+      // })
     }
 
     this.checkIfMobile()

@@ -41,6 +41,7 @@ export class LoginComponent implements OnInit {
       if (res.success === 1) {
         this.showSuccess();
         localStorage.setItem('token', res.access_token);
+        localStorage.setItem('u_token', res.user);
         setTimeout(() => {
           window.location.reload();
         }, 2000);

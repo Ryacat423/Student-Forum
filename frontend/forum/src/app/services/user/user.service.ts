@@ -9,15 +9,19 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  getUser(id: number){
-    return this.http.get(`${environment.apiUrl}get_user.php?id=${id}`);
+  getUser(userId:number) {
+    return this.http.get(`${environment.apiUrl}user/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
   }
 
-  getConvoList(userId: number){
-    return this.http.get(`${environment.apiUrl}get_conversation.php?userID=${userId}`);
-  }
+  // getConvoList(userId: number){
+  //   return this.http.get(`${environment.apiUrl}get_conversation.php?userID=${userId}`);
+  // }
 
-  getNotifs(userId:any){
-    return this.http.get(`${environment.apiUrl}get_notifs.php?userID=${userId}`);
-  }
+  // getNotifs(userId:any){
+  //   return this.http.get(`${environment.apiUrl}get_notifs.php?userID=${userId}`);
+  // }
 }

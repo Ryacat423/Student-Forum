@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user/user.service';
 import { TimeAgoPipe } from '../../Pipe/time/time-ago.pipe';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-main',
@@ -14,6 +15,7 @@ import Swal from 'sweetalert2';
 export class MainComponent implements OnInit {
   constructor(
     private uservice: UserService, 
+    private auth: AuthService,
     private router: Router
   ) {}
 
@@ -33,15 +35,17 @@ export class MainComponent implements OnInit {
   isDark: boolean = false;
 
   ngOnInit(): void {
-    this.userId = localStorage.getItem('token');
+    const user = this.auth.getUser();
+    console.log(user);
+    this.userId = localStorage.getItem('u_token');
     this.saved = localStorage.getItem('isDark');
 
     this.isDark = this.saved === 'true';
 
     if (this.userId) {
       this.getUserData(this.userId);
-      this.getConvos(this.userId);
-      this.getNotifications(this.userId);
+      // this.getConvos(this.userId);
+      // this.getNotifications(this.userId);
     }
 
     this.checkIfMobile();
@@ -51,20 +55,21 @@ export class MainComponent implements OnInit {
     this.uservice.getUser(userId).subscribe((res: any) => {
       this.userData = res;
       localStorage.setItem('status', this.userData.status);
+      console.log(this.userData)
     });
   }
 
-  getConvos(userId: number) {
-    this.uservice.getConvoList(userId).subscribe((res: any) => {
-      this.convo = res;
-    });
-  }
+  // getConvos(userId: number) {
+  //   this.uservice.getConvoList(userId).subscribe((res: any) => {
+  //     this.convo = res;
+  //   });
+  // }
 
-  getNotifications(userId: number) {
-    this.uservice.getNotifs(userId).subscribe((res: any) => {
-      this.notifs = res;
-    });
-  }
+  // getNotifications(userId: number) {
+  //   this.uservice.getNotifs(userId).subscribe((res: any) => {
+  //     this.notifs = res;
+  //   });
+  // }
   navigateHome() {
     this.router.navigate(['./forum/home']);
     this.current = 'Home';

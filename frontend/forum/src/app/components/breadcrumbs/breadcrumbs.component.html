@@ -130,7 +130,7 @@
           aria-expanded="false"
         >
           <img
-            src="{{ userData?.profile_img }}"
+            src="{{ profile }}"
             alt="Profile"
             class="rounded-circle"
           />
@@ -144,12 +144,12 @@
         >
           <li class="dropdown-header">
             <img
-              src="{{ userData?.profile_img }}"
+              src="{{ profile }}"
               alt="Profile"
               class="rounded-circle"
             />
-            <h6>{{ userData?.full_name }}</h6>
-            <span>{{ userData?.course_code }} - Student</span>
+            <h6>{{ userData?.first_name }} {{userData?.last_name}}</h6>
+            <span>{{ userData?.course.code }} - Student</span>
           </li>
           <li>
             <hr class="dropdown-divider" />
