@@ -62,6 +62,7 @@ class AuthController extends Controller
             return response()->json([
                 'access_token' => $token,
                 'message' => 'User registered successfully',
+                'success' => 1,
                 'user' => $user
             ], 200);
         } catch (\Exception $exception) {
