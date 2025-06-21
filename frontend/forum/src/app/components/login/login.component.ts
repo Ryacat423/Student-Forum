@@ -25,8 +25,8 @@ export class LoginComponent implements OnInit {
 
   errmsg: string = '';
   login = new FormGroup({
-    user: new FormControl(null),
-    password: new FormControl(null),
+    email: new FormControl(''),
+    password: new FormControl(''),
   });
 
   ngOnInit(): void {
@@ -37,23 +37,20 @@ export class LoginComponent implements OnInit {
   }
 
   loginUser() {
-    this.auth.login(this.login.value).subscribe((result: any) => {
-      console.log(result);
-      if (result.userdata != null) {
-        localStorage.setItem('token', result.userdata.userID); 
-        this.showApprovalConfirmation();
+    this.auth.login(this.login.value).subscribe((res:any)=> {
+      if (res.success === 1) {
+        this.showSuccess();
+        localStorage.setItem('token', res.access_token);
         setTimeout(() => {
           window.location.reload();
         }, 2000);
       } else {
-        this.errmsg = result.msg;
         this.showError();
-        this.login.reset();
       }
     });
   }
 
-  showApprovalConfirmation() {
+  showSuccess() {
     Swal.fire({
       icon: 'success',
       title: 'Login Successful',

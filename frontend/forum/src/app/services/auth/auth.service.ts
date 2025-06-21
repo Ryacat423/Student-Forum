@@ -21,7 +21,15 @@ export class AuthService {
     return this.http.post(`${environment.apiUrl}register`, data);
   }
 
-  login(data: any){
-    return this.http.post(`${environment.apiUrl}login`, JSON.stringify(data))
+  login(data: any) {
+    return this.http.post(`${environment.apiUrl}login`, data);
+  }
+
+  logout() {
+    return this.http.post(`${environment.apiUrl}logout`, {}, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
   }
 }
