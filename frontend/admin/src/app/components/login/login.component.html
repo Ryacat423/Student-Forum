@@ -1,1 +1,43 @@
-<p>login works!</p>
+<div class="container-fluid vh-100" style="background-color: var(--color-dark)">
+  <div class="login-card">
+    <div class="logo-container">
+      <div class="logo pb-2">
+        <img src="/img/logo-favicon.png" alt="" width="100">
+      </div>
+      <hr>
+      <h1 class="school-title">
+        Northern Luzon <br>Adventist College <br>
+        Student Forum: Admin Panel<br />
+      </h1>
+    </div>
+
+    <form [formGroup]="login" (submit)="loginAdmin()">
+      <div class="mb-3 form-field">
+        <label for="step.name" class="ms-2">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          placeholder="Enter Email Address..."
+          required
+          formControlName="email"
+        />
+      </div>
+
+      <div class="mb-3 form-field">
+        <label for="step.name" class="ms-2">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          placeholder="Password"
+          required
+          formControlName="password"
+        />
+      </div>
+
+      <button type="submit" class="btn btn-login">Login</button>
+
+    </form>
+  </div>
+</div>
