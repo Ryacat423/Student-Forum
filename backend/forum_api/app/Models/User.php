@@ -63,4 +63,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    
+    public function course()
+    {
+        return $this->belongsTo(Course::class, 'course_id', 'course_id');
+    }
+
 }
