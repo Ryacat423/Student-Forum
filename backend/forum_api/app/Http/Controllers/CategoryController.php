@@ -18,6 +18,17 @@ class CategoryController extends Controller
         ], 200);
     }
 
+    public function getCategory($id)
+    {
+        $category = Category::find($id);
+
+        if (!$category) {
+            return response()->json(['success' => false, 'message' => 'Category not found'], 404);
+        }
+
+        return response()->json(['success' => true, 'category' => $category]);
+    }
+
     public function saveCategory(Request $request) {
         $categoryData = json_decode($request->input('category_data'), true);
 
