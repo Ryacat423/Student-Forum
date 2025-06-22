@@ -3,6 +3,7 @@ import { LoginComponent } from './components/login/login.component';
 import { MainComponent } from './components/main/main.component';
 import { home } from './Modules/Home/home.routes';
 import { forum } from './Modules/Forum/forum.routes';
+import { AuthGuard } from './services/auth/auth.guard';
 
 export const routes: Routes = [
     {
@@ -12,6 +13,7 @@ export const routes: Routes = [
     {
         path: 'admin',
         component: MainComponent,
+        canActivate: [AuthGuard],
         children: [
             {
                 path: 'home',
@@ -30,7 +32,11 @@ export const routes: Routes = [
     },
     {
         path: '',
-        redirectTo: 'admin',
+        redirectTo: 'login',
         pathMatch: 'full'
+    },
+    {
+        path: '**',
+        redirectTo: 'login'
     }
 ];
