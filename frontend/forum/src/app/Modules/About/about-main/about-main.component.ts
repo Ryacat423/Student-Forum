@@ -12,9 +12,6 @@ import { CommonModule } from '@angular/common';
   styleUrl: './about-main.component.css'
 })
 export class AboutMainComponent {
-  navs = [
-    { label: 'Home', link: '/forum/home' }
-  ];
   current: string = 'About Us';
 
   activeTab: string = 'history';

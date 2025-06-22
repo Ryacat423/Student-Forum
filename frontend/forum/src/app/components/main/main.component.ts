@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user/user.service';
 import { TimeAgoPipe } from '../../Pipe/time/time-ago.pipe';
@@ -16,6 +16,7 @@ export class MainComponent implements OnInit {
   constructor(
     private uservice: UserService, 
     private auth: AuthService,
+    private acroute: ActivatedRoute,
     private router: Router
   ) {}
 
@@ -35,28 +36,19 @@ export class MainComponent implements OnInit {
   isDark: boolean = false;
 
   ngOnInit(): void {
-    const user = this.auth.getUser();
-    console.log(user);
     this.userId = localStorage.getItem('u_token');
     this.saved = localStorage.getItem('isDark');
 
     this.isDark = this.saved === 'true';
 
     if (this.userId) {
-      this.getUserData(this.userId);
+      this.userData = this.acroute.snapshot.data['user'];
+      console.log(this.userData);
       // this.getConvos(this.userId);
       // this.getNotifications(this.userId);
     }
 
     this.checkIfMobile();
-  }
-
-  getUserData(userId: number) {
-    this.uservice.getUser(userId).subscribe((res: any) => {
-      this.userData = res;
-      localStorage.setItem('status', this.userData.status);
-      console.log(this.userData)
-    });
   }
 
   // getConvos(userId: number) {
@@ -71,42 +63,42 @@ export class MainComponent implements OnInit {
   //   });
   // }
   navigateHome() {
-    this.router.navigate(['./forum/home']);
+    this.router.navigate([this.userData ? '/forum/home' : '/public/home']);
     this.current = 'Home';
     this.closeMobileMenu();
   }
 
   navigateAbout() {
-    this.router.navigate(['./forum/about-us']);
+    this.router.navigate([this.userData ? '/forum/about-us' : '/public/about-us']);
     this.current = 'About Us';
     this.closeMobileMenu();
   }
 
   navigateContact() {
-    this.router.navigate(['./forum/contact']);
+    this.router.navigate([this.userData ? '/forum/contact' : '/public/contact']);
     this.current = 'Contact Us';
     this.closeMobileMenu();
   }
 
   navigateRegister() {
-    this.router.navigate(['./forum/register']);
+    this.router.navigate(['/public/register']);
     this.current = 'Register';
     this.closeMobileMenu();
   }
 
   navigateProfile() {
-    this.router.navigate(['./forum/profile']);
+    this.router.navigate(['/forum/profile']);
     this.current = 'Profile';
     this.closeMobileMenu();
   }
   navigateMessages() {
-    this.router.navigate(['./forum/home/messages']);
+    this.router.navigate(['/forum/home/messages']);
     this.current = 'Messages';
     this.closeMobileMenu();
   }
 
   navigateLogin() {
-    this.router.navigate(['./forum/login']);
+    this.router.navigate(['/public/login']);
     this.current = 'Login';
     this.closeMobileMenu();
   }

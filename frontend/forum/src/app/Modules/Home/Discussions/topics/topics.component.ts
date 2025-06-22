@@ -47,25 +47,34 @@ export class TopicsComponent implements OnChanges, OnInit {
     const firstInitial = parts[0]?.charAt(0) ?? '';
     const secondInitial = parts[1]?.charAt(0) ?? '';
   
-    return firstInitial + secondInitial;
+    return (firstInitial + secondInitial).toUpperCase();
+  }
+
+  // New method to get reply count (you might need to adjust based on your data structure)
+  getReplyCount(topic: any): number {
+    // This is a placeholder - you'll need to implement based on your data structure
+    // If replies are stored separately, you might need to count them
+    return topic.replies || 0;
   }
 
   toggleOwn(){
     this.active = 'own';
     this.updateFilteredTopics();
+    console.log(this.filteredTopics)
     this.switch.emit(this.active);
   }
 
   toggleAll(){
     this.active = 'all';
     this.updateFilteredTopics();
+    console.log(this.filteredTopics)
     this.switch.emit(this.active);
   }
 
   updateFilteredTopics() {
     if (this.active === 'own' && this.currentuser) {
       this.filteredTopics = this.topics.filter(topic => 
-        topic.userID === this.currentuser || topic.userID === this.currentuser
+        topic.user_id === parseInt(this.currentuser)
       );
     } else {
       this.filteredTopics = [...this.topics];

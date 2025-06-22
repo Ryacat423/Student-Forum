@@ -19,7 +19,7 @@ export class DiscussionMainComponent implements OnInit{
   ) {}
 
   topics: any;
-  categ_topics: any;
+  category_data: any;
 
   name: any;
   id: any;
@@ -30,31 +30,35 @@ export class DiscussionMainComponent implements OnInit{
   msg: any;
 
   navs = [
-    { label: 'Home', link: '/forum/home' },
     { label: 'Categories', link: '/forum/home' }
   ];
   current: string = 'Home';
-  imgurl: string = 'http://localhost/studentforum/admin/media/';
 
   ngOnInit(): void {
     this.acroute.paramMap.subscribe(categ => {
       this.name = categ.get('id');
       this.getTopics(this.name)
+      this.getCategoryData(this.name);
     });
 
-    this.id = localStorage.getItem('token');
+    this.id = localStorage.getItem('u_token');
     this.status = localStorage.getItem('status');
   }
 
   getTopics(id: number){
-    this.dservice.getTopics(id).subscribe((res: any)=> {
-      this.topics = res.data;
-      this.categ_topics = res.categ_data[0];
-      this.current = this.categ_topics.category_name;
+    this.dservice.getTopics(id, this.activeFilter).subscribe((res: any)=> {
+      this.topics = res;
     })
   }
 
-    refreshTopics(newTopics: any){
+  getCategoryData(id: number) {
+    this.dservice.getCategoryById(id).subscribe((res:any)=>{
+      this.category_data = res.category;
+      this.current = this.category_data.name;
+    })
+  }
+
+  refreshTopics(newTopics: any){
     this.topics = newTopics.body?.topics;
   }
 
@@ -67,7 +71,7 @@ export class DiscussionMainComponent implements OnInit{
   }
 
   getOwnTopicCount(): number {
-    return this.topics?.filter((t:any) => t.userID === this.id || t.user_id === this.id)?.length || 0;
+    return this.topics?.filter((t:any) => t.user_id === parseInt(this.id))?.length || 0;
   }
 
   showAdd(){

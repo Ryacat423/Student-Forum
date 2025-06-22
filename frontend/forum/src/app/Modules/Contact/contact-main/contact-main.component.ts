@@ -18,10 +18,6 @@ export class ContactMainComponent implements OnInit {
   ){}
 
   user: any;
-  navs = [
-    { label: 'Home', link: '/forum/home' }
-  ];
-
   current: string = 'Contact';
 
   message!: FormGroup;

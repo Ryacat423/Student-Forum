@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment.prod';
 export class UserService {
 
   constructor(private http: HttpClient) { }
+  private user: any = null;
 
   getUser(userId:number) {
     return this.http.get(`${environment.apiUrl}user/${userId}`, {
@@ -16,7 +17,17 @@ export class UserService {
       }
     });
   }
+  setUser(data: any) {
+    this.user = data;
+  }
 
+  getLoggedUser() {
+    return this.user;
+  }
+
+  clearUser() {
+    this.user = null;
+  }
   // getConvoList(userId: number){
   //   return this.http.get(`${environment.apiUrl}get_conversation.php?userID=${userId}`);
   // }

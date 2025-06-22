@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { DataService } from '../../../../services/forum/data.service';
 import { environment } from '../../../../../environments/environment.prod';
 
 @Component({
@@ -15,48 +14,46 @@ export class NewTopicComponent {
 
   @Input() categid!: number;
   @Output() saveTopic = new EventEmitter();
-  
-  userid = localStorage.getItem('token');
-  
-  constructor(
-    private dservice: DataService, 
-    private http: HttpClient
-  ){}
+
+  userid = localStorage.getItem('u_token');
+  selectedFiles: File[] = [];
 
   topicForm = new FormGroup({
     title: new FormControl(''),
-    body: new FormControl(''),
-    categid: new FormControl(),
-    userid: new FormControl(),
+    content: new FormControl('')
   });
 
-  selectedFile: any = null;
+  constructor(private http: HttpClient) {}
 
   onFileSelected(event: any): void {
     if (event.target.files.length > 0) {
-      this.selectedFile = event.target.files[0];
-      console.log(this.selectedFile);
+      this.selectedFiles = Array.from(event.target.files);
     }
   }
 
   addTopic() {
-    this.topicForm.controls['userid'].setValue(Number(this.userid));
-    this.topicForm.controls['categid'].setValue(Number(this.categid));
-  
-    const fd = new FormData();
-    if (this.selectedFile) {
-      fd.append('files', this.selectedFile);
-    }
-    fd.append('topic_data', JSON.stringify(this.topicForm.value));
-  
-    this.http.post(`${environment.apiUrl}create_topic.php`,fd, {
+    const formData = new FormData();
+
+    this.selectedFiles.forEach(file => {
+      formData.append('images[]', file);
+    });
+
+    formData.append('category_id', String(this.categid));
+    formData.append('user_id', String(this.userid));
+    formData.append('title', this.topicForm.value.title || '');
+    formData.append('content', this.topicForm.value.content || '');
+
+    this.http.post(`${environment.apiUrl}topics`, formData, {
       observe: 'events',
-      reportProgress: true
-    })
-      .subscribe((res: any) => {
-        console.log(res);
-        this.topicForm.reset();
-        this.saveTopic.emit(res);
-      });
+      reportProgress: true,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    }).subscribe((res: any) => {
+      console.log(res);
+      this.topicForm.reset();
+      this.selectedFiles = [];
+      this.saveTopic.emit(res);
+    });
   }
 }

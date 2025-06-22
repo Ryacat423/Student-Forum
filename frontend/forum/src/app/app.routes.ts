@@ -6,11 +6,47 @@ import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { about } from './Modules/About/about.routes';
 import { ContactMainComponent } from './Modules/Contact/contact-main/contact-main.component';
+import { AuthGuard } from './services/auth/auth.guard';
+import { UserResolver } from './services/user/user.resolver';
 
 export const routes: Routes = [
     {
+        path: 'public',
+        component: MainComponent,
+        children: [
+            {
+                path: 'home',
+                loadChildren: ()=>import('./Modules/Home/home.routes').then(h=>home)
+            },
+            {
+                path: 'about-us',
+                loadChildren: ()=>import('./Modules/About/about.routes').then(a=>about)
+            },
+            {
+                path: 'contact',
+                component: ContactMainComponent
+            },
+            {
+                path: 'register',
+                component: RegisterComponent
+            },
+            {
+                path: 'login',
+                component: LoginComponent,
+
+            },
+            {
+                path: '',
+                redirectTo: 'home',
+                pathMatch: 'full'
+            }
+        ]
+    },
+    {
         path: 'forum',
         component: MainComponent,
+        canActivate: [AuthGuard],
+        resolve: { user: UserResolver },
         children: [
             {
                 path: 'home',
@@ -28,14 +64,7 @@ export const routes: Routes = [
                 path: 'contact',
                 component: ContactMainComponent
             },
-            {
-                path: 'register',
-                component: RegisterComponent
-            },
-            {
-                path: 'login',
-                component: LoginComponent
-            },
+
             {
                 path: '',
                 redirectTo: 'home',
@@ -43,10 +72,13 @@ export const routes: Routes = [
             }
         ]
     },
-
     {
         path: '',
-        redirectTo: 'forum',
+        redirectTo: 'public',
         pathMatch: 'full'
+    },
+    {
+        path: '**',
+        redirectTo: 'login'
     }
 ];

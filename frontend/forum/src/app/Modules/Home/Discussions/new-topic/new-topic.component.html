@@ -12,13 +12,13 @@
     </div>
 
     <div class="mb-3">
-      <label for="topicbody" class="form-label">Topic Body</label>
+      <label for="content" class="form-label">Topic Content</label>
       <textarea 
-        formControlName="body" 
+        formControlName="content" 
         class="form-control" 
-        id="topicbody"
+        id="content"
         rows="4"
-        placeholder="Enter topic body"
+        placeholder="Enter topic content"
       ></textarea>
     </div>
     
@@ -29,7 +29,11 @@
           <i class="bi bi-paperclip"></i> Add Files
           <input type="file" style="display: none;" (change)="onFileSelected($event)">
         </label>
-        <span class="file-name" *ngIf="selectedFile">{{ selectedFile.name }}</span>
+        @if(selectedFiles) {
+          @for(file of selectedFiles; track $index) {
+            <span class="file-name">{{ file.name }}</span>
+          }
+        }
       </div>
     </div>
     

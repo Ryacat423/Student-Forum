@@ -4,16 +4,16 @@
   <div class="category-header">
     <div class="category-info">
       <div class="category-icon-large">
-        @if(categ_topics?.category_img.startsWith('bi')){
-            <i class="bi {{ categ_topics?.category_img }}"></i>
+        @if(category_data?.icon?.startsWith('bi')){
+            <i class="bi {{ category_data?.icon }}"></i>
         }@else {
-            <img src="{{imgurl + categ_topics?.category_img}}" alt="{{categ_topics?.category_name}}" width="100">
+            <!-- <img src="{{imgurl + category_data?.icon}}" alt="{{categ_topics?.name}}" width="100"> -->
         }
       </div>
 
       <div class="category-details">
         <h1>{{current}}</h1>
-        <p>{{categ_topics?.category_desc}}</p>
+        <p>{{category_data?.description}}</p>
       </div>
     </div>
   </div>
@@ -22,7 +22,7 @@
     <div class="discussion-main">
       <app-topics 
         [topics]="topics || []" 
-        [categ_data]="categ_topics"
+        [categ_data]="category_data"
         [currentuser]="id"
         (switch)="onFilterChange($event)"
       ></app-topics>
@@ -57,7 +57,7 @@
           <h5 class="section-title">Category Information</h5>
         </div>
         <div class="category-info-content">
-          <p><strong>Category:</strong> {{categ_topics?.category_name}}</p>
+          <p><strong>Category:</strong> {{category_data?.name}}</p>
           <p><strong>Total Discussions:</strong> {{topics?.length}}</p>
           @if(activeFilter === 'own'){
             <p><strong>Your Topics:</strong> {{getOwnTopicCount()}}</p>

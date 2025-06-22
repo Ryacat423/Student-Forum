@@ -14,11 +14,15 @@ export class DataService {
   }
 
   getCategories() {
-    return this.http.get(`${environment.apiUrl}get_categories`)
+    return this.http.get(`${environment.apiUrl}get_categories`);
   }
 
-  getTopics(id: number){
-    return this.http.get(`${environment.apiUrl}get_topics.php?id=${id}`)
+  getCategoryById(id: number) {
+    return this.http.get(`${environment.apiUrl}category/${id}`);
+  }
+
+  getTopics(id: number, filter: string){
+    return this.http.get(`${environment.apiUrl}topics/category/${id}?filter=${filter}`);
   }
 
   sendMessage(data: any){

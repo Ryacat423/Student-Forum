@@ -3,21 +3,21 @@ import { BreadcrumbsComponent } from '../../../components/breadcrumbs/breadcrumb
 import { SearchFilterPipe } from '../../../Pipe/search/search-filter.pipe';
 import { DataService } from '../../../services/forum/data.service';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { environment } from '../../../../environments/environment.prod';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-categories',
-  imports: [BreadcrumbsComponent, SearchFilterPipe, FormsModule],
+  imports: [BreadcrumbsComponent, SearchFilterPipe, FormsModule, RouterModule],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css',
 })
 export class CategoriesComponent implements OnInit {
-  constructor(private dservice: DataService, private router: Router) {}
+  constructor(private dservice: DataService, private router: Router, private auth: AuthService) {}
 
   categories: any;
 
-  navs = [{ label: 'Home', link: '/forum/home' }];
   current: string = 'Categories';
   imgurl: string = environment.mediaUrl;
 
@@ -35,6 +35,7 @@ export class CategoriesComponent implements OnInit {
   }
 
   select(categ: any) {
-    this.router.navigate(['/forum/home/discussions', categ]);
+    const path = this.auth.isLoggedIn() ? '/forum/home/discussions/' : '/public/home/discussions/';
+    this.router.navigate([path, categ]);
   }
 }

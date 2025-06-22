@@ -32,7 +32,7 @@
         @for(topic of filteredTopics | searchFilter: keyword; track $index){
           <div class="topic-card">
             <div class="topic-avatar">
-              {{ getInitials(topic?.username) }}
+              {{ getInitials(topic?.user?.first_name + ' ' + topic?.user?.last_name) }}
             </div>
             <div class="topic-content">
               <div class="topic-header">
@@ -41,23 +41,23 @@
                     '/forum/home/discussions',
                     categoryId,
                     'topic',
-                    topic.topicID
+                    topic.topic_id
                   ]"
                   class="topic-title"
                 >
-                  {{ topic.topic_title }}
+                  {{ topic.title }}
                 </a>
   
-                <span class="topic-category">{{ categ_data.category_name }}</span>
+                <span class="topic-category">{{ categ_data?.name }}</span>
               </div>
               <div class="topic-meta">
-                <span>Posted by: {{ topic.username }}</span>
-                <span>{{ topic.creation_time | date : "MMMM d, y" }}</span>
+                <span>Posted by: {{ topic.user?.first_name }} {{ topic.user?.last_name }}</span>
+                <span>{{ topic.created_at | date : "MMMM d, y" }}</span>
               </div>
-              <p class="topic-preview">{{ topic.content }}</p>
+              <p class="topic-preview">{{ topic.post?.content }}</p>
               <div class="topic-stats">
                 <span><i class="bi bi-eye"></i> {{ topic.views }} views</span>
-                <span><i class="bi bi-chat"></i> {{ topic.replies }} replies</span>
+                <span><i class="bi bi-chat"></i> {{ getReplyCount(topic) }} replies</span>
               </div>
             </div>
           </div>
