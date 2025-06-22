@@ -5,21 +5,20 @@ import { TimeAgoPipe } from '../../Pipe/time/time-ago.pipe';
 import { UserService } from '../../services/user/user.service';
 import { environment } from '../../../environments/environment.prod';
 
-
 @Component({
   selector: 'app-breadcrumbs',
   imports: [RouterModule, CommonModule, TimeAgoPipe],
   templateUrl: './breadcrumbs.component.html',
   styleUrl: './breadcrumbs.component.css'
 })
-
-export class BreadcrumbsComponent implements OnInit{
+export class BreadcrumbsComponent implements OnInit {
   @Input() navs!: { label: string, link: string }[];
   @Input() current!: string;  
 
   userData: any;
-  
+  userId: any;
   profile: any;
+  isLoadingUser: boolean = false;
 
   convo: any[] = [];
   notifs: any[] = [];
@@ -27,17 +26,72 @@ export class BreadcrumbsComponent implements OnInit{
   constructor(
     private router: Router, 
     private uservice: UserService
-  ){}
+  ) {}
+
   ngOnInit(): void {
     const token = localStorage.getItem('token');
-    if (token) {
-      this.userData = this.uservice.getLoggedUser();
-      this.profile = environment.mediaUrl + this.userData.profile_pic;
+    this.userId = localStorage.getItem('u_token');
+    
+    if (token && this.userId) {
+      this.loadUserData();
     }
     this.checkIfMobile();
   }
 
+  private loadUserData(): void {
+    this.userData = this.uservice.getLoggedUser();
+    
+    if (this.userData) {
+      this.setProfilePicture();
+      this.loadUserRelatedData();
+      return;
+    }
+
+    this.isLoadingUser = true;
+    this.uservice.getUser(Number(this.userId)).subscribe({
+      next: (user: any) => {
+        this.userData = user;
+        this.uservice.setUser(user); 
+        this.setProfilePicture();
+        this.isLoadingUser = false;
+        this.loadUserRelatedData();
+      },
+      error: (error) => {
+        console.error('Error loading user data in breadcrumbs:', error);
+        this.isLoadingUser = false;
+      }
+    });
+  }
+
+  private setProfilePicture(): void {
+    if (this.userData && this.userData.profile_pic) {
+      this.profile = environment.mediaUrl + this.userData.profile_pic;
+    }
+  }
+
+  private loadUserRelatedData(): void {
+    if (this.userData) {
+      // Load conversations and notifications if needed
+      // this.getConvos(this.userId);
+      // this.getNotifications(this.userId);
+    }
+  }
+
+  // Uncomment these methods when ready to use
+  // getConvos(userId: number) {
+  //   this.uservice.getConvoList(userId).subscribe((res: any) => {
+  //     this.convo = res;
+  //   });
+  // }
+
+  // getNotifications(userId: number) {
+  //   this.uservice.getNotifs(userId).subscribe((res: any) => {
+  //     this.notifs = res;
+  //   });
+  // }
+
   isMobile: boolean = false;
+
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.checkIfMobile();

@@ -184,75 +184,78 @@
 
   @if(userId != null){
   <aside class="sidebar d-none d-md-block">
-    @if(userId && userData?.profile_pic){
-    <div class="user-profile p-3">
-      <div class="avatar">
-        <img src="img/logo.jpg" alt="Forum Logo" />
-      </div>
-      <h1
-        style="
-          font-family: 'Nunito', sans-serif;
-          font-size: 1.2em;
-          text-align: center;
-        "
-        class="name"
-        routerLink="/forum/home"
-      >
-        NLAC<br />Student Forum
-      </h1>
-    </div>
-    }
+    @if(isLoadingUser) {
+        <div class="user-profile p-3 text-center">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      } @else if(userData != null) {
+        <div class="user-profile p-3">
+          <div class="avatar">
+            <img src="img/logo.jpg" alt="Forum Logo" />
+          </div>
+          <h1
+            style="
+              font-family: 'Nunito', sans-serif;
+              font-size: 1.2em;
+              text-align: center;
+            "
+            class="name"
+            routerLink="/forum/home"
+          >
+            NLAC<br />Student Forum
+          </h1>
+        </div>
+        <nav>
+          <ul class="nav-menu px-0">
+            <li class="nav-item" routerLinkActive="active">
+              <a routerLink="/forum/home" class="nav-link">
+                <i class="bi bi-house-door-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
 
-    <button (click)="toggleDarkMode()">dark</button>
-    <nav>
-      <ul class="nav-menu px-0">
-        <li class="nav-item" routerLinkActive="active">
-          <a routerLink="/forum/home" class="nav-link">
-            <i class="bi bi-house-door-fill"></i>
-            <span>Home</span>
-          </a>
-        </li>
+            <li class="nav-item" routerLinkActive="active">
+              <a routerLink="/forum/about-us" class="nav-link">
+                <i class="bi bi-info-circle-fill"></i>
+                <span>About Us</span>
+              </a>
+            </li>
 
-        <li class="nav-item" routerLinkActive="active">
-          <a routerLink="/forum/about-us" class="nav-link">
-            <i class="bi bi-info-circle-fill"></i>
-            <span>About Us</span>
-          </a>
-        </li>
+            <li class="nav-item" routerLinkActive="active">
+              <a routerLink="/forum/contact" class="nav-link">
+                <i class="bi bi-telephone-fill"></i>
+                <span>Contact</span>
+              </a>
+            </li>
 
-        <li class="nav-item" routerLinkActive="active">
-          <a routerLink="/forum/contact" class="nav-link">
-            <i class="bi bi-telephone-fill"></i>
-            <span>Contact</span>
-          </a>
-        </li>
+            @if (userId) {
+            <li class="nav-item" routerLinkActive="active">
+              <a routerLink="/forum/profile" class="nav-link">
+                <i class="bi bi-people-fill"></i>
+                <span>Profile</span>
+              </a>
+            </li>
 
-        @if (userId) {
-        <li class="nav-item" routerLinkActive="active">
-          <a routerLink="/forum/profile" class="nav-link">
-            <i class="bi bi-people-fill"></i>
-            <span>Profile</span>
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" (click)="log()">
-            <i class="bi bi-box-arrow-right"></i>
-            <span>Logout</span>
-          </a>
-        </li>
-        } @else {
-        <li class="nav-item" routerLinkActive="active">
-          <a [routerLink]="['/register']" class="nav-link">
-            <i class="bi bi-person-plus-fill"></i>
-            <span>Register</span>
-          </a>
-        </li>
-        }
-      </ul>
-    </nav>
+            <li class="nav-item">
+              <a class="nav-link" (click)="log()">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+              </a>
+            </li>
+            } @else {
+            <li class="nav-item" routerLinkActive="active">
+              <a [routerLink]="['/register']" class="nav-link">
+                <i class="bi bi-person-plus-fill"></i>
+                <span>Register</span>
+              </a>
+            </li>
+            }
+          </ul>
+        </nav>
+      }
   </aside>
-
   }
 
   <div

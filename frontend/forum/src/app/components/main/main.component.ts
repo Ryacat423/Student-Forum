@@ -14,7 +14,7 @@ import { AuthService } from '../../services/auth/auth.service';
 })
 export class MainComponent implements OnInit {
   constructor(
-    private uservice: UserService, 
+    private uservice: UserService,
     private auth: AuthService,
     private acroute: ActivatedRoute,
     private router: Router
@@ -22,6 +22,7 @@ export class MainComponent implements OnInit {
 
   userId: any;
   userData: any;
+  isLoadingUser: boolean = false;
 
   convo: any[] = [];
   notifs: any[] = [];
@@ -31,7 +32,7 @@ export class MainComponent implements OnInit {
   mobileMenuOpen: boolean = false;
   isMobile: boolean = false;
   isMedium: boolean = false;
-  
+
   saved: any;
   isDark: boolean = false;
 
@@ -42,26 +43,36 @@ export class MainComponent implements OnInit {
     this.isDark = this.saved === 'true';
 
     if (this.userId) {
-      this.userData = this.acroute.snapshot.data['user'];
-      console.log(this.userData);
-      // this.getConvos(this.userId);
-      // this.getNotifications(this.userId);
+      this.loadUserData();
     }
 
     this.checkIfMobile();
   }
 
-  // getConvos(userId: number) {
-  //   this.uservice.getConvoList(userId).subscribe((res: any) => {
-  //     this.convo = res;
-  //   });
-  // }
+  private loadUserData(): void {
+    this.userData = this.acroute.snapshot.data['user'];
 
-  // getNotifications(userId: number) {
-  //   this.uservice.getNotifs(userId).subscribe((res: any) => {
-  //     this.notifs = res;
-  //   });
-  // }
+    if (this.userData) {
+      this.uservice.setUser(this.userData);
+      return;
+    }
+
+    this.isLoadingUser = true;
+    this.uservice.getUser(Number(this.userId)).subscribe({
+      next: (user: any) => {
+        this.userData = user;
+        this.uservice.setUser(user);
+        this.isLoadingUser = false;
+        console.log('User data loaded:', this.userData);
+      },
+      error: (error) => {
+        console.error('Error loading user data:', error);
+        this.isLoadingUser = false;
+        this.logout();
+      },
+    });
+  }
+
   navigateHome() {
     this.router.navigate([this.userData ? '/forum/home' : '/public/home']);
     this.current = 'Home';
@@ -69,13 +80,17 @@ export class MainComponent implements OnInit {
   }
 
   navigateAbout() {
-    this.router.navigate([this.userData ? '/forum/about-us' : '/public/about-us']);
+    this.router.navigate([
+      this.userData ? '/forum/about-us' : '/public/about-us',
+    ]);
     this.current = 'About Us';
     this.closeMobileMenu();
   }
 
   navigateContact() {
-    this.router.navigate([this.userData ? '/forum/contact' : '/public/contact']);
+    this.router.navigate([
+      this.userData ? '/forum/contact' : '/public/contact',
+    ]);
     this.current = 'Contact Us';
     this.closeMobileMenu();
   }
@@ -105,6 +120,7 @@ export class MainComponent implements OnInit {
 
   logout() {
     localStorage.clear();
+    this.uservice.clearUser();
     this.closeMobileMenu();
     this.router.navigate(['/']).then(() => {
       window.location.reload();
@@ -134,15 +150,15 @@ export class MainComponent implements OnInit {
     localStorage.setItem('isDark', this.isDark.toString());
   }
 
-  log(){
+  log() {
     Swal.fire({
       title: 'Are you sure you want to logout?',
       showCancelButton: true,
       confirmButtonText: 'Logout',
       cancelButtonText: 'Close',
-      reverseButtons: true
-    }).then((result: any)=>{
-      if(result.isConfirmed){
+      reverseButtons: true,
+    }).then((result: any) => {
+      if (result.isConfirmed) {
         this.logout();
       }
     });

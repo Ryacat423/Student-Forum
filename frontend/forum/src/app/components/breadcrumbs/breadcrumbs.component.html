@@ -10,36 +10,15 @@
   <span class="separator">›</span>
   }
   <span class="current" style="cursor: pointer">{{ current }}</span>
-
-  @if(!userData && !isMobile){
-    <div
-      class="ms-auto d-lg-flex d-md-flex align-items-center gap-3 d-none"
-      style="cursor: pointer"
-    >
-      <a class="login-btn" 
-        [routerLink]="userData ? '/forum/about-us' : '/public/about-us'"
-      >
-        <div>About Us</div>
-      </a>
-      <a class="login-btn" 
-        [routerLink]="userData ? '/forum/contact' : '/public/contact'"
-      >
-        <div>Contact Us</div>
-      </a>
-
-      <div>
-        <a class="login-btn me-2" (click)="navigateRegister()">
-          <div class="btn btn-outline-primary btn-sm">Register</div>
-        </a>
-        <a class="login-btn" (click)="navigateLogin()">
-          <div class="btn btn-outline-success btn-sm">Login</div>
-        </a>
-      </div>
-    </div>
-  } 
   
   @if(!isMobile){ 
-    @if(userData){
+    @if(isLoadingUser) {
+      <div class="ms-auto d-flex align-items-center">
+        <div class="spinner-border spinner-border-sm" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    } @else if(userData){
       <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
           <li class="nav-item dropdown">
@@ -109,12 +88,12 @@
                       [routerLink]="['/forum/messages/body', conv.messageID]"
                     >
                       <div class="profile-image active-now">
-                        <img src="{{ conv?.profile_pic }}" alt="Anna Smith" />
+                        <img src="{{ conv?.profile_pic }}" alt="Profile" />
                       </div>
                       <div class="message-content">
                         <div class="message-sender">
                           {{ conv?.sender_name }}
-                          <span class="sender-role">{{ conv.role }}</span>
+                          <span class="sender-role">{{ conv?.role }}</span>
                         </div>
                         <div class="message-preview">
                           {{ conv?.content }}
@@ -140,13 +119,21 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              <img
-                src="{{ profile }}"
-                alt="Profile"
-                class="rounded-circle"
-              />
+              @if(profile) {
+                <img
+                  src="{{ profile }}"
+                  alt="Profile"
+                  class="rounded-circle"
+                />
+              } @else {
+                <!-- Default avatar when profile pic is loading -->
+                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" 
+                     style="width: 32px; height: 32px;">
+                  <i class="bi bi-person-fill text-white"></i>
+                </div>
+              }
               <span class="d-none d-md-block dropdown-toggle ps-2">{{
-                userData?.username
+                userData?.username || 'Loading...'
               }}</span>
             </a>
 
@@ -154,13 +141,20 @@
               class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile mt-5"
             >
               <li class="dropdown-header">
-                <img
-                  src="{{ profile }}"
-                  alt="Profile"
-                  class="rounded-circle"
-                />
-                <h6>{{ userData?.first_name }} {{userData?.last_name}}</h6>
-                <span>{{ userData?.course.code }} - Student</span>
+                @if(profile) {
+                  <img
+                    src="{{ profile }}"
+                    alt="Profile"
+                    class="rounded-circle"
+                  />
+                } @else {
+                  <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" 
+                       style="width: 40px; height: 40px;">
+                    <i class="bi bi-person-fill text-white"></i>
+                  </div>
+                }
+                <h6>{{ userData?.first_name || 'Loading' }} {{ userData?.last_name || '' }}</h6>
+                <span>{{ userData?.course?.code || 'Loading...' }} - Student</span>
               </li>
               <li>
                 <hr class="dropdown-divider" />
@@ -208,6 +202,31 @@
           </li>
         </ul>
       </nav>
+    } @else if(!userData && !isMobile){
+      <div
+        class="ms-auto d-lg-flex d-md-flex align-items-center gap-3 d-none"
+        style="cursor: pointer"
+      >
+        <a class="login-btn" 
+          [routerLink]="userData ? '/forum/about-us' : '/public/about-us'"
+        >
+          <div>About Us</div>
+        </a>
+        <a class="login-btn" 
+          [routerLink]="userData ? '/forum/contact' : '/public/contact'"
+        >
+          <div>Contact Us</div>
+        </a>
+
+        <div>
+          <a class="login-btn me-2" (click)="navigateRegister()">
+            <div class="btn btn-outline-primary btn-sm">Register</div>
+          </a>
+          <a class="login-btn" (click)="navigateLogin()">
+            <div class="btn btn-outline-success btn-sm">Login</div>
+          </a>
+        </div>
+      </div>
     } 
   }
 </div>

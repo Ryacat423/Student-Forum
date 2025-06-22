@@ -10,6 +10,15 @@ export class UserService {
   constructor(private http: HttpClient) { }
   private user: any = null;
 
+  loadUser(): void {
+    const id = localStorage.getItem('u_token');
+    if (id) {
+      this.getUser(+id).subscribe(user => {
+        this.setUser(user);
+      });
+    }
+  }
+
   getUser(userId:number) {
     return this.http.get(`${environment.apiUrl}user/${userId}`, {
       headers: {
