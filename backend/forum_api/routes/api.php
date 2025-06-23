@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ForumController;
+use App\Http\Controllers\TopicController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -45,5 +46,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::get('/topics/{category_id}', [ForumController::class, 'getTopics']);
 Route::get('/topics/category/{category_id}', [ForumController::class, 'getTopicsByCategory']);
-Route::get('/topics/{topic_id}/comments', [ForumController::class, 'getComments']);
-Route::get('/posts/{post_id}/replies', [ForumController::class, 'getReplies']);
+
+//Topic Routes
+Route::get('/posts/{topic_id}', [TopicController::class, 'show']);
+Route::get('/topics/{topic_id}/comments', [TopicController::class, 'getComments']);
+Route::get('/posts/{post_id}/replies', [TopicController::class, 'getReplies']);

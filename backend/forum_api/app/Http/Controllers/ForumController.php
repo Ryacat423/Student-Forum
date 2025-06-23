@@ -10,8 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class ForumController extends Controller
 {
-    public function createTopic(Request $request)
-    {
+    public function createTopic(Request $request){
         $request->validate([
             'category_id' => 'required|exists:categories,category_id',
             'user_id' => 'required|exists:users,user_id',
@@ -36,10 +35,16 @@ class ForumController extends Controller
                 'reply' => null
             ]);
 
+            $topics = Topic::with(['user', 'category', 'post'])
+            ->where('category_id', $request->category_id)
+            ->orderByDesc('topic_id')
+            ->get();
+
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
                     $filename = time().'_'.$image->getClientOriginalName();
-                    $image->storeAs('public/media', $filename);
+                    $image->move(public_path('media'), $filename);
+
 
                     Media::create([
                         'user_id' => $request->user_id,
@@ -50,12 +55,19 @@ class ForumController extends Controller
             }
 
             DB::commit();
-            return response()->json(['success' => true, 'topic' => $topic, 'post' => $post], 201);
+            return response()->json([
+                'success' => true, 
+                'topic' => $topic, 
+                'post' => $post, 
+                'topics'=>$topics
+            ], 201);
 
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
+
+
     }
 
     public function getTopics()
@@ -100,26 +112,5 @@ class ForumController extends Controller
         ]);
 
         return response()->json(['success' => true, 'post' => $post], 201);
-    }
-
-    public function getComments($topic_id)
-    {
-        $posts = Post::with(['user', 'media'])
-            ->where('topic_id', $topic_id)
-            ->whereNotNull('reply')
-            ->orderBy('created_at')
-            ->get();
-
-        return response()->json($posts);
-    }
-
-    public function getReplies($post_id)
-    {
-        $replies = Post::with(['user', 'media'])
-            ->where('reply', $post_id)
-            ->orderBy('created_at')
-            ->get();
-
-        return response()->json($replies);
     }
 }
