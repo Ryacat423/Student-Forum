@@ -1,0 +1,75 @@
+@if(loading) {
+<div class="text-center p-4">
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+}
+
+@if(error) {
+<div class="alert alert-danger" role="alert">
+  {{ error }}
+</div>
+}
+
+@if(!loading && !error && postData) {
+    <div>
+      <div class="container-fluid">
+        <app-breadcrumbs [navs]="navs" [current]="current"></app-breadcrumbs>
+          
+        <div class="discussion-layout">
+          <div class="discussion-main">
+            <app-post-data
+                [liked]="liked"
+                [currentUser]="currentUser"
+                [postData]="postData"
+                [isAuthor]="isAuthor"
+            >
+          ></app-post-data>
+          </div>
+          <div class="discussion-sidebar">
+            <div class="sidebar">
+              <div class="sidebar-section">
+                <div class="section-header">
+                  <h2 class="section-title">About the Author</h2>
+                </div>
+                <div class="p-3 d-flex flex-column align-items-center">
+                  <div class="mb-3">
+                    <img src="{{postData?.post.user.profile_pic}}" alt="Profile" width="100" class="rounded">
+                  </div>
+                  <h3 class="author-name">{{postData?.post.user.first_name}} {{postData?.post.user.last_name}}</h3>
+                  <p class="author-details">{{postData?.post.user.course.code}} • Student</p>
+                  <p class="author-details">Member since {{postData.post.user.registration_date | date: 'MMMM yyyy'}}</p>
+                </div>
+              </div>
+              
+              <div class="sidebar-section mt-2">
+                <div class="section-header">
+                  <h2 class="section-title">Topic Stats</h2>
+                </div>
+                <div class="stats-container">
+                  <div class="stat-item">
+                    <span class="stat-label">Category:</span>
+                    <span class="stat-value">{{postData.topic.category.name}}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Views:</span>
+                    <span class="stat-value">{{postData.topic.views}}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Replies:</span>
+                    <!-- <span class="stat-value">{{post.replies}}</span> -->
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Created:</span>
+                    <span class="stat-value">{{postData.post.created_at | date: 'MMM d, y'}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+}
+

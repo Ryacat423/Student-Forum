@@ -1,0 +1,73 @@
+<section class="post-section">
+  <div class="post-header">
+    <div class="post-meta">
+      <div class="post-author">
+        <div class="author-avatar">
+          {{ getInitials() }}
+        </div>
+        <div>
+          <div class="author-name">{{ postData?.post.user.first_name }} {{postData?.post.user.last_name}}</div>
+          <div class="author-role">
+            {{ capitalizeFirstLetter(postData?.post.user.role) }} •
+            {{ postData?.post.user.course.name }}
+          </div>
+        </div>
+      </div>
+      <div class="post-date">
+        Posted on {{ postData?.post.created_at | date : "MMMM d, y" }} at
+        {{ postData?.post.created_at | date : "h:mm a" }}
+      </div>
+    </div>
+    <div class="post-header-main mt-4 d-flex flex-row">
+      <h1 class="post-title">{{ postData?.topic.title }}</h1>
+
+    </div>
+  </div>
+
+  <div class="post-content">
+    @for(paragraph of postData?.post.content?.split('\n'); track $index) {
+    <p>{{ paragraph }}</p>
+    } 
+    
+    @if(postData.post.media){
+        @for(media of postData?.post.media; track $index) {
+            <img src="{{ mediaurl + media.filename }}" alt="" style="width: 30%" />
+        }
+    }
+  </div>
+
+  <div class="post-actions">
+    <button
+      class="action-btn btn {{ liked ? 'btn-primary' : 'btn-outline-primary' }}"
+      (click)="currentUser ? toggleLike() : notifyLoginRequired()"
+    >
+      <i
+        class="bi {{
+          liked ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up'
+        }} me-1"
+      ></i>
+      {{ liked ? "Liked" : "Like" }} ({{ postData.totalLikes }})
+    </button>
+
+    <button
+      class="action-btn btn btn-outline-secondary"
+      (click)="currentUser ? toggleComment() : notifyLoginRequired()"
+    >
+      <i class="bi bi-chat me-1"></i> Comment
+    </button>
+    @if(isAuthor){
+      <button class="action-btn edit-btn" (click)="editTopic(postData?.post.post_id)">
+        <i class="bi bi-pencil-square"></i> Edit
+      </button>
+    }@else {
+      <button
+        class="action-btn btn btn-outline-danger"
+        (click)="
+          currentUser ? openReportModal(postData.postID) : notifyLoginRequired()
+        "
+      >
+        <i class="bi bi-exclamation-triangle me-1"></i> Report
+      </button>
+    }
+  </div>
+</section>

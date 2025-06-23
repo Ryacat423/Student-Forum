@@ -25,6 +25,10 @@ export class DataService {
     return this.http.get(`${environment.apiUrl}topics/category/${id}?filter=${filter}`);
   }
 
+  getPost(id: number) {
+    return this.http.get(`${environment.apiUrl}posts/${id}`);
+  }
+
   sendMessage(data: any){
     return this.http.post(`${environment.apiUrl}send_message.php`, JSON.stringify(data));
   }
