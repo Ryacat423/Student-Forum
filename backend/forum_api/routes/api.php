@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ForumController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -42,6 +43,8 @@ Route::post('/edit_category', [CategoryController::class, 'saveCategory']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/topics', [ForumController::class, 'createTopic']);
     Route::post('/posts', [ForumController::class, 'comment']);
+
+    Route::put('/update/{topic}', [ForumController::class, 'updateTopic']);
 });
 
 Route::get('/topics/{category_id}', [ForumController::class, 'getTopics']);
@@ -49,5 +52,7 @@ Route::get('/topics/category/{category_id}', [ForumController::class, 'getTopics
 
 //Topic Routes
 Route::get('/posts/{topic_id}', [TopicController::class, 'show']);
-Route::get('/topics/{topic_id}/comments', [TopicController::class, 'getComments']);
-Route::get('/posts/{post_id}/replies', [TopicController::class, 'getReplies']);
+Route::get('/topic/{topic_id}/comments', [TopicController::class, 'getComments']);
+Route::get('/post/{post_id}/replies', [TopicController::class, 'getReplies']);
+
+Route::post('/like', [LikeController::class, 'toggle']);

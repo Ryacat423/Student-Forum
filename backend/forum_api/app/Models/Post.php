@@ -30,11 +30,14 @@ class Post extends Model
     }
 
     public function replies() {
-        return $this->hasMany(Post::class, 'reply');
+        return $this->hasMany(Post::class, 'reply', 'post_id');
     }
 
     public function parent() {
         return $this->belongsTo(Post::class, 'reply');
     }
 
+    public function likes() {
+        return $this->hasMany(Like::class, 'post_id', 'post_id');
+    }
 }
