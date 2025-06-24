@@ -27,50 +27,55 @@
   </div>
 
   <div class="topic-list">
-    @if(active === 'all' || active === 'own'){
-      @if(filteredTopics.length > 0){ 
-        @for(topic of filteredTopics | searchFilter: keyword; track $index){
-          <div class="topic-card">
-            <div class="topic-avatar">
-              {{ getInitials(topic?.user?.first_name + ' ' + topic?.user?.last_name) }}
+    @if(isLoading) {
+      <div class="ms-auto d-flex align-items-center">
+        <div class="spinner-border spinner-border-sm" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    } @else {
+      @if(active === 'all' || active === 'own'){
+        @if(filteredTopics.length > 0){ 
+          @for(topic of filteredTopics | searchFilter: keyword; track $index){
+            <div class="topic-card">
+              <div class="topic-avatar">
+                {{ getInitials(topic?.user?.first_name + ' ' + topic?.user?.last_name) }}
+              </div>
+              <div class="topic-content">
+                <div class="topic-header">
+                  <a
+                    [routerLink]="currentuser 
+                      ? ['/forum/home/discussions', categoryId, 'post', topic.topic_id]
+                      : ['/public/home/discussions', categoryId, 'post', topic.topic_id]"
+                    class="topic-title"
+                  >
+                    {{ topic.title }}
+                  </a>
+    
+                  <span class="topic-category">{{ categ_data?.name }}</span>
+                </div>
+                <div class="topic-meta">
+                  <span>Posted by: {{ topic.user?.first_name }} {{ topic.user?.last_name }}</span>
+                  <span>{{ topic.created_at | date : "MMMM d, y" }}</span>
+                </div>
+                <p class="topic-preview">{{ topic.post?.content }}</p>
+                <div class="topic-stats">
+                  <span><i class="bi bi-eye"></i> {{ topic.views }} views</span>
+                  <span><i class="bi bi-chat"></i> {{ getReplyCount(topic) }} replies</span>
+                </div>
+              </div>
             </div>
+          }
+        }@else {
+          <div class="topic-card empty-state">
             <div class="topic-content">
-              <div class="topic-header">
-                <a
-                  [routerLink]="[
-                    '/forum/home/discussions',
-                    categoryId,
-                    'post',
-                    topic.topic_id
-                  ]"
-                  class="topic-title"
-                >
-                  {{ topic.title }}
-                </a>
-  
-                <span class="topic-category">{{ categ_data?.name }}</span>
-              </div>
-              <div class="topic-meta">
-                <span>Posted by: {{ topic.user?.first_name }} {{ topic.user?.last_name }}</span>
-                <span>{{ topic.created_at | date : "MMMM d, y" }}</span>
-              </div>
-              <p class="topic-preview">{{ topic.post?.content }}</p>
-              <div class="topic-stats">
-                <span><i class="bi bi-eye"></i> {{ topic.views }} views</span>
-                <span><i class="bi bi-chat"></i> {{ getReplyCount(topic) }} replies</span>
+              <img src="/img/cloud.png" alt="" width="100" />
+              <div style="font-weight: 400">
+                {{ active === 'own' ? 'You haven\'t created any topics yet.' : 'No topics yet for this category.' }}
               </div>
             </div>
           </div>
         }
-      }@else {
-        <div class="topic-card empty-state">
-          <div class="topic-content">
-            <img src="/img/cloud.png" alt="" width="100" />
-            <div style="font-weight: 400">
-              {{ active === 'own' ? 'You haven\'t created any topics yet.' : 'No topics yet for this category.' }}
-            </div>
-          </div>
-        </div>
       }
     }
   </div>

@@ -11,16 +11,13 @@ import { Router, RouterModule } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
   constructor(
     private auth: AuthService,
     private router: Router
   ){}
 
-  navs = [
-    { label: 'Home', link: '/forum/home' }
-  ];
   current: string = 'Login';
 
   errmsg: string = '';
@@ -29,22 +26,13 @@ export class LoginComponent implements OnInit {
     password: new FormControl(''),
   });
 
-  ngOnInit(): void {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.router.navigateByUrl('/forum/home');
-    }
-  }
-
   loginUser() {
     this.auth.login(this.login.value).subscribe((res:any)=> {
       if (res.success === 1) {
         this.showSuccess();
         localStorage.setItem('token', res.access_token);
         localStorage.setItem('u_token', res.user);
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        this.router.navigateByUrl('/forum/home');
       } else {
         this.showError();
       }

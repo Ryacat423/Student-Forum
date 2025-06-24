@@ -18,11 +18,12 @@ export class DiscussionMainComponent implements OnInit{
     private r: Router
   ) {}
 
+  isLoading: boolean = false;
   topics: any;
   category_data: any;
 
   name: any;
-  id: any;
+  id: any = '';
   status: any;
 
   show_add: boolean = false;
@@ -30,8 +31,9 @@ export class DiscussionMainComponent implements OnInit{
   msg: any;
 
   navs = [
-    { label: 'Categories', link: '/forum/home' }
+    { label: 'Categories', link: this.id ? '/forum/home' : '/public/home' }
   ];
+  
   current: string = 'Home';
 
   ngOnInit(): void {
@@ -46,8 +48,10 @@ export class DiscussionMainComponent implements OnInit{
   }
 
   getTopics(id: number){
+    this.isLoading = true;
     this.dservice.getTopics(id, this.activeFilter).subscribe((res: any)=> {
       this.topics = res;
+      this.isLoading = false;
     })
   }
 

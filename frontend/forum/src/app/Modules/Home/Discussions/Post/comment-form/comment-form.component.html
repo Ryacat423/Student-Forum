@@ -1,0 +1,28 @@
+<div class="comment-form">
+  <textarea
+    class="form-control comment-textarea"
+    placeholder="Write your comment..."
+    [(ngModel)]="commentText"
+    rows="3"
+    [disabled]="isSubmitting"
+  ></textarea>
+  <div class="form-actions mt-2">
+
+    <div class="file-upload-control d-flex align-items-center flex-row-reverse gap-3">
+      <label class="file-upload-btn">
+        <i class="bi bi-paperclip"></i> Add Files
+        <input type="file" style="display: none;" (change)="onFileSelected($event)" accept="image/*">
+      </label>
+      @if(selectedFile){
+        <span class="file-name">{{ selectedFile.name }}</span>
+      }
+    </div>
+
+    <button 
+      class="post-button"
+      [disabled]="(!commentText.trim() && !selectedFile) || isSubmitting"
+      (click)="submitComment()">
+      {{ isSubmitting ? 'Posting...' : 'Post Comment' }}
+    </button>
+  </div>
+</div>

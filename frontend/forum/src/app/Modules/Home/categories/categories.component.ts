@@ -16,6 +16,7 @@ import { AuthService } from '../../../services/auth/auth.service';
 export class CategoriesComponent implements OnInit {
   constructor(private dservice: DataService, private router: Router, private auth: AuthService) {}
 
+  isLoading: boolean = true;
   categories: any;
 
   current: string = 'Categories';
@@ -30,7 +31,7 @@ export class CategoriesComponent implements OnInit {
   getCategories() {
     this.dservice.getCategories().subscribe((res: any) => {
       this.categories = res;
-      console.log(this.categories);
+      this.isLoading = false;
     });
   }
 

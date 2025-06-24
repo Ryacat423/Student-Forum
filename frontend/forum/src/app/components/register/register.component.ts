@@ -20,9 +20,6 @@ export class RegisterComponent implements OnInit {
     private auth: AuthService
   ){}
 
-  navs = [
-    { label: 'Home', link: '/forum/home' }
-  ];
   genderOptions: string[] = ['Male', 'Female', 'Others'];
 
   courses: any;

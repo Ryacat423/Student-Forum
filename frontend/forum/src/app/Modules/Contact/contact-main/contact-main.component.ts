@@ -40,12 +40,12 @@ export class ContactMainComponent implements OnInit {
 
   sendMessage() {
     console.log(this.message.value);
-    this.dservice.sendMessage(this.message.value).subscribe((res: any) => {
-      if(res === 1){
-        this.showApprovalConfirmation();
-        this.message.reset();
-      }
-    });
+    // this.dservice.sendMessage(this.message.value).subscribe((res: any) => {
+    //   if(res === 1){
+    //     this.showApprovalConfirmation();
+    //     this.message.reset();
+    //   }
+    // });
   }
   
   @ViewChild('messageModal') messageModal: any;

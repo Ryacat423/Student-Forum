@@ -12,6 +12,7 @@ import { SearchFilterPipe } from '../../../../Pipe/search/search-filter.pipe';
 })
 export class TopicsComponent implements OnChanges, OnInit {
 
+  @Input() isLoading: boolean = false;
   @Input() topics: any[] = [];
   @Input() categ_data: any;
   @Input() currentuser: any;
@@ -60,14 +61,12 @@ export class TopicsComponent implements OnChanges, OnInit {
   toggleOwn(){
     this.active = 'own';
     this.updateFilteredTopics();
-    console.log(this.filteredTopics)
     this.switch.emit(this.active);
   }
 
   toggleAll(){
     this.active = 'all';
     this.updateFilteredTopics();
-    console.log(this.filteredTopics)
     this.switch.emit(this.active);
   }
 

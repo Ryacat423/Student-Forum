@@ -19,21 +19,23 @@ export class PostMainComponent implements OnInit {
     private modal: NgbModal
   ){}
   
-  navs = [
-    { label: 'Categories', link: '/forum/home' },
-  ];
-
   current: string = 'Home';
   postId: number | null = null;
   postData: any;
+  
   loading: boolean = false;
   error: string | null = null;
 
   isAuthor: boolean = false;
-  currentUser: any;
-
+  currentUser: any = '';
+  
   liked: boolean = false;
-
+  likeCount: number = 0;
+  
+  navs = [
+    { label: 'Categories', link: this.currentUser ? '/forum/home' : '/public/home' }
+  ];
+  
   ngOnInit(): void {
     this.currentUser = localStorage.getItem('u_token');
     this.acroute.paramMap
@@ -46,7 +48,7 @@ export class PostMainComponent implements OnInit {
       });
   }
 
-  getPostData(postId: number): void {
+  getPostData(postId: number) {
     if (!postId || postId <= 0) {
       this.error = 'Invalid post ID';
       return;
@@ -57,9 +59,26 @@ export class PostMainComponent implements OnInit {
     
     this.dservice.getPost(postId).subscribe((res: any) => {
       this.postData = res;
+      console.log(this.postData)
       this.isAuthor = this.postData.post.user.user_id == localStorage.getItem('u_token');
       this.loading = false;
-      console.log('Post data loaded:', this.postData);
+      this.current = this.postData?.topic.title;
+      this.likeCount = this.postData.like_count;
+      const userLike = this.postData?.post.likes
+        .find((like: any) => like.user_id == this.currentUser);
+      
+      console.log(userLike)
+      this.liked = userLike?.status === 1;
     });
+  }
+
+  handleLike(likeData: any) {
+    this.dservice.like(likeData).subscribe((res: any)=> {
+      this.postData.post = res.post;
+      const userLike = this.postData?.post.likes
+        .find((like: any) => like.user_id == this.currentUser);
+      this.liked = userLike?.status === 1;
+      this.likeCount = res.like_count;
+    })
   }
 }

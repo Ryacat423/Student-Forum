@@ -46,7 +46,7 @@
           liked ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up'
         }} me-1"
       ></i>
-      {{ liked ? "Liked" : "Like" }} ({{ postData.totalLikes }})
+      {{ liked ? "Liked" : "Like" }} ({{ likeCount }})
     </button>
 
     <button
@@ -71,3 +71,11 @@
     }
   </div>
 </section>
+
+<app-comments
+  [isToggled]="showComment"
+  [comments]="comments"
+  [user_id]="currentUser"
+>
+
+</app-comments>

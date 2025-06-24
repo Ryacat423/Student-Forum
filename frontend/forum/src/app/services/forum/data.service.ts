@@ -29,7 +29,23 @@ export class DataService {
     return this.http.get(`${environment.apiUrl}posts/${id}`);
   }
 
-  sendMessage(data: any){
-    return this.http.post(`${environment.apiUrl}send_message.php`, JSON.stringify(data));
+  getComments(id: number) {
+    return this.http.get(`${environment.apiUrl}topic/${id}/comments`);
+  }
+
+  like(data: any) {
+    return this.http.post(`${environment.apiUrl}like`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+  }
+
+  updateTopic(id: number, data: any) {
+    return this.http.put(`${environment.apiUrl}update/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
   }
 }

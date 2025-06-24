@@ -32,11 +32,17 @@
         </div>
       </div>
     </div>
-
     <div class="categories-list">
+        @if(isLoading) {
+          <div class="ms-auto d-flex align-items-center">
+            <div class="spinner-border spinner-border-sm" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        }
       @for(categ of categories?.categories | searchFilter: keyword; track
       categ.category_id){
-      <div class="category-card" (click)="select(categ.category_id)">
+        <div class="category-card" (click)="select(categ.category_id)">
         @if(categ?.icon.startsWith('bi')){
           <div class="category-icon">
             <i class="bi {{ categ?.icon }}"></i>

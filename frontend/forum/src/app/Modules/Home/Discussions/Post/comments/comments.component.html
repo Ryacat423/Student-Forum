@@ -1,0 +1,145 @@
+<section class="comments-section">
+  <div class="section-header">
+    <h2 class="section-title">Comments ({{ comments }})</h2>
+    <select class="sort-select" [(ngModel)]="sortOption" (change)="sortComments()">
+      <option value="newest">Newest First</option>
+      <option value="oldest">Oldest First</option>
+      <option value="likes">Most Liked</option>
+    </select>
+  </div>
+  
+  @if(isToggled) {
+    <app-comment-form 
+      [postId]="postId"
+      [userId]="currentUserId"
+      (commentAdded)="onCommentAdded($event)"
+    >
+    </app-comment-form>
+  }
+
+  <div class="comment-list">
+    @if(comments) {
+      @for(comment of comments; track $index) {
+        <div class="comment">
+          <div class="comment-header">
+            <div class="comment-author">
+              <div class="author-avatar">
+                {{ comment.user.first_name.substring(0, 2).toUpperCase() }}
+              </div>
+              <div>
+                <div class="author-name">{{ comment.user.first_name }} {{ comment.user.last_name }}</div>
+                <div class="author-info">{{ comment.user.role }} • {{ comment.user.course.code }}</div>
+              </div>
+            </div>
+            <div class="comment-date">
+              {{ comment.created_at | date: 'MMM d, y' }} • {{ comment.created_at | date: 'h:mm a' }}
+            </div>
+          </div>
+          
+          <div class="comment-body">
+            @if(editingCommentId === comment.post_id) {
+              <div class="edit-form">
+                <textarea 
+                  class="comment-input" 
+                  [(ngModel)]="editText">
+                </textarea>
+                <div class="edit-actions">
+                  <button 
+                    class="cancel-btn" 
+                    (click)="toggleEdit(comment.post_id, '')">
+                    Cancel
+                  </button>
+                  <button 
+                    class="save-btn" 
+                    [disabled]="!editText.trim()"
+                    (click)="saveEdit(comment.post_id)">
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            } @else {
+              @if(comments?.media){
+                @for(media of comments?.media; track $index) {
+                    <img src="{{ mediaurl + media.filename }}" alt="" style="width: 30%" />
+                }
+              }
+              <p>{{ comment.content }}</p>
+            }
+          </div>
+          
+          <div class="comment-actions">
+            <button class="comment-action"              
+              (click)="toggleLike(comment.post_id)">
+              @if(comment.likes){
+                <i class="fst-normal bi"
+                  [ngClass]="{
+                    'bi-hand-thumbs-up-fill': getUserLikeStatus(comment.likes, currentUserId) === 0,
+                    'bi-hand-thumbs-up': getUserLikeStatus(comment.likes, currentUserId) !== 0
+                  }"
+                ></i> {{comment.like_count}}
+              }
+            </button>
+            
+            @if(currentUserId){
+              <button 
+                class="comment-action" 
+                (click)="toggleReplyForm(comment.postID)"
+                [disabled]="status === 'muted'"  
+              >
+                <i class="bi bi-reply"></i> Reply
+              </button>
+            }
+
+            @if(comment.user.user_id == user_id) {
+              <button class="comment-action" (click)="toggleEdit(comment.post_id, comment.content)">
+                <i class="bi bi-pencil"></i> Edit
+              </button>
+              <button class="comment-action delete" (click)="deleteComment(comment.post_id)">
+                <i class="bi bi-trash"></i> Delete
+              </button>
+            }
+          </div>
+
+          @if(showReplyForm(comment.post_id)) {
+            <div class="mx-3">
+              <app-comment-form
+              >
+              </app-comment-form>
+            </div>
+          }
+
+          @if(comment.replies && comment.replies.length > 0) {
+            @if(showicon){
+              <button class="comment-action" (click)="toggleReplies(comment.post_id)">
+                <i class="bi bi-chevron-down"></i> 
+                Show Replies
+              </button>
+            }
+            @if(shouldShowReplies(comment.post_id)){
+              <app-replies
+                [commentId]="comment.post_id"
+                [replies]="comment.replies"
+
+                [currentUserId]="currentUserId"
+                
+                [status]="status"
+                (replyLike)="onReplyLike($event)"
+                (replyUpdate)="onReplyUpdate($event)"
+                (replyDelete)="onReplyDelete($event)"
+                (newReplyAdded)="onNewReplyAdded($event)"
+              ></app-replies>
+              <button class="comment-action ms-4" (click)="toggleReplies(comment.post_id)">
+                <i class="bi bi-chevron-up"></i> 
+                Hide Replies
+              </button>
+            }
+          }
+        </div>
+      }
+    } @else {
+      <div class="no-comments">
+        Be the first to comment on this discussion!
+      </div>
+    }
+  </div>
+</section>

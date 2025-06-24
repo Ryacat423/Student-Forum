@@ -22,6 +22,8 @@
     <div class="discussion-main">
       <app-topics 
         [topics]="topics || []" 
+        [isLoading]="isLoading"
+        
         [categ_data]="category_data"
         [currentuser]="id"
         (switch)="onFilterChange($event)"

@@ -1,0 +1,71 @@
+.comment-form {
+  margin-bottom: 25px;
+}
+
+.comment-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #dde2e5;
+  border-radius: 6px;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 100px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s ease;
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: #4a66f5;
+}
+
+.post-button {
+  background-color: #4a66f5;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.post-button:hover {
+  background-color: #3651d3;
+}
+
+.post-button:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.file-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 6px 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
+
+.file-upload-btn:hover {
+  background-color: #e9ecef;
+}
+
+.file-name {
+  margin-left: 10px;
+  font-size: 0.9rem;
+}

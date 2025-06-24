@@ -1,21 +1,23 @@
-import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DataService } from '../../../../../services/forum/data.service';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { environment } from '../../../../../../environments/environment.prod';
+import { CommentsComponent } from '../comments/comments.component';
 
 @Component({
   selector: 'app-post-data',
-  imports: [CommonModule],
+  imports: [CommonModule, CommentsComponent],
   templateUrl: './post-data.component.html',
   styleUrl: './post-data.component.css',
 })
-export class PostDataComponent {
-  @Input() postData: any;
+export class PostDataComponent implements OnInit {
+  @Input() postData: any = [];
   @Input() isAuthor: any;
   @Input() liked: boolean = false;
+  @Input() likeCount: number = 0;
   @Input() currentUser: number = 0;
 
   @Input() reportTypes: any;
@@ -23,15 +25,27 @@ export class PostDataComponent {
   @Output() reportPost = new EventEmitter<any>();
   @Output() likePost = new EventEmitter();
 
+  comments: any;
   showComment: boolean = false;
   mediaurl: string = environment.mediaUrl;
 
   constructor(
-    private acroute: ActivatedRoute,
     private modal: NgbModal,
     private router: Router,
-    private dataService: DataService
+    private dservice: DataService
   ) {}
+
+  ngOnInit(): void {
+    const postId: any = this.postData.topic.topic_id
+    this.getComments(postId);
+  }
+
+  getComments(postId: number) {
+    this.dservice.getComments(postId).subscribe((res: any)=> {
+      this.comments = res;
+      console.log(this.comments);
+    })
+  }
 
   toggleLike() {
     if (!this.currentUser) {
@@ -43,10 +57,18 @@ export class PostDataComponent {
     const likeData = {
       action: action,
       userID: this.currentUser,
-      postID: this.postData.postID,
+      postID: this.postData.topic.topic_id,
     };
     this.liked = !this.liked;
     this.likePost.emit(likeData);
+  }
+
+  toggleComment() {
+    if (!this.currentUser) {
+      this.notifyLoginRequired();
+      return;
+    }
+    this.showComment = !this.showComment;
   }
 
   capitalizeFirstLetter(string: string): string {
@@ -60,14 +82,6 @@ export class PostDataComponent {
     const firstInitial = parts[0]?.charAt(0) ?? '';
     const secondInitial = parts[1]?.charAt(0) ?? '';
     return firstInitial + secondInitial;
-  }
-
-  toggleComment() {
-    if (!this.currentUser) {
-      this.notifyLoginRequired();
-      return;
-    }
-    this.showComment = !this.showComment;
   }
 
   notifyLoginRequired() {

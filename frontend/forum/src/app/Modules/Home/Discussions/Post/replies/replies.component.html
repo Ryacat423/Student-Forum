@@ -1,0 +1,217 @@
+<div class="replies">
+  @for(reply of replies; track reply.post_id) {
+  <div class="reply">
+    <div class="reply-header">
+      <div class="reply-author">
+        <div class="author-avatar">
+          {{ reply.user.first_name.substring(0, 2).toUpperCase() }}
+        </div>
+        <div>
+          <div class="author-name">{{ reply.user.first_name }} {{reply.user.last_name}}</div>
+          <div class="author-info">
+            {{ reply.user.role }} • {{ reply.user.course.code }}
+          </div>
+        </div>
+      </div>
+      <div class="reply-date">
+        {{ reply.created_at | date : "MMM d, y" }} •
+        {{ reply.created_at | date : "h:mm a" }}
+      </div>
+    </div>
+
+    <div class="reply-body">
+      @if(editingCommentId === reply.post_id) {
+      <div class="edit-form">
+        <textarea class="reply-input" [(ngModel)]="editReplyText"> </textarea>
+        <div class="edit-actions">
+          <button
+            class="cancel-btn"
+            (click)="toggleReplyEdit(reply.postID, '')"
+          >
+            Cancel
+          </button>
+          <button
+            class="save-btn"
+            [disabled]="!editReplyText.trim()"
+            (click)="saveReplyEdit(reply.postID)"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+      } @else { 
+        @if(reply.imgurl){
+            <img src="{{ reply.imgurl }}" alt="reply-attachment" width="200" />
+        }
+      <p>{{ reply.content }}</p>
+      }
+    </div>
+
+    <div class="reply-actions">
+      <div class="d-flex gap-3">
+        <button
+          class="reply-action {{
+            reply.like_status == 1 ? 'btn-primary' : 'btn-outline-primary'
+          }}"
+          (click)="toggleReplyLike(reply.postID)"
+        >
+            @if(reply.likes){
+            <i class="fst-normal bi"
+                [ngClass]="{
+                'bi-hand-thumbs-up-fill': getUserLikeStatus(reply.likes, currentUserId) === 0,
+                'bi-hand-thumbs-up': getUserLikeStatus(reply.likes, currentUserId) !== 0
+                }"
+            ></i> ({{reply.like_count}})
+            }
+        </button>
+
+        @if(currentUserId){
+        <button
+          class="comment-action"
+          (click)="
+            toggleReplyForm(commentId, reply.postID, reply.commenter_name)
+          "
+        >
+          <i class="bi bi-reply"></i> Reply
+        </button>
+        }
+      </div>
+
+      @if(reply.user.user_id == currentUserId) {
+      <button
+        class="reply-action mt-1"
+        (click)="toggleReplyEdit(reply.post_id, reply.content)"
+      >
+        <i class="bi bi-pencil"></i> Edit
+      </button>
+      <button
+        class="reply-action delete mt-1"
+        (click)="deleteReply(reply.post_id)"
+      >
+        <i class="bi bi-trash"></i> Delete
+      </button>
+      }
+    </div>
+
+    @if(showReplyForm(commentId, reply.post_id)) {
+    <div class="reply-form-container mt-2 mb-3">
+      <div class="replying-to-banner mb-2">
+        <i class="bi bi-arrow-return-right"></i> Replying to
+        {{ reply.user.first_name }} {{reply.user.last_name}}
+        <button
+          class="cancel-reply-btn"
+          (click)="toggleReplyForm(commentId, reply.post_id)"
+        >
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+      <app-comment-form> </app-comment-form>
+    </div>
+    } 
+
+    @if(reply.replies) {
+    <div class="mt-3">
+      @for(childReply of reply.replies; track childReply.post_id) {
+        <div>
+          <div class="reply-header">
+            <div class="reply-author">
+              <div class="author-avatar">
+                {{ childReply.user.first_name.substring(0, 2).toUpperCase() }}
+              </div>
+              <div>
+                <div class="author-name">{{ childReply.user.first_name }} {{childReply.user.last_name}}</div>
+                <div class="author-info">
+                  <span class="replying-to"
+                    >Replying to {{ reply.user.first_name }} {{reply.user.last_name}}</span
+                  >
+                  • {{ childReply.user.role }} • {{ childReply.user.course.code }}
+                </div>
+              </div>
+            </div>
+            <div class="reply-date">
+              {{ childReply.created_at | date : "MMM d, y" }} •
+              {{ childReply.created_at | date : "h:mm a" }}
+            </div>
+          </div>
+
+          <div class="reply-body">
+            @if(editingCommentId === childReply.post_id) {
+            <div class="edit-form">
+              <textarea class="reply-input" [(ngModel)]="editReplyText">
+              </textarea>
+              <div class="edit-actions">
+                <button
+                  class="cancel-btn"
+                  (click)="toggleReplyEdit(childReply.post_id, '')"
+                >
+                  Cancel
+                </button>
+                <button
+                  class="save-btn"
+                  [disabled]="!editReplyText.trim()"
+                  (click)="saveReplyEdit(childReply.post_id)"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+            } @else {
+            <p>{{ childReply.content }}</p>
+            }
+          </div>
+
+          <div class="reply-actions">
+            <div class="d-flex gap-3">
+              <button
+              class="reply-action {{
+                reply.like_status == 1 ? 'btn-primary' : 'btn-outline-primary'
+              }}"
+              (click)="toggleReplyLike(childReply.post_id)"
+              >
+                @if(reply.likes){
+                  <i class="fst-normal bi"
+                      [ngClass]="{
+                      'bi-hand-thumbs-up-fill': getUserLikeStatus(reply.likes, currentUserId) === 0,
+                      'bi-hand-thumbs-up': getUserLikeStatus(reply.likes, currentUserId) !== 0
+                      }"
+                  ></i> ({{reply.like_count}})
+                }
+              </button>
+              <button
+                class="comment-action"
+                type="button"
+                (click)="
+                  toggleReplyForm(
+                    commentId,
+                    reply.post_id,
+                    reply.commenter_name
+                  )
+                "
+              >
+                <i class="bi bi-reply"></i> Reply
+              </button>
+            </div>
+
+            @if(childReply.user.user_id == currentUserId) {
+            <button
+              class="reply-action mt-1"
+              (click)="toggleReplyEdit(childReply.post_id, childReply.content)"
+            >
+              <i class="bi bi-pencil"></i> Edit
+            </button>
+            <button
+              class="reply-action delete mt-1"
+              (click)="deleteReply(childReply.post_id)"
+            >
+              <i class="bi bi-trash"></i> Delete
+            </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+    }
+    
+  </div>
+  }
+</div>
