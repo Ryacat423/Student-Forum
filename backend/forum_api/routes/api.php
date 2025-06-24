@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DataController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\TopicController;
@@ -40,6 +41,7 @@ Route::get('/category/{id}', [CategoryController::class, 'getCategory']);
 Route::post('/edit_category', [CategoryController::class, 'saveCategory']);
 
 //Forum API
+Route::get('/dashboard-stats', [DataController::class, 'getDashboardStats']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/topics', [ForumController::class, 'createTopic']);
     Route::post('/posts', [ForumController::class, 'comment']);

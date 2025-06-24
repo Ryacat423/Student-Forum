@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('middle_name')->nullable();
             $table->string('gender');
             $table->date('bdate');
-            $table->string('address');
             $table->string('contact');
 
             $table->integer('course_id');

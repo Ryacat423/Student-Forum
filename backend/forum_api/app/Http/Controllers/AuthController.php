@@ -21,7 +21,6 @@ class AuthController extends Controller
             'middle_name' => 'nullable|string|max:255',
             'gender' => 'required|string',
             'bdate' => 'required|date',
-            'address' => 'required|string|max:255',
             'contact' => 'required|string|max:20',
             'course_id' => 'required|integer',
             'role' => 'required|string',
@@ -46,7 +45,6 @@ class AuthController extends Controller
                 'middle_name' => $validated['middle_name'],
                 'gender' => $validated['gender'],
                 'bdate' => $validated['bdate'],
-                'address' => $validated['address'],
                 'contact' => $validated['contact'],
                 'course_id' => $validated['course_id'],
                 'role' => $validated['role'],
@@ -74,7 +72,7 @@ class AuthController extends Controller
 
     public function login(Request $request) {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
+            'email' => 'required|string',
             'password' => 'required|string|min:8',
         ]);
 
@@ -119,21 +117,24 @@ class AuthController extends Controller
         ], 200);
     }
 
-    // Get all users with status = pending
-    public function getApplicants() {
-        $applicants = User::with('course')
-                      ->where('status', 'pending')
-                      ->get();
+    public function getApplicants(Request $request) {
+        $perPage = $request->query('per_page', 5);
 
-        $total = $applicants->count();
+        $paginated = User::with('course')
+                        ->where('status', 'pending')
+                        ->paginate($perPage);
+
+        $allApplicants = User::with('course')
+                        ->where('status', 'pending')
+                        ->get();
 
         return response()->json([
-            'applicants' => $applicants,
-            'total' => $total
+            'paginated' => $paginated,
+            'applicants' => $allApplicants
         ], 200);
     }
 
-    // Approve applicant by updating status to active
+
     public function approveApplicant(Request $request) {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,user_id',

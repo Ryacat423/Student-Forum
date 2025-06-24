@@ -25,7 +25,6 @@ class User extends Authenticatable
         'middle_name',
         'gender',
         'bdate',
-        'address',
         'contact',
 
         'course_id',
