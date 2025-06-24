@@ -41,10 +41,6 @@ export class RegisterComponent implements OnInit {
     email: new FormControl(''),
     contact: new FormControl(''),
 
-    barangay: new FormControl(''),
-    town: new FormControl(''),
-    city: new FormControl(''),
-
     username: new FormControl(''),
     password: new FormControl(''),
 
@@ -71,21 +67,46 @@ export class RegisterComponent implements OnInit {
       formData.course_id = formData.major_id;
     }
 
-    formData.address = `${formData.barangay}, ${formData.town}, ${formData.city}`;
     formData.course_id = parseInt(formData.course_id, 10);
 
-    delete formData.barangay;
-    delete formData.town;
-    delete formData.city;
     delete formData.major_id;
 
     console.log(formData);
-    this.auth.registerUser(formData).subscribe((res: any) => {
-      if (res.success === 1) {
-        this.showSuccess();
-        this.register.reset();
-      } else {
-        this.showError();
+    this.auth.registerUser(formData).subscribe({
+      next: (res: any) => {
+        if (res.success === 1) {
+          this.showSuccess();
+          this.register.reset({
+            first_name: '',
+            last_name: '',
+            middle_name: null,
+            bdate: null,
+            gender: '',
+            course_id: 0,
+            major_id: 0,
+            email: '',
+            contact: '',
+            username: '',
+            password: '',
+            password_confirmation: '',
+            bio: 'my bio',
+            status: 'pending',
+            role: 'student',
+            profile_pic: 'default.png'
+          });
+        }
+      },
+      error: (err: any) => {
+        if (err.status === 403 || err.status === 422) {
+          if (err.error?.email || err.error?.password) {
+            this.showError(`Validation Error: ${Object.values(err.error).flat().join('</br>')}`);
+          } else {
+            this.showError("Access Denied: Invalid Registration Form.");
+          }
+        } else {
+          this.showError("An unexpected error occurred.");
+        }
+        console.error(err);
       }
     });
   }
@@ -110,8 +131,15 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  showError() {
-    Swal.fire('Oops...', 'Something went wrong!', 'error');
+  showError(message: any) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Registrataion Failed',
+      html: Array.isArray(message) ? message.join('<br>') : message, 
+      confirmButtonText: 'Try Again',
+      position: 'center',
+      timer: 10000
+    });
   }
 
   getFieldControl(field: string): FormControl {

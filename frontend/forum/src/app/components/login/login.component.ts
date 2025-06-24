@@ -26,15 +26,43 @@ export class LoginComponent {
     password: new FormControl(''),
   });
 
+  // loginUser() {
+  //   this.auth.login(this.login.value).subscribe((res:any)=> {
+  //     try {
+  //       if (res.success === 1) {
+  //         this.showSuccess();
+  //         localStorage.setItem('token', res.access_token);
+  //         localStorage.setItem('u_token', res.user);
+  //         this.router.navigateByUrl('/forum/home');
+  //       }
+  //     } catch (err){
+  //       if (err) {
+  //         throw(this.showError())
+  //       }
+  //     }
+  //   });
+  // }
   loginUser() {
-    this.auth.login(this.login.value).subscribe((res:any)=> {
-      if (res.success === 1) {
-        this.showSuccess();
-        localStorage.setItem('token', res.access_token);
-        localStorage.setItem('u_token', res.user);
-        this.router.navigateByUrl('/forum/home');
-      } else {
-        this.showError();
+    this.auth.login(this.login.value).subscribe({
+      next: (res: any) => {
+        if (res.success === 1) {
+          this.showSuccess();
+          localStorage.setItem('token', res.access_token);
+          localStorage.setItem('u_token', res.user);
+          this.router.navigateByUrl('/forum/home');
+        }
+      },
+      error: (err: any) => {
+        if (err.status === 403 || err.status === 422) {
+          if (err.error?.email || err.error?.password) {
+            this.showError(`Validation Error: ${Object.values(err.error).flat().join('\n')}`);
+          } else {
+            this.showError("Access Denied: Invalid login.");
+          }
+        } else {
+          this.showError("An unexpected error occurred.");
+        }
+        console.error(err);
       }
     });
   }
@@ -49,13 +77,14 @@ export class LoginComponent {
     });
   }
 
-  showError() {
+  showError(message: any) {
     Swal.fire({
       icon: 'error',
       title: 'Login Failed',
-      text: this.errmsg || 'Invalid username or password',
+      html: Array.isArray(message) ? message.join('<br>') : message, 
       confirmButtonText: 'Try Again',
-      position: 'center'
+      position: 'center',
+      timer: 3000
     });
   }
 }

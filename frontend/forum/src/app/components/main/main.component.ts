@@ -13,6 +13,8 @@ import { AuthService } from '../../services/auth/auth.service';
   styleUrl: './main.component.css',
 })
 export class MainComponent implements OnInit {
+
+
   constructor(
     private uservice: UserService,
     private auth: AuthService,
