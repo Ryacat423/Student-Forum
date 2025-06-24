@@ -17,6 +17,18 @@ export class DataService {
     return this.http.get(`${environment.apiUrl}get_categories`);
   }
 
+  getReportTypes() {
+    return this.http.get(`${environment.apiUrl}type`);
+  }
+
+  reportPost(data: any) {
+    return this.http.post(`${environment.apiUrl}report`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+  }
+
   getCategoryById(id: number) {
     return this.http.get(`${environment.apiUrl}category/${id}`);
   }

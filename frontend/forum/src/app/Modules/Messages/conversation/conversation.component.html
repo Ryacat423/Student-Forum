@@ -1,0 +1,153 @@
+<div class="conversation-container" style="font-family: 'Nunito', sans-serif;">
+  <div class="conversation-header rounded">
+    <div class="thread-actions">
+      <button class="thread-action-btn" routerLink="/forum/messages">
+        <i class="bi bi-arrow-left"></i>
+        <span class="ms-2">Go back</span>
+      </button>
+    </div>
+
+    <div class="thread-actions">
+      <button class="thread-action-btn">
+        <i class="bi bi-trash"></i>
+        Delete
+      </button>
+    </div>
+  </div>
+
+  <div class="message-wrapper">
+    <div class="message-item">
+      <div class="conversation-header">
+        <h2>{{ message?.subject }}</h2>
+      </div>
+      <div class="message-header">
+        <div class="message-sender">
+          <img src="{{ message?.profile_pic }}" alt="Avatar" />
+          <div class="sender-details">
+            <div class="d-flex gap-2">
+              <span class="sender-name">{{ message?.sender_name }}</span>
+              <span class="sender-role">{{ message?.role }}</span>
+            </div>
+            <span class="sender-email">{{ message?.sender_email }}</span>
+          </div>
+        </div>
+        <div class="message-timestamp">
+          {{ message?.date_sent | date : "MMM d, y, h:mm a" }}
+        </div>
+      </div>
+      <div class="message-content p-5 d-flex flex-column">
+        <p>{{ message?.content }}</p>
+        <div class="message-actions align-self-end">
+          @if(!['mute', 'unmute', 'report'].includes(message?.subject.toLowerCase())){
+            @if(!isReplying){
+            <button
+              class="btn btn-sm btn-outline-secondary rounded-pill"
+              (click)="toggleReply()"
+            >
+              <i class="bi bi-reply"></i>
+              Reply
+            </button>
+            }
+          }@else {
+            <a routerLink="/forum/contact">Request Appeal</a>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if(replies.length > 0){ @for(message of replies; track $index){
+  <div class="message-wrapper">
+    <div class="message-item">
+      <div class="conversation-header">
+        <h2>{{ message?.subject }}</h2>
+      </div>
+      <div class="reply-header">
+        <div class="message-sender">
+          <img src="{{ message?.profile_pic }}" alt="Avatar" />
+          <div class="sender-details">
+            <div class="d-flex gap-2">
+              <span class="sender-name">{{ message?.sender_name }}</span>
+              <span class="sender-role">{{ message?.role }}</span>
+            </div>
+            <span class="sender-email">{{ message?.sender_email }}</span>
+          </div>
+        </div>
+        <div class="message-timestamp">
+          {{ message?.date_sent | date : "MMM d, y, h:mm a" }}
+        </div>
+      </div>
+      <div class="message-content p-5 d-flex flex-column">
+        <p>{{ message?.content }}</p>
+        <div class="message-actions align-self-end">
+          @if(!isReplying ){
+          <button
+            class="btn btn-sm btn-outline-secondary rounded-pill"
+            (click)="toggleReply()"
+          >
+            <i class="bi bi-reply"></i>
+            Reply
+          </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  } }
+</div>
+
+@if(isReplying){
+<form [formGroup]="reply" class="compose-container" (submit)="sendMessage()">
+  <div class="compose-header d-flex justify-content-between align-items-center">
+    <h2 class="fs-5">Compose Reply</h2>
+    <button
+      class="btn btn-sm btn-outline-secondary rounded-pill"
+      type="button"
+      (click)="toggleReply()"
+    >
+      <i class="bi bi-x"></i>
+      Cancel
+    </button>
+  </div>
+  <br />
+  <div class="compose-content">
+    <label class="form-label">Subject</label>
+    <input type="text" formControlName="subject" />
+
+    <label class="form-label">Reply Content</label>
+    <textarea
+      placeholder="Type your message here..."
+      formControlName="content"
+      rows="4"
+    ></textarea>
+  </div>
+  <div class="compose-actions">
+    <button class="compose-action-btn send-btn" type="submit">
+      <i class="bi bi-send"></i>
+      Send
+    </button>
+  </div>
+</form>
+}
+
+  <ng-template #messageModal let-modal>
+    <div class="message-modal-overlay" (click)="modal.dismiss('outside click')">
+      <div class="message-modal-container fade-in-modal">
+        <div class="message-modal-content">
+          <div class="message-animation">
+            <svg class="message-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+              <circle class="message-icon__circle" cx="26" cy="26" r="25" fill="none"/>
+              <path class="message-icon__envelope" fill="none" d="M16,20 L16,34 L36,34 L36,20 L16,20 Z M16,20 L26,28 L36,20"/>
+            </svg>
+          </div>
+          <div class="message-text">
+            <h2>Message Sent</h2>
+            <p>Your message has been sent successfully.</p>
+          </div>
+          <div class="message-actions">
+            <button class="message-button" (click)="modal.close('close')">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>

@@ -8,6 +8,7 @@ import { about } from './Modules/About/about.routes';
 import { ContactMainComponent } from './Modules/Contact/contact-main/contact-main.component';
 import { AuthGuard } from './services/auth/auth.guard';
 import { UserResolver } from './services/user/user.resolver';
+import { messages } from './Modules/Messages/messages.routes';
 
 export const routes: Routes = [
     {
@@ -63,6 +64,10 @@ export const routes: Routes = [
             {
                 path: 'contact',
                 component: ContactMainComponent
+            },
+            {
+                path: 'messages',
+                loadChildren: ()=>import('./Modules/Messages/messages.routes').then(m=>messages)
             },
 
             {

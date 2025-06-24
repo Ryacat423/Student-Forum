@@ -37,11 +37,13 @@ export class MainComponent implements OnInit {
 
   saved: any;
   isDark: boolean = false;
+  status: any;
 
   ngOnInit(): void {
     this.userId = localStorage.getItem('u_token');
     this.saved = localStorage.getItem('isDark');
-
+    this.status = localStorage.getItem('status');
+  
     this.isDark = this.saved === 'true';
 
     if (this.userId) {
@@ -53,9 +55,9 @@ export class MainComponent implements OnInit {
 
   private loadUserData(): void {
     this.userData = this.acroute.snapshot.data['user'];
-
     if (this.userData) {
       this.uservice.setUser(this.userData);
+      this.uservice.refreshUser();
       return;
     }
 

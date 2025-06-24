@@ -70,7 +70,6 @@ export class CommentsComponent implements OnInit, OnChanges {
     if (changes['comments'] && this.comments) {
       this.commentCount = this.comments.length;
       this.currentAttachment = this.comments.media ? this.comments.media : [];
-      console.log(this.currentAttachment);
       this.sortComments();
     }
   }

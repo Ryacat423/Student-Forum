@@ -1,0 +1,80 @@
+
+<div class="email-container" style="font-family: 'Nunito', sans-serif;">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>Messages</h2>
+
+    </div>
+    <div class="conversation-list">
+      <div class="search-container">
+        <div class="search-bar">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search messages..."
+            [(ngModel)]="keyword"
+          />
+        </div>
+      </div>
+      @if(convo.length > 0){
+        @for(conversation of convo | searchFilter: keyword; track $index){
+        <div
+          class="conversation-item"
+          [class.unread]="conversation.unread"
+          [class.active]="conversation.selected"
+          (click)="navigateMessage(conversation.messageID)"
+        >
+          <div class="avatar">
+            <img src="{{ conversation.profile_pic }}" alt="Avatar" />
+          </div>
+          <div class="conversation-details">
+            <div class="conversation-header">
+              <div class="sender-info">
+                <span class="sender-name fw-bold">
+                  @if(conversation.sender_id == userID){
+                    You
+                  }@else {
+                    {{ conversation.sender_name }}
+                  }
+                </span>
+                <span class="sender-role">{{ conversation.role }}</span>
+              </div>
+              <span class="timestamp">{{
+                conversation.date_sent | date : "MMM d"
+              }}</span>
+            </div>
+            <div class="message-preview">
+              <h3 class="subject">
+                {{ conversation.subject || "No Subject" }}
+              </h3>
+              <p class="last-message">{{ conversation.content }}</p>
+            </div>
+          </div>
+        </div>
+        }
+      }@else {
+        <div class="topic-card empty-state">
+          <div class="topic-content">
+            <img src="/img/cloud.png" alt="" width="100" />
+            <div style="font-weight: 400">
+              No messages
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

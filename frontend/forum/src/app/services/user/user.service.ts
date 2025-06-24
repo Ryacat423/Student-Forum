@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.prod';
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,7 @@ export class UserService {
   private userSubject = new BehaviorSubject<any>(null);
   user$: Observable<any> = this.userSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   loadUser(): void {
     const id = localStorage.getItem('u_token');
@@ -27,6 +29,48 @@ export class UserService {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     });
+  }
+
+  refreshUser() {
+    const id = localStorage.getItem('u_token');
+    if (id) {
+      this.getUser(+id).subscribe((user:any) => {
+        const oldStatus = localStorage.getItem('status');
+        const newStatus = user.status;
+
+        if (newStatus !== oldStatus) {
+          localStorage.setItem('status', newStatus);
+
+          if (newStatus === 'suspended') {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Account Suspended',
+              text: 'You have been suspended. Contact Admin to gain Access again.',
+              confirmButtonText: 'OK',
+            }).then(()=>{
+              this.router.navigate(['/login'])
+            });
+          } else if (newStatus === 'muted') {
+            Swal.fire({
+              icon: 'info',
+              title: 'You’ve been muted',
+              text: 'You cannot comment or reply.',
+              confirmButtonText: 'Got it'
+            });
+          } else if (oldStatus === 'muted' || oldStatus === 'suspended') {
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Restrictions Lifted',
+              text: 'Your account has been restored.',
+              confirmButtonText: 'Awesome'
+            });
+          }
+        }
+
+        this.setUser(user);
+      });
+    }
   }
 
   updateProfile(data: any) {

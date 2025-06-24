@@ -6,10 +6,11 @@ import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { environment } from '../../../../../../environments/environment.prod';
 import { CommentsComponent } from '../comments/comments.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-post-data',
-  imports: [CommonModule, CommentsComponent],
+  imports: [CommonModule, CommentsComponent, FormsModule],
   templateUrl: './post-data.component.html',
   styleUrl: './post-data.component.css',
 })
@@ -30,6 +31,7 @@ export class PostDataComponent implements OnInit {
   mediaurl: string = environment.mediaUrl;
 
   postId: any;
+  types: any;
 
   constructor(
     private modal: NgbModal,
@@ -40,6 +42,14 @@ export class PostDataComponent implements OnInit {
   ngOnInit(): void {
     this.postId = this.postData.topic.topic_id
     this.getComments(this.postId);
+    this.getReportTypes();
+  }
+
+  getReportTypes() {
+    this.dservice.getReportTypes().subscribe((res:any)=>{
+      this.types = res;
+      console.log(this.types)
+    })
   }
 
   getComments(postId: number) {
@@ -58,9 +68,11 @@ export class PostDataComponent implements OnInit {
     const likeData = {
       action: action,
       userID: this.currentUser,
-      postID: this.postData.topic.topic_id,
+      topicID: this.postData.topic.topic_id,
+      postID: this.postData.post.post_id
     };
     this.liked = !this.liked;
+    console.log(likeData);
     this.likePost.emit(likeData);
   }
 
@@ -109,11 +121,6 @@ export class PostDataComponent implements OnInit {
     });
   }
 
-  // idToDelete: number = 0;
-  // getDeleteId(id: number) {
-  //   this.idToDelete = id;
-  // }
-
   deleteComment(commentId: number): void {
     Swal.fire({
       title: 'Are you sure?',
@@ -129,7 +136,7 @@ export class PostDataComponent implements OnInit {
         this.dservice.deleteComment(commentId).subscribe({
           next: (res: any) => {
             if (res.success) {
-              this.comments = this.comments.filter((c: any) => c.post_id !== commentId);
+              this.comments = this.getComments(this.postId);
               Swal.fire('Deleted!', 'Comment has been deleted.', 'success');
             } else {
               Swal.fire('Error!', 'Something went wrong while deleting.', 'error');
@@ -144,8 +151,65 @@ export class PostDataComponent implements OnInit {
   }
 
   postIdToReport: number | null = null;
-  @ViewChild('report') reportTemplate!: TemplateRef<any>;
+  selectedReportTypes: number[] = [];
+  explanation: string = '';
+  maxCharacterCount: number = 500;
+  error: string = '';
 
+  toggleReportType(typeId: number): void {
+    if (this.isSelected(typeId)) {
+      this.selectedReportTypes = this.selectedReportTypes.filter(
+        (id) => id !== typeId
+      );
+    } else {
+      this.selectedReportTypes.push(typeId);
+    }
+  }
+
+  isSelected(typeId: number): boolean {
+    return this.selectedReportTypes.includes(typeId);
+  }
+
+  resetForm(): void {
+    this.selectedReportTypes = [];
+    this.explanation = '';
+    this.error = '';
+  }
+
+    handleReportSubmission(): void {
+    if (!this.currentUser) {
+      this.notifyLoginRequired();
+      return;
+    }
+
+    if (!this.postIdToReport) {
+      console.error('No post ID to report');
+      return;
+    }
+
+    if (this.selectedReportTypes.length === 0) {
+      this.error = 'Please select at least one report type';
+      return;
+    }
+
+    if (this.explanation.trim().length < 10) {
+      this.error = 'Please provide a more detailed explanation';
+      return;
+    }
+
+    const completeReportData = {
+      types: this.selectedReportTypes,
+      post_id: this.postIdToReport,
+      explanation: this.explanation,
+      userid: Number(this.currentUser),
+    };
+    console.log(completeReportData)
+    this.reportPost.emit(completeReportData);
+
+    this.modal.dismissAll();
+    this.resetForm();
+  }
+  @ViewChild('report') reportTemplate!: TemplateRef<any>;
   openReportModal(postId: number): void {
     if (!this.currentUser) {
       this.notifyLoginRequired();
@@ -154,9 +218,8 @@ export class PostDataComponent implements OnInit {
 
     this.postIdToReport = postId;
     this.modal.open(this.reportTemplate, {
-      size: 'md',
+      size: 'lg',
       ariaLabelledBy: 'modal-title',
-      keyboard: false,
       centered: true,
       windowClass: 'modal-holder',
       backdrop: 'static',

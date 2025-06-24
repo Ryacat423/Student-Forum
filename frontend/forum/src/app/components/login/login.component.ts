@@ -25,23 +25,7 @@ export class LoginComponent {
     email: new FormControl(''),
     password: new FormControl(''),
   });
-
-  // loginUser() {
-  //   this.auth.login(this.login.value).subscribe((res:any)=> {
-  //     try {
-  //       if (res.success === 1) {
-  //         this.showSuccess();
-  //         localStorage.setItem('token', res.access_token);
-  //         localStorage.setItem('u_token', res.user);
-  //         this.router.navigateByUrl('/forum/home');
-  //       }
-  //     } catch (err){
-  //       if (err) {
-  //         throw(this.showError())
-  //       }
-  //     }
-  //   });
-  // }
+  
   loginUser() {
     this.auth.login(this.login.value).subscribe({
       next: (res: any) => {
@@ -49,6 +33,7 @@ export class LoginComponent {
           this.showSuccess();
           localStorage.setItem('token', res.access_token);
           localStorage.setItem('u_token', res.user);
+          localStorage.setItem('status', res.status)
           this.router.navigateByUrl('/forum/home');
         }
       },
@@ -56,6 +41,8 @@ export class LoginComponent {
         if (err.status === 403 || err.status === 422) {
           if (err.error?.email || err.error?.password) {
             this.showError(`Validation Error: ${Object.values(err.error).flat().join('\n')}`);
+          } else if (err.error?.error) {
+            this.showError(err.error.error); 
           } else {
             this.showError("Access Denied: Invalid login.");
           }
