@@ -46,7 +46,7 @@ class TopicController extends Controller
         ])
         ->where('topic_id', $topic_id)
         ->where('reply', 0)
-        ->orderBy('created_at', 'asc')
+        ->orderBy('created_at', 'desc')
         ->get();
 
 

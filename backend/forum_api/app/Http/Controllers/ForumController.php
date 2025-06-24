@@ -37,7 +37,7 @@ class ForumController extends Controller
 
             $topics = Topic::with(['user', 'category', 'post'])
             ->where('category_id', $request->category_id)
-            ->orderByDesc('topic_id')
+            ->orderByDesc('created_at')
             ->get();
 
             if ($request->hasFile('images')) {
@@ -66,27 +66,64 @@ class ForumController extends Controller
             DB::rollback();
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
-
-
     }
 
     public function updateTopic(Topic $topic, Request $request) {
-        $reqdata = $request->validate([
-            'title' => 'required',
-            'content' => 'required',
+        $validated = $request->validate([
+            'title' => 'sometimes|required|string',
+            'content' => 'sometimes|required|string',
+            'remove_current_images' => 'nullable',
             'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048'
         ]);
-        
-        $reqdata['title'] = strip_tags($reqdata['title']);
-        $reqdata['content'] = strip_tags($reqdata['content']);
 
-        $topic->update($reqdata);
+        DB::beginTransaction();
+        try {
+            if (isset($validated['title'])) {
+                $topic->update([
+                    'title' => strip_tags($validated['title']),
+                ]);
+            }
 
-        return response()->json(1);
+            $post = $topic->post;
+            if ($post && isset($validated['content'])) {
+                $post->update([
+                    'content' => strip_tags($validated['content']),
+                ]);
+            }
+
+            if ($request->input('remove_current_images') && $post) {
+                foreach ($post->media as $media) {
+                    $filePath = public_path('media/' . $media->filename);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                    $media->delete();
+                }
+            }
+
+            if ($request->hasFile('images') && $post) {
+                foreach ($request->file('images') as $image) {
+                    $filename = time() . '_' . $image->getClientOriginalName();
+                    $image->move(public_path('media'), $filename);
+
+                    \App\Models\Media::create([
+                        'user_id' => $request->user()->user_id ?? $post->user_id,
+                        'post_id' => $post->post_id,
+                        'filename' => $filename
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return response()->json(['success' => true], 200);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 
-    public function getTopics()
-    {
+    public function getTopics() {
         $topics = Topic::with(['user', 'category', 'post'])
             ->orderByDesc('topic_id')
             ->get();
@@ -94,8 +131,7 @@ class ForumController extends Controller
         return response()->json($topics);
     }
 
-    public function getTopicsByCategory(Request $request, $category_id)
-    {
+    public function getTopicsByCategory(Request $request, $category_id) {
         $userId = $request->user()->id ?? null;
         $filter = $request->query('filter');
 
@@ -104,56 +140,155 @@ class ForumController extends Controller
             ->when($filter === 'own' && $userId, function ($query) use ($userId) {
                 return $query->where('user_id', $userId);
             })
-            ->orderByDesc('topic_id')
+            ->orderByDesc('created_at')
             ->get();
 
         return response()->json($topics);
     }
 
-    public function comment(Request $request)
-    {
+    public function comment(Request $request) {
         $request->validate([
             'topic_id' => 'required|exists:topics,topic_id',
             'user_id' => 'required|exists:users,user_id',
             'content' => 'required|string',
             'reply' => 'nullable|integer',
-            'image' => $request->hasFile('image') ? 'image|mimes:jpeg,png,jpg,gif,svg|max:2048' : '',
+            'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048'
         ]);
 
-        $post = Post::create([
-            'topic_id' => $request->topic_id,
-            'user_id' => $request->user_id,
-            'content' => $request->content,
-            'reply' => $request->reply,
-        ]);
+        DB::beginTransaction();
+        try {
+            $post = Post::create([
+                'topic_id' => $request->topic_id,
+                'user_id' => $request->user_id,
+                'content' => $request->content,
+                'reply' => $request->reply,
+            ]);
 
-        $filename = null;
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $filename = time().'_'.$image->getClientOriginalName();
+                    $image->move(public_path('media'), $filename);
 
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = 'image' . time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('media'), $filename);
+                    Media::create([
+                        'user_id' => $request->user_id,
+                        'post_id' => $post->post_id,
+                        'filename' => $filename
+                    ]);
+                }
+            }
+
+            $comments = Post::with([
+                'user.course',
+                'media',
+                'likes',
+                'replies.user.course',
+                'replies.media',
+                'replies.likes',
+                'replies.replies.user.course',
+                'replies.replies.media',
+                'replies.replies.likes',
+            ])
+            ->where('topic_id', $request->topic_id)
+            ->where('reply', 0)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+            DB::commit();
+            return response()->json([
+                'success' => true, 
+                'comments' => $comments
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
-        
-        $comments = Post::with([
-            'user.course',
-            'media',
-            'likes',
-            'replies.user.course',
-            'replies.media',
-            'replies.likes',
-            'replies.replies.user.course',
-            'replies.replies.media',
-            'replies.replies.likes',
-        ])
-        ->where('topic_id', $request->topic_id)
-        ->where('reply', 0)
-        ->orderBy('created_at', 'asc')
-        ->get();
+    }
 
-        return response()->json([
-            'success' => true, 
-            'comments' => $comments
-        ], 201);
+    public function updateComment(Request $request, Post $post) {
+        $validated = $request->validate([
+            'content' => 'sometimes|required|string',
+            'topic_id' => 'required|exists:topics,topic_id'
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // Update content if provided
+            if (isset($validated['content'])) {
+                $post->update([
+                    'content' => strip_tags($validated['content'])
+                ]);
+            }
+
+            // Fetch updated comments
+            $comments = Post::with([
+                'user.course',
+                'media',
+                'likes',
+                'replies.user.course',
+                'replies.media',
+                'replies.likes',
+                'replies.replies.user.course',
+                'replies.replies.media',
+                'replies.replies.likes',
+            ])
+            ->where('topic_id', $request->topic_id)
+            ->where('reply', 0)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'comments' => $comments
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteComment(Post $post) {
+        DB::beginTransaction();
+        try {
+            foreach ($post->media as $media) {
+                $filePath = public_path('media/' . $media->filename);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+                $media->delete();
+            }
+
+            $replies = Post::where('reply', $post->post_id)->get();
+            foreach ($replies as $reply) {
+                foreach ($reply->media as $media) {
+                    $filePath = public_path('media/' . $media->filename);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                    $media->delete();
+                }
+                $reply->delete();
+            }
+            $post->delete();
+
+            DB::commit();
+            return response()->json(['success' => true], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -47,6 +47,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/posts', [ForumController::class, 'comment']);
 
     Route::put('/update/{topic}', [ForumController::class, 'updateTopic']);
+    Route::put('/comment/{post}', [ForumController::class, 'updateComment']);
+    Route::delete('/comment/{post}', [ForumController::class, 'deleteComment']);
 });
 
 Route::get('/topics/{category_id}', [ForumController::class, 'getTopics']);

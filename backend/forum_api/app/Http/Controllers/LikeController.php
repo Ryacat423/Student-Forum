@@ -8,8 +8,7 @@ use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
-    public function toggle(Request $request)
-    {
+    public function toggle(Request $request) {
         $request->validate([
             'userID' => 'required|integer|exists:users,user_id',
             'postID' => 'required|integer|exists:posts,post_id',
