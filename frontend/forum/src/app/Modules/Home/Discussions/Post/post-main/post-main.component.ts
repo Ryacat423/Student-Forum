@@ -67,12 +67,12 @@ export class PostMainComponent implements OnInit {
       const userLike = this.postData?.post.likes
         .find((like: any) => like.user_id == this.currentUser);
       
-      console.log(userLike)
       this.liked = userLike?.status === 1;
     });
   }
 
   handleLike(likeData: any) {
+    console.log(likeData);
     this.dservice.like(likeData).subscribe((res: any)=> {
       this.postData.post = res.post;
       const userLike = this.postData?.post.likes

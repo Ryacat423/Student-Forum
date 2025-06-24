@@ -41,6 +41,14 @@ export class DataService {
     });
   }
 
+  comment(data: any) {
+    return this.http.post(`${environment.apiUrl}posts`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+  }
+
   updateTopic(id: number, data: any) {
     return this.http.put(`${environment.apiUrl}update/${id}`, data, {
       headers: {

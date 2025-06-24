@@ -76,6 +76,8 @@
   [isToggled]="showComment"
   [comments]="comments"
   [user_id]="currentUser"
->
+  [postId]="postId"
 
+  (likeComment)="handleLike($event)"
+>
 </app-comments>

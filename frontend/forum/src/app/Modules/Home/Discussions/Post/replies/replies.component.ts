@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommentFormComponent } from '../comment-form/comment-form.component';
+import { environment } from '../../../../../../environments/environment.prod';
 
 @Component({
   selector: 'app-replies',
@@ -13,34 +14,27 @@ export class RepliesComponent implements OnInit {
   @Input() replies: any;
   @Input() commentId: any;
   @Input() currentUserId: any;
-  @Input() status: any; // User status (muted, etc.)
+  @Input() status: any;
 
-  // Output events to parent component
-  @Output() replyLike = new EventEmitter<any>();
   @Output() replyUpdate = new EventEmitter<any>();
   @Output() replyDelete = new EventEmitter<any>();
   @Output() newReplyAdded = new EventEmitter<any>();
 
   editingCommentId: number | null = null;
   editReplyText = '';
+  mediaurl: string = environment.mediaUrl;
+
+  showicon: boolean = false;
   
-  // Reply form management
   activeReplyForms: {[key: string]: boolean} = {};
   replyingTo: {[key: string]: any} = {};
   showChildReplies: boolean = false;
 
   ngOnInit() {
     console.log(this.replies)
-    
-    // Initialize status if not passed from parent
     if (!this.status) {
       this.status = localStorage.getItem('status');
     }
-  }
-
-  getUserLikeStatus(likes: any[], currentUserId: number): number | null {
-    const like = likes?.find(like => like.user_id === currentUserId);
-    return like ? like.status : null;
   }
 
   toggleReplyEdit(replyId: number, content: string) {
@@ -61,7 +55,6 @@ export class RepliesComponent implements OnInit {
         commentId: this.commentId
       };
 
-      // Emit the update event to parent
       this.replyUpdate.emit({
         action: 'edit',
         replyId: replyId,
@@ -69,7 +62,6 @@ export class RepliesComponent implements OnInit {
         commentId: this.commentId
       });
 
-      // Reset editing state
       this.editingCommentId = null;
       this.editReplyText = '';
     }
@@ -83,17 +75,14 @@ export class RepliesComponent implements OnInit {
     if (this.status !== 'muted') {
       const key = this.getReplyFormKey(commentId, replyId);
       
-      // Close all other reply forms
       Object.keys(this.activeReplyForms).forEach(existingKey => {
         if (existingKey !== key) {
           this.activeReplyForms[existingKey] = false;
         }
       });
-      
-      // Toggle current reply form
+
       this.activeReplyForms[key] = !this.activeReplyForms[key];
-  
-      // Set replying-to information for nested replies
+
       if (this.activeReplyForms[key] && replyId) {
         this.replyingTo[key] = {
           id: replyId,
@@ -114,28 +103,8 @@ export class RepliesComponent implements OnInit {
     const key = this.getReplyFormKey(commentId, replyId);
     return this.replyingTo[key] || null;
   }
-
-  toggleReplyLike(replyId: number) {
-    const reply = this.replies.find((r: any) => r.postID === replyId);
-    console.log(reply);
-    
-    if (!reply) return;
-  
-    const action = reply.like_status == 1 ? 'unlike' : 'like';
-  
-    const likeData = {
-      action,
-      userID: this.currentUserId,
-      replyId: replyId,
-      commentId: this.commentId
-    };
-  
-    // Emit like event to parent
-    this.replyLike.emit(likeData);
-  }
   
   deleteReply(replyId: number) {
-    // Emit delete event to parent
     this.replyDelete.emit({
       replyId: replyId,
       commentId: this.commentId
@@ -144,18 +113,15 @@ export class RepliesComponent implements OnInit {
   
   onReplyAdded(data: any) {
     console.log('Reply added:', data);
-    
-    // Add commentId to the reply data
-    const replyData = {
-      ...data,
-      commentId: this.commentId
-    };
-    
-    // Emit new reply event to parent
-    this.newReplyAdded.emit(replyData);
+    const activeFormKey = Object.keys(this.activeReplyForms).find(key => this.activeReplyForms[key]);
+    if (activeFormKey) {
+      this.activeReplyForms[activeFormKey] = false;
+      delete this.replyingTo[activeFormKey];
+    }
+    this.newReplyAdded.emit(data);
+  }
 
-    // Reset reply forms
-    this.activeReplyForms = {};
-    this.replyingTo = {};
+  toggleReplies(commentId: number) {
+    this.showicon = !this.showicon;
   }
 }

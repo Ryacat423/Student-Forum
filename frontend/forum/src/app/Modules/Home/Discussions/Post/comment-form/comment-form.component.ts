@@ -20,50 +20,36 @@ export class CommentFormComponent {
     
   commentText = '';
   isSubmitting = false;
-  selectedFile: any = null;
 
+  selectedFiles: File[] = [];
   onFileSelected(event: any): void {
     if (event.target.files.length > 0) {
-      this.selectedFile = event.target.files[0];
-      console.log(this.selectedFile)
+      this.selectedFiles = Array.from(event.target.files);
     }
   }
 
   submitComment() {
-    if (!this.commentText.trim() && !this.selectedFile) return;
+    if (!this.commentText.trim() && this.selectedFiles.length === 0) return;
+
     this.isSubmitting = true;
-        
-    const commentData = {
-      topic_id: this.postId,
-      user_id: this.userId,
-      content: this.commentText,
-      reply: this.parentId ?? 0,
-      reply_to_reply: this.replyToId
-    };
-    
-    if (this.selectedFile) {
-      const fd = new FormData();
-      fd.append('files', this.selectedFile);
-      fd.append('comment_data', JSON.stringify(commentData));
-      
-      // this.dservice.commentWithAttachment(fd).subscribe((res: any) => {
-      //   console.log(res);
-      //   if (res.msg === 1) {
-      //     this.commentAdded.emit(res);
-      //     this.commentText = '';
-      //     this.selectedFile = null;
-      //   }
-      //   this.isSubmitting = false;
-      // });
-    } else {
-      // this.dservice.commentOnPost(commentData).subscribe((res: any) => {
-      //   console.log(res);
-      //   if (res.msg === 1) {
-      //     this.commentAdded.emit(res);
-      //     this.commentText = '';
-      //   }
-      //   this.isSubmitting = false;
-      // });
-    }
+    const formData = new FormData();
+
+    formData.append('topic_id', String(this.postId));
+    formData.append('user_id', String(this.userId ?? ''));
+    formData.append('content', this.commentText);
+    formData.append('reply', String(this.parentId ?? 0));
+
+    this.selectedFiles.forEach(file => {
+      formData.append('images[]', file);
+    });
+
+    this.dservice.comment(formData).subscribe((res:any)=>{
+      if (res.success) {
+          this.commentAdded.emit(res.comments);
+          this.commentText = '';
+          this.selectedFiles = [];
+        }
+        this.isSubmitting = false;
+    });
   }
 }

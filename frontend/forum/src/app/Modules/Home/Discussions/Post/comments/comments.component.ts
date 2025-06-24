@@ -1,18 +1,11 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { DataService } from '../../../../../services/forum/data.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CommentFormComponent } from '../comment-form/comment-form.component';
 import { environment } from '../../../../../../environments/environment.prod';
 import { RepliesComponent } from '../replies/replies.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-comments',
@@ -31,8 +24,6 @@ export class CommentsComponent implements OnInit, OnChanges {
   @Input() repliesVisibility: { [commentId: number]: boolean } = {};
   @Output() newCommentAdded = new EventEmitter<any>();
   @Output() commentUpdate = new EventEmitter<any>();
-  @Output() likeComment = new EventEmitter<any>();
-  @Output() likeReply = new EventEmitter<any>();
 
   @Output() delComment = new EventEmitter<any>();
 
@@ -50,11 +41,10 @@ export class CommentsComponent implements OnInit, OnChanges {
   status: any;
 
   activeReplyForms: { [key: string]: boolean } = {};
-  likedComments: { [key: number]: boolean } = {};
   replyingTo: any = {};
 
   ngOnInit() {
-    this.currentUserId = Number(localStorage.getItem('u_token')) || 0;
+    this.currentUserId = localStorage.getItem('u_token');
     this.status = localStorage.getItem('status');
   }
 
@@ -78,21 +68,19 @@ export class CommentsComponent implements OnInit, OnChanges {
             new Date(a.post_date).getTime() - new Date(b.post_date).getTime()
         );
         break;
-      case 'likes':
-        this.comments.sort((a: any, b: any) => b.totalLikes - a.totalLikes);
-        break;
     }
-  }
-
-  getUserLikeStatus(likes: any[], currentUserId: number): number | null {
-    const like = likes?.find((like) => like.user_id === currentUserId);
-    return like ? like.status : null;
   }
 
   onCommentAdded(comment: any) {
     console.log('Comment added:', comment);
-    this.newCommentAdded.emit(comment);
-    this.isToggled = !this.isToggled;
+    this.comments = comment;
+    this.isToggled = false;
+
+    const activeFormKey = Object.keys(this.activeReplyForms).find(key => this.activeReplyForms[key]);
+    if (activeFormKey) {
+      this.activeReplyForms[activeFormKey] = false;
+      delete this.replyingTo[activeFormKey];
+    }
   }
 
   toggleReplies(commentId: number) {
@@ -102,22 +90,6 @@ export class CommentsComponent implements OnInit, OnChanges {
 
   shouldShowReplies(commentId: number): boolean {
     return !!this.repliesVisibility[commentId];
-  }
-
-  toggleLike(commentId: number) {
-    const comment = this.comments.find((c: any) => c.postID === commentId);
-    console.log(comment);
-    if (!comment) return;
-
-    const action = comment.like_status == 1 ? 'unlike' : 'like';
-
-    const likeData = {
-      action,
-      userID: this.currentUserId,
-      commentId,
-    };
-
-    this.likeComment.emit(likeData);
   }
 
   toggleEdit(commentId: number, content: string) {
@@ -191,19 +163,10 @@ export class CommentsComponent implements OnInit, OnChanges {
 
     return !!this.activeReplyForms[key];
   }
-  // Add these methods to your CommentsComponent class
 
-  // Handle reply like events
-  onReplyLike(likeData: any) {
-    console.log('Reply like event:', likeData);
-    this.likeReply.emit(likeData);
-  }
-
-  // Handle reply update events
   onReplyUpdate(updateData: any) {
     console.log('Reply update event:', updateData);
 
-    // Find and update the reply in the local data structure
     const comment = this.comments.find(
       (c: any) => c.post_id === updateData.commentId
     );
@@ -223,11 +186,8 @@ export class CommentsComponent implements OnInit, OnChanges {
     });
   }
 
-  // Handle reply delete events
   onReplyDelete(deleteData: any) {
     console.log('Reply delete event:', deleteData);
-
-    // Remove reply from local data structure
     const comment = this.comments.find(
       (c: any) => c.post_id === deleteData.commentId
     );
@@ -236,27 +196,14 @@ export class CommentsComponent implements OnInit, OnChanges {
         (r: any) => r.postID !== deleteData.replyId
       );
     }
-
-    // Emit to parent component
     this.delComment.emit(deleteData.replyId);
   }
 
-  // Handle new reply added events
   onNewReplyAdded(replyData: any) {
-    console.log('New reply added:', replyData);
+    this.comments = replyData;
+  }
 
-    // Add reply to local data structure
-    const comment = this.comments.find(
-      (c: any) => c.post_id === replyData.commentId
-    );
-    if (comment) {
-      if (!comment.replies) {
-        comment.replies = [];
-      }
-      comment.replies.push(replyData);
-    }
-
-    // Emit to parent component
-    this.newCommentAdded.emit(replyData);
+  notifyLoginRequired() {
+    Swal.fire('Login Required', 'You need to login to perform this action', 'info');
   }
 }

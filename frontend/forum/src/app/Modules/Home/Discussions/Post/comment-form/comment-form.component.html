@@ -13,14 +13,16 @@
         <i class="bi bi-paperclip"></i> Add Files
         <input type="file" style="display: none;" (change)="onFileSelected($event)" accept="image/*">
       </label>
-      @if(selectedFile){
-        <span class="file-name">{{ selectedFile.name }}</span>
-      }
+        @if(selectedFiles) {
+          @for(file of selectedFiles; track $index) {
+            <span class="file-name">{{ file.name }}</span>
+          }
+        }
     </div>
 
     <button 
       class="post-button"
-      [disabled]="(!commentText.trim() && !selectedFile) || isSubmitting"
+      [disabled]="(!commentText.trim() && !selectedFiles) || isSubmitting"
       (click)="submitComment()">
       {{ isSubmitting ? 'Posting...' : 'Post Comment' }}
     </button>

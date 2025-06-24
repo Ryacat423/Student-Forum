@@ -29,6 +29,8 @@ export class PostDataComponent implements OnInit {
   showComment: boolean = false;
   mediaurl: string = environment.mediaUrl;
 
+  postId: any;
+
   constructor(
     private modal: NgbModal,
     private router: Router,
@@ -36,14 +38,13 @@ export class PostDataComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const postId: any = this.postData.topic.topic_id
-    this.getComments(postId);
+    this.postId = this.postData.topic.topic_id
+    this.getComments(this.postId);
   }
 
   getComments(postId: number) {
     this.dservice.getComments(postId).subscribe((res: any)=> {
       this.comments = res;
-      console.log(this.comments);
     })
   }
 
@@ -90,6 +91,22 @@ export class PostDataComponent implements OnInit {
 
   editTopic(postid: number) {
     this.router.navigate(['/forum/home/edit-topic', postid]);
+  }
+
+  handleLike(likeData: any) {
+    console.log('Comment like data:', likeData);
+    this.dservice.like(likeData).subscribe((res: any) => {
+      console.log('Like response:', res);
+
+      if (this.comments && Array.isArray(this.comments)) {
+        const commentIndex = this.comments.findIndex((comment: any) => comment.post_id === likeData.postID);
+        
+        if (commentIndex !== -1) {
+          this.comments[commentIndex].likes = res.post.likes;
+          this.comments[commentIndex].like_count = res.like_count;
+        }
+      }
+    });
   }
 
   postIdToReport: number | null = null;

@@ -4,7 +4,6 @@
     <select class="sort-select" [(ngModel)]="sortOption" (change)="sortComments()">
       <option value="newest">Newest First</option>
       <option value="oldest">Oldest First</option>
-      <option value="likes">Most Liked</option>
     </select>
   </div>
   
@@ -57,33 +56,22 @@
                   </button>
                 </div>
               </div>
-            } @else {
-              @if(comments?.media){
-                @for(media of comments?.media; track $index) {
-                    <img src="{{ mediaurl + media.filename }}" alt="" style="width: 30%" />
-                }
+            } 
+            
+            @if(comment.media && comment.media.length > 0){              
+              @for(media of comment.media; track $index) {
+                  <img src="{{ mediaurl + media.filename }}" alt="comment photo" style="width: 30%" class="img-fluid py-3" />
               }
-              <p>{{ comment.content }}</p>
             }
+            <p>{{ comment.content }}</p>
+            
           </div>
           
-          <div class="comment-actions">
-            <button class="comment-action"              
-              (click)="toggleLike(comment.post_id)">
-              @if(comment.likes){
-                <i class="fst-normal bi"
-                  [ngClass]="{
-                    'bi-hand-thumbs-up-fill': getUserLikeStatus(comment.likes, currentUserId) === 0,
-                    'bi-hand-thumbs-up': getUserLikeStatus(comment.likes, currentUserId) !== 0
-                  }"
-                ></i> {{comment.like_count}}
-              }
-            </button>
-            
+          <div class="comment-actions">            
             @if(currentUserId){
               <button 
                 class="comment-action" 
-                (click)="toggleReplyForm(comment.postID)"
+                (click)="toggleReplyForm(comment.post_id)"
                 [disabled]="status === 'muted'"  
               >
                 <i class="bi bi-reply"></i> Reply
@@ -103,6 +91,11 @@
           @if(showReplyForm(comment.post_id)) {
             <div class="mx-3">
               <app-comment-form
+                [postId]="comment.topic_id"
+                [userId]="currentUserId"
+                [parentId]="comment.post_id"
+
+                (commentAdded)="onCommentAdded($event)"
               >
               </app-comment-form>
             </div>
@@ -123,7 +116,6 @@
                 [currentUserId]="currentUserId"
                 
                 [status]="status"
-                (replyLike)="onReplyLike($event)"
                 (replyUpdate)="onReplyUpdate($event)"
                 (replyDelete)="onReplyDelete($event)"
                 (newReplyAdded)="onNewReplyAdded($event)"
