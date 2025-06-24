@@ -1,16 +1,16 @@
 <div
-  class="table-header text-light p-2"
+  class="table-header text-light p-2 shadow-sm"
   style="background-color: var(--color-app-notif-h4)"
 >
   <h6>Student Forum: Categories</h6>
   <div class="search-container">
     <div class="search-bar">
-      <input type="text" placeholder="Search Categories..." />
+      <input [(ngModel)]="keyword" type="text" placeholder="Search Categories..." />
       <button><i class="bi bi-search"></i></button>
     </div>
   </div>
 </div>
-<div class="applications-table">
+<div class="applications-table shadow-sm">
   <div class="table-responsive">
     <table class="table custom-table">
       <thead class="bg-secondary">
@@ -21,7 +21,7 @@
         </tr>
       </thead>
       <tbody>
-        @for(categ of categories; track categ.category_id) {
+        @for(categ of categories | searchFilter: keyword; track categ.category_id) {
             <tr>
               <td>{{categ.name}}</td>
               <td>{{categ.description}}</td>

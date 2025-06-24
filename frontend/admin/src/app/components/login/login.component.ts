@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit{
 
   constructor(
     private auth: AuthService,
@@ -18,7 +18,9 @@ export class LoginComponent implements OnInit {
   ){}
 
   ngOnInit(): void {
-    localStorage.clear();
+    if (localStorage.getItem('token')) {
+      this.router.navigateByUrl('/admin');
+    }
   }
 
   login = new FormGroup({
@@ -27,13 +29,26 @@ export class LoginComponent implements OnInit {
   });
 
   loginAdmin() {
-    this.auth.login(this.login.value).subscribe((res:any)=> {
-      if (res.success === 1) {
-        this.showSuccess();
-        localStorage.setItem('token', res.access_token);
-        this.router.navigate(['/admin']);
-      } else {
-        this.showError();
+    this.auth.login(this.login.value).subscribe({
+      next: (res: any) => {
+        if (res.success === 1) {
+          this.showSuccess();
+          localStorage.setItem('token', res.access_token);
+          localStorage.setItem('u_token', res.user);
+          this.router.navigateByUrl('/admin/home');
+        }
+      },
+      error: (err: any) => {
+        if (err.status === 403 || err.status === 422) {
+          if (err.error?.email || err.error?.password) {
+            this.showError(`Validation Error: ${Object.values(err.error).flat().join('\n')}`);
+          } else {
+            this.showError("Access Denied: Invalid login.");
+          }
+        } else {
+          this.showError("An unexpected error occurred.");
+        }
+        console.error(err);
       }
     });
   }
@@ -41,13 +56,21 @@ export class LoginComponent implements OnInit {
   showSuccess() {
     Swal.fire({
       icon: 'success',
-      title: 'Logged in Succesfully!',
-      showConfirmButton: true,
-      timer: 3000,
+      title: 'Login Successful',
+      text: 'Welcome back!',
+      showConfirmButton: false,
+      timer: 1500,
     });
   }
 
-  showError() {
-    Swal.fire('Oops...', 'Something went wrong!', 'error');
+  showError(message: any) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Login Failed',
+      html: Array.isArray(message) ? message.join('<br>') : message, 
+      confirmButtonText: 'Try Again',
+      position: 'center',
+      timer: 3000
+    });
   }
 }

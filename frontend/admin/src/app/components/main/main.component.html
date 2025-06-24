@@ -104,12 +104,12 @@
   </aside>
 
   <div class="main-content" [ngClass]="{ 'with-mobile-nav': isMobile }">
-    <div class="container-fluid bg-white p-3">
+    <div class="container-fluid bg-white p-3 shadow-sm">
       <div class="d-flex justify-content-end align-items-center gap-3">
         <span class="text-muted small">
-
-          June 20, 2025 | 3:38pm
+          {{ currentDate | date: 'MMMM d, y | h:mma' }}
         </span>
+
         <i class="bi bi-chat-left-text fs-5"></i>
       </div>
     </div>

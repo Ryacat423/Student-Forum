@@ -30,9 +30,6 @@ export class CategoryMainComponent implements OnInit {
       this.categories = res.categories;
       this.totalCategories = res.total;
       this.sharedData.updateCategoryCount(this.totalCategories);
-
-      const currentValue = this.sharedData.getCategoryCountValue();
-      console.log('Current shared category count:', currentValue);
     });
   }
 
@@ -43,5 +40,6 @@ export class CategoryMainComponent implements OnInit {
 
   refreshCateg(categories: any) {
     this.categories = categories;
+    this.sharedData.updateCategoryCount(this.categories.length);
   }
 }

@@ -1,10 +1,10 @@
 <div class="container">
   <div class="row mb-4">
     <div class="col-lg-3 col-md-6 mb-3">
-      <div class="stat-card">
+      <div class="stat-card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <div class="stat-number">247</div>
+            <div class="stat-number">{{students}}</div>
             <div class="stat-label">Total Students</div>
           </div>
           <div class="stat-icon text-primary">
@@ -14,10 +14,10 @@
       </div>
     </div>
     <div class="col-lg-3 col-md-6 mb-3">
-      <div class="stat-card">
+      <div class="stat-card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <div class="stat-number">{{applicants?.total}}</div>
+            <div class="stat-number">{{pending}}</div>
             <div class="stat-label">Pending Applications</div>
           </div>
           <div class="stat-icon text-warning">
@@ -27,10 +27,10 @@
       </div>
     </div>
     <div class="col-lg-3 col-md-6 mb-3">
-      <div class="stat-card">
+      <div class="stat-card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <div class="stat-number">89</div>
+            <div class="stat-number">{{discussions}}</div>
             <div class="stat-label">Active Discussions</div>
           </div>
           <div class="stat-icon text-success">
@@ -40,10 +40,10 @@
       </div>
     </div>
     <div class="col-lg-3 col-md-6 mb-3">
-      <div class="stat-card">
+      <div class="stat-card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <div class="stat-number">1.2K</div>
+            <div class="stat-number">{{posts}}</div>
             <div class="stat-label">Total Posts</div>
           </div>
           <div class="stat-icon text-info">
@@ -54,7 +54,7 @@
     </div>
   </div>
 
-  <div class="p-4 bg-white">
+  <div class="p-4 bg-white shadow-sm">
     <div
       class="table-header text-light p-2 d-flex align-items-center justify-content-between rounded"
       style="background-color: var(--color-app-notif-h4)"
@@ -85,28 +85,31 @@
             </tr>
           </thead>
           <tbody>
-            @for(user of applicants?.applicants | searchFilter: keyword; track user.user_id) {
+            <!-- Use your SearchFilterPipe directly -->
+            @for(user of (keyword ? allApplicants : applicants) | searchFilter: keyword; track user.user_id) {
               <tr>
                 <td>
                   <div class="d-flex align-items-center">
                     <div>
-                      <strong>{{user.first_name}} {{user.last_name}}</strong><br />
-                      <small class="text-muted">ID: {{user.user_id}}</small>
+                      <strong>{{ user.first_name }} {{ user.last_name }}</strong><br />
+                      <small class="text-muted">ID: {{ user.user_id }}</small>
                     </div>
                   </div>
                 </td>
-                <td>{{user.email}}</td>
+                <td>{{ user.email }}</td>
                 <td>
-                  @if(user.course_id == 9) { {{user.course.code}} - }
-                  {{user.course.name}}
+                  @if(user.course_id == 9) {
+                    {{ user.course.code }} -
+                  }
+                  {{ user.course.name }}
                 </td>
-                <td>{{user.registration_date | date: 'MMMM d, y' }}</td>
-                <td><span class="status-badge status-pending">{{user.status}}</span></td>
-                <td>
-                  <button class="btn btn-action btn-approve me-2" (click)="approveApplicant(user.user_id)">
+                <td>{{ user.registration_date | date: 'MMMM d, y' }}</td>
+                <td><span class="status-badge status-pending">{{ user.status }}</span></td>
+                <td class="d-flex flex-column gap-2">
+                  <button class="w-100 btn btn-action btn-approve me-2" (click)="approveApplicant(user.user_id)">
                     <i class="fas fa-check me-1"></i>Approve
                   </button>
-                  <button class="btn btn-action btn-reject">
+                  <button class="w-100 btn btn-action btn-reject">
                     <i class="fas fa-times me-1"></i>Reject
                   </button>
                 </td>
@@ -116,37 +119,50 @@
         </table>
       </div>
     </div>
-    <div class="d-flex justify-content-between align-items-center p-3" style="background-color: #f8fafc; border-top: 1px solid #e2e8f0;">
-        <div class="text-muted">
-            Showing <strong>1-5</strong> of <strong>18</strong> applications
-        </div>
+
+    <div
+      class="d-flex justify-content-between align-items-center p-3"
+      style="background-color: #f8fafc; border-top: 1px solid #e2e8f0;"
+    >
+      <div class="text-muted">
+        @if (keyword && keyword.trim() !== '') {
+          Showing <strong>{{ (allApplicants| searchFilter: keyword).length }}</strong> filtered results
+        } @else {
+          Showing
+          <strong>{{ (pagination.currentPage - 1) * pagination.perPage + 1 }}</strong>
+          -
+          <strong>
+            {{ Math.min(pagination.currentPage * pagination.perPage, pagination.total) }}
+          </strong>
+          of <strong>{{ pagination.total }}</strong> applications
+        }
+      </div>
+
+      @if (!keyword || keyword.trim() === '') {
         <nav aria-label="Table pagination">
-            <ul class="pagination pagination-sm mb-0">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
-                        <i class="bi bi-chevron-left"></i>
-                    </a>
-                </li>
-                <li class="page-item active">
-                    <a class="page-link" href="#">1</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">2</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">3</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">4</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">
-                        <i class="bi bi-chevron-right"></i>
-                    </a>
-                </li>
-            </ul>
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" [class.disabled]="pagination.currentPage === 1">
+              <a class="page-link" (click)="getApplicants(pagination.currentPage - 1)">
+                <i class="bi bi-chevron-left"></i>
+              </a>
+            </li>
+
+            @for(page of [].constructor(pagination.lastPage); track $index) {
+              <li class="page-item" [class.active]="pagination.currentPage === $index + 1">
+                <a class="page-link" (click)="getApplicants($index + 1)">
+                  {{ $index + 1 }}
+                </a>
+              </li>
+            }
+
+            <li class="page-item" [class.disabled]="pagination.currentPage === pagination.lastPage">
+              <a class="page-link" (click)="getApplicants(pagination.currentPage + 1)">
+                <i class="bi bi-chevron-right"></i>
+              </a>
+            </li>
+          </ul>
         </nav>
+      }
     </div>
   </div>
-
 </div>

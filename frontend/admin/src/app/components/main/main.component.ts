@@ -11,6 +11,8 @@ import Swal from 'sweetalert2';
   styleUrl: './main.component.css',
 })
 export class MainComponent implements OnInit {
+  currentDate: Date = new Date();
+  private intervalId: any;
 
   constructor(
     private auth: AuthService,
@@ -24,6 +26,10 @@ export class MainComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkIfMobile();
+    this.intervalId = setInterval(() => {
+      this.currentDate = new Date();
+    }, 1000);
+
   }
   
   logingOut(){
