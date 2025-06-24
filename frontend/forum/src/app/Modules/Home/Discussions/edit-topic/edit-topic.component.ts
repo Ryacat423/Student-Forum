@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BreadcrumbsComponent } from '../../../../components/breadcrumbs/breadcrumbs.component';
 import { DataService } from '../../../../services/forum/data.service';
 import { environment } from '../../../../../environments/environment.prod';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEventType } from '@angular/common/http';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -18,16 +18,16 @@ import Swal from 'sweetalert2';
 export class EditTopicComponent implements OnInit {
   
   current: string = 'Home';
-  
   currrentuser: any = '';
   isSubmitting = false;
-  
   navs: any = [];
 
   post: any;
   selectedFiles: File[] = [];
   topicID: any;
-  currentAttachment: string | null = null;
+  currentAttachment: any;
+  removeCurrentImages = false;
+  mediaUrl = environment.mediaUrl;
   
   topicForm!: FormGroup;
   
@@ -66,24 +66,30 @@ export class EditTopicComponent implements OnInit {
         
         this.topicForm = new FormGroup({
           title: new FormControl(this.post.topic.title),
-          content: new FormControl(this.post.post.content),
-          keepAttachment: new FormControl(true)
+          content: new FormControl(this.post.post.content)
         });
         
-        this.currentAttachment = this.post.filename || null;
+        this.currentAttachment = this.post.post.media;
+        
       });
   }
   
   onFileSelected(event: any): void {
     if (event.target.files.length > 0) {
       this.selectedFiles = Array.from(event.target.files);
+      console.log('Selected files:', this.selectedFiles);
     }
   }
   
   removeAttachment(): void {
-    this.currentAttachment = null;
-    this.topicForm.patchValue({ keepAttachment: false });
-    console.log('Attachment removed, keepAttachment set to:', this.topicForm.value.keepAttachment);
+    this.currentAttachment = [];
+    this.selectedFiles = [];
+    this.removeCurrentImages = true;
+    console.log('Attachment will be removed on save');
+  }
+  
+  removeNewFile(index: number): void {
+    this.selectedFiles.splice(index, 1);
   }
   
   cancelEdit(): void {
@@ -91,55 +97,80 @@ export class EditTopicComponent implements OnInit {
   }
   
   savePost(): void {
-    this.isSubmitting = true;
+    if (this.topicForm.invalid) {
+      this.showError();
+      return;
+    }
 
+    this.isSubmitting = true;
     const formData = new FormData();
     
     formData.append('_method', 'PUT');
     formData.append('title', this.topicForm.value.title || '');
     formData.append('content', this.topicForm.value.content || '');
 
-    if (this.selectedFiles) {
-      this.selectedFiles.forEach(file => {
-        formData.append('images[]', file);
+    if (this.removeCurrentImages) {
+      formData.append('remove_current_images', '1');
+    }
+
+    if (this.selectedFiles && this.selectedFiles.length > 0) {
+      this.selectedFiles.forEach((file, index) => {
+        formData.append('images[]', file, file.name);
       });
     }
 
+    console.log('Submitting form data:', {
+      title: this.topicForm.value.title,
+      content: this.topicForm.value.content,
+      removeCurrentImages: this.removeCurrentImages,
+      selectedFiles: this.selectedFiles.length
+    });
+
     this.http.post(`${environment.apiUrl}update/${this.topicID}`, formData, {
-      observe: 'events',
-      reportProgress: true,
+      observe: 'response',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
-    }).subscribe((res: any) => {
-      if (!res) {
+    }).subscribe({
+      next: (response: any) => {
+        console.log('Update response:', response);
+        this.isSubmitting = false;
+        
+        if (response.body && response.body.success) {
+          this.showSuccess();
+          setTimeout(() => {
+            this.router.navigateByUrl(
+              `/forum/home/discussions/${this.post.topic.category_id}/post/${this.post.topic.topic_id}`
+            );
+          }, 1500);
+        } else {
+          this.showError();
+        }
+      },
+      error: (error) => {
+        console.error('Update error:', error);
+        this.isSubmitting = false;
         this.showError();
       }
-
-      setTimeout(()=> {
-        this.router.navigateByUrl(
-          `/forum/home/discussions/${this.post.topic.category_id}/post/${this.post.topic.topic_id}`
-        );
-
-      }, 1000);
     });
   }
 
   showSuccess() {
     Swal.fire({
       icon: 'success',
-      title: 'Edit Successful',
+      title: 'Post Updated Successfully',
       showConfirmButton: false,
+      timer: 1500,
     });
   }
 
   showError() {
     Swal.fire({
       icon: 'error',
-      title: 'Something went wrong',
-      text: 'Inputs required',
+      title: 'Update Failed',
+      text: 'Please check your inputs and try again',
       showConfirmButton: false,
-      timer: 1000,
+      timer: 2000,
     });
   }
 }

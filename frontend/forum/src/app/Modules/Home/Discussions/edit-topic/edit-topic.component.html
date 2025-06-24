@@ -8,55 +8,82 @@
         <form [formGroup]="topicForm" (submit)="savePost()">
             <div class="mb-3">
               <label for="title" class="form-label">Title</label>
-              <input type="text" class="form-control" id="title" formControlName="title">
+              <input type="text" class="form-control" id="title" formControlName="title" required>
             </div>
           
             <div class="mb-3">
               <label for="content" class="form-label">Content</label>
-              <textarea class="form-control" id="content" formControlName="content"></textarea>
+              <textarea class="form-control" id="content" formControlName="content" rows="5" required></textarea>
             </div>
           
             <div class="mb-3">
-              <label class="form-label">Attachment:</label>
-
-              @if(!currentAttachment && !selectedFiles){
-                <div class="file-upload-control d-flex align-items-center gap-3">
-                    <label class="file-upload-btn btn btn-outline-secondary">
-                      <i class="bi bi-paperclip"></i> Add Attachment
-                      <input type="file" style="display: none;" (change)="onFileSelected($event)" accept="image/*">
-                    </label>
-                </div>
-              }
+              <label class="form-label">Attachments:</label>
 
               @if(currentAttachment){
-                <div class="d-flex gap-3 flex-column">
-                  <div class="d-flex gap-3 align-items-center">
-                    <p class="mb-0">Current: {{ currentAttachment }}</p>
-                    <button type="button" class="btn btn-sm btn-danger" (click)="removeAttachment()">Remove</button>
-                  </div>
-                  <div class="mt-2">
-                    <img [src]="post.media_url" alt="Post attachment" class="img-fluid" style="max-width: 300px">
-                  </div>
+                <div class="mb-3">
+                  <h6>Current Images:</h6>
+                  @for(media of currentAttachment; track $index) {
+                    <div class="d-flex gap-3 align-items-center mb-2">
+                      <div class="d-flex gap-3 align-items-center">
+                        <span class="text-muted">{{ media?.filename }}</span>
+                        <button type="button" class="btn btn-sm btn-danger" (click)="removeAttachment()">
+                          <i class="bi bi-trash"></i> Remove All
+                        </button>
+                      </div>
+                    </div>
+                    <div class="mb-2">
+                      <img [src]="mediaUrl + media.filename" alt="Post attachment" class="img-fluid border rounded" style="max-width: 300px; max-height: 200px;">
+                    </div>
+                  }
                 </div>
               }
 
-              @if(selectedFiles){
-                @for(file of selectedFiles; track $index) {
-                    <div class="d-flex gap-3 align-items-center">
-                      <p class="mb-0">New file: {{ file.name }}</p>
-                      <button type="button" class="btn btn-sm btn-danger" (click)="removeAttachment()">Cancel</button>
+              @if(selectedFiles && selectedFiles.length > 0){
+                <div class="mb-3">
+                  <h6>New Images to Upload:</h6>
+                  @for(file of selectedFiles; track $index) {
+                    <div class="d-flex gap-3 align-items-center mb-2">
+                      <span class="text-success">{{ file.name }}</span>
+                      <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeNewFile($index)">
+                        <i class="bi bi-x"></i> Remove
+                      </button>
                     </div>
+                  }
+                </div>
+              }
+
+              <!-- File upload control -->
+              <div class="file-upload-control d-flex align-items-center gap-3">
+                <label class="file-upload-btn btn btn-outline-secondary">
+                  <i class="bi bi-paperclip"></i> 
+                  {{ (selectedFiles && selectedFiles.length > 0) ? 'Add More Images' : 'Add Images' }}
+                  <input type="file" style="display: none;" (change)="onFileSelected($event)" accept="image/*" multiple>
+                </label>
+                
+                @if((currentAttachment && currentAttachment.length > 0) || (selectedFiles && selectedFiles.length > 0)) {
+                  <small class="text-muted">You can upload multiple images</small>
                 }
+              </div>
+
+              @if(removeCurrentImages) {
+                <div class="alert alert-warning mt-2">
+                  <i class="bi bi-exclamation-triangle"></i> Current images will be removed when you save.
+                </div>
               }
             </div>
           
             <div class="d-flex gap-2 mt-4">
-              <button class="btn btn-outline-secondary" type="button" (click)="cancelEdit()">
+              <button class="btn btn-outline-secondary" type="button" (click)="cancelEdit()" [disabled]="isSubmitting">
                 Cancel
               </button>
           
-              <button class="btn btn-primary" type="submit" [disabled]="isSubmitting">
-                {{ isSubmitting ? 'Saving...' : 'Save Changes' }}
+              <button class="btn btn-primary" type="submit" [disabled]="isSubmitting || topicForm.invalid">
+                @if(isSubmitting) {
+                  <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                  Saving...
+                } @else {
+                  Save Changes
+                }
               </button>
             </div>
           </form>
