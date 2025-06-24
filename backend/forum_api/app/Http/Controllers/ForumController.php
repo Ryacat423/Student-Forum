@@ -291,4 +291,50 @@ class ForumController extends Controller
             ], 500);
         }
     }
+
+    public function deleteTopic(Topic $topic) {
+        DB::beginTransaction();
+        try {
+            foreach ($topic->posts as $post) {
+                foreach ($post->media as $media) {
+                    $filePath = public_path('media/' . $media->filename);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                    $media->delete();
+                }
+
+                $post->likes()->delete();
+
+                $replies = Post::where('reply', $post->post_id)->get();
+                foreach ($replies as $reply) {
+                    foreach ($reply->media as $replyMedia) {
+                        $filePath = public_path('media/' . $replyMedia->filename);
+                        if (file_exists($filePath)) {
+                            unlink($filePath);
+                        }
+                        $replyMedia->delete();
+                    }
+
+                    $reply->likes()->delete();
+
+                    $reply->delete();
+                }
+
+                $post->delete();
+            }
+
+            $topic->delete();
+
+            DB::commit();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 }

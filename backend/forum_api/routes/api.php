@@ -28,7 +28,11 @@ Route::middleware('auth:sanctum')->group(function(){
 
 //User API
 Route::middleware('auth:sanctum')->group(function(){
+    Route::get('/user/activities', [UserController::class, 'activities']);
     Route::get('/user/{id}', [UserController::class, 'me']);
+
+    Route::put('/profile/update', [UserController::class, 'update']);
+    Route::post('/profile/image', [UserController::class, 'updateProfileImage']);
 });
 
 //Course API
@@ -49,6 +53,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/update/{topic}', [ForumController::class, 'updateTopic']);
     Route::put('/comment/{post}', [ForumController::class, 'updateComment']);
     Route::delete('/comment/{post}', [ForumController::class, 'deleteComment']);
+    Route::delete('/topic/{topic}', [ForumController::class, 'deleteTopic']);
+
 });
 
 Route::get('/topics/{category_id}', [ForumController::class, 'getTopics']);
