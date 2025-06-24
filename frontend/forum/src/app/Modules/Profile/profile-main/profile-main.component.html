@@ -1,1 +1,262 @@
-<p>profile-main works!</p>
+<div class="container-fluid" style="font-family: 'Nunito', sans-serif">
+  <app-breadcrumbs [current]="current"></app-breadcrumbs>
+
+  <div class="profile-header p-4">
+    <div class="row">
+      <div class="col-md-4 text-center">
+        <div class="d-flex flex-column align-items-center">
+          <img
+            [src]="profileData?.profile_pic"
+            alt="Profile Avatar"
+            class="profile-avatar mb-3"
+          />
+          
+          @if(isEditing) {
+            <div class="mt-2">
+              <input 
+                type="file" 
+                class="form-control" 
+                (change)="onFileSelected($event)" 
+                accept="image/*"
+              />
+              <button 
+                class="btn btn-sm btn-primary mt-2" 
+                (click)="updateProfileImage()"
+                [disabled]="!selectedFile"
+              >
+                Update Profile Photo
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          @if(!isEditing) {
+            <h2>{{ profileData?.full_name }}</h2>
+            <button
+              class="btn btn-outline-secondary btn-sm"
+              (click)="toggleEdit()"
+            >
+              <i class="bi bi-pencil-square"></i> Edit Profile
+            </button>
+          }
+        </div>
+
+        @if(!isEditing) {
+            <h5 class="card-title mb-3">Profile</h5>
+
+            <div class="row mb-2">
+            <div class="col-sm-3 text-muted">Course</div>
+            <div class="col-sm-9">{{ profileData?.course.name }} Student</div>
+            </div>
+
+            <div class="row mb-2">
+            <div class="col-sm-3 text-muted">Username</div>
+            <div class="col-sm-9">{{ profileData?.username }}</div>
+            </div>
+
+            <div class="row mb-2">
+            <div class="col-sm-3 text-muted">Email</div>
+            <div class="col-sm-9">{{ profileData?.email }}</div>
+            </div>
+
+            <div class="row">
+            <div class="col-sm-3 text-muted">Bio</div>
+            <div class="col-sm-9">
+                {{ profileData?.bio || "No bio provided." }}
+            </div>
+            </div>
+
+        } @else {
+          <form [formGroup]="profileForm" (submit)="saveProfile()" class="mt-3">
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="username" class="form-label">Username</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  formControlName="username"
+                />
+              </div>
+              <div class="col-md-8">
+                <label for="email" class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  formControlName="email"
+                />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="first_name" class="form-label">First Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="first_name"
+                  formControlName="first_name"
+                />
+              </div>
+              <div class="col-md-4">
+                <label for="middle_name" class="form-label">Middle Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="middle_name"
+                  formControlName="middle_name"
+                />
+              </div>
+              <div class="col-md-4">
+                <label for="last_name" class="form-label">Last Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="last_name"
+                  formControlName="last_name"
+                />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="birthday" class="form-label">Birthday</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="birthday"
+                  formControlName="birthday"
+                />
+              </div>
+              <div class="col-md-6">
+                <label for="course" class="form-label">Course</label>
+                <select
+                  class="form-select"
+                  id="course"
+                  formControlName="course_id"
+                >
+                    <option [value]="0" disabled selected>Select Course</option>
+                    @for(course of courses; track course.course_id) {
+                        <option [value]="course.course_id">{{ course.name }}</option>
+                    }
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="bio" class="form-label">Bio</label>
+              <textarea
+                class="form-control"
+                id="bio"
+                rows="3"
+                formControlName="bio"
+              ></textarea>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="profileForm.invalid"
+              >
+                Save Profile
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="cancelEdit()"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content p-3">
+        <div class="tab-pane fade show active">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>My Activities</h4>
+            <div class="btn-group">
+              <button
+                class="btn btn-outline-secondary"
+                [class.active]="activityFilter === 'all'"
+                (click)="filterActivities('all')"
+              >
+                All
+              </button>
+              <button
+                class="btn btn-outline-secondary"
+                [class.active]="activityFilter === 'posts'"
+                (click)="filterActivities('posts')"
+              >
+                Posts
+              </button>
+              <button
+                class="btn btn-outline-secondary"
+                [class.active]="activityFilter === 'comments'"
+                (click)="filterActivities('comments')"
+              >
+                Comments
+              </button>
+            </div>
+          </div>
+
+          @if(allActivities?.length === 0) {
+            <div class="text-center p-5">
+              <i class="bi bi-inbox-fill fs-1 text-muted"></i>
+              <p class="mt-3">No activities found.</p>
+            </div>
+          } @else {
+            @for(activity of userActivities; track activity.post_id) {
+              <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between">
+                  <span>
+                    <span class="badge bg-success">{{ activity.reply != null ? "Comment" : "Posted" }}</span> in
+                    <b [routerLink]="['/forum/home/discussions', activity.topic.category.category_id]" style="cursor: pointer;" class="categ">{{ activity.topic.category.name }}</b> <i class="ms-3 me-1 bi bi-chevron-right" style="font-size: .6rem;"></i> 
+                    {{activity.topic.title}}
+                  </span>
+                  <small class="text-muted">
+                    {{ activity.created_at | date : "short" }}
+                  </small>
+                </div>
+                <div class="card-body">
+                  @if(activity.reply === null) {
+                    <h5 class="card-title">{{ activity.topic.title }}</h5>
+                  }
+                  <p class="card-text">{{ activity.content }}</p>
+                  <div class="d-flex justify-content-end gap-2">
+                    <a
+                      [routerLink]="['/forum/home/discussions/', activity.topic.category.category_id, 'post', activity.topic_id]"
+                      class="btn btn-sm btn-outline-primary"
+                    >
+                      View {{ activity.reply !== null ? "Comment" : "Post" }}
+                    </a>
+                    @if(activity.reply === null){
+                      <a
+                        [routerLink]="['/forum/home/edit-topic/', activity.topic_id]"
+                        class="btn btn-sm btn-outline-secondary"
+                      >
+                        Edit Post
+                      </a>
+                      <a
+                        class="btn btn-sm btn-outline-danger"
+                        (click)="deletePost(activity.topic_id)"
+                      >
+                        Delete Post
+                      </a>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          }
+        </div>
+  </div>
+</div>

@@ -42,7 +42,6 @@ export class BreadcrumbsComponent implements OnInit {
     this.userData = this.uservice.getLoggedUser();
     
     if (this.userData) {
-      this.setProfilePicture();
       this.loadUserRelatedData();
       return;
     }
@@ -52,7 +51,6 @@ export class BreadcrumbsComponent implements OnInit {
       next: (user: any) => {
         this.userData = user;
         this.uservice.setUser(user); 
-        this.setProfilePicture();
         this.isLoadingUser = false;
         this.loadUserRelatedData();
       },
@@ -61,12 +59,6 @@ export class BreadcrumbsComponent implements OnInit {
         this.isLoadingUser = false;
       }
     });
-  }
-
-  private setProfilePicture(): void {
-    if (this.userData && this.userData.profile_pic) {
-      this.profile = environment.mediaUrl + this.userData.profile_pic;
-    }
   }
 
   private loadUserRelatedData(): void {

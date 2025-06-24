@@ -1,14 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+  private userSubject = new BehaviorSubject<any>(null);
+  user$: Observable<any> = this.userSubject.asObservable();
 
-  constructor(private http: HttpClient) { }
-  private user: any = null;
+  constructor(private http: HttpClient) {}
 
   loadUser(): void {
     const id = localStorage.getItem('u_token');
@@ -19,29 +21,47 @@ export class UserService {
     }
   }
 
-  getUser(userId:number) {
+  getUser(userId: number) {
     return this.http.get(`${environment.apiUrl}user/${userId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     });
   }
-  setUser(data: any) {
-    this.user = data;
+
+  updateProfile(data: any) {
+    return this.http.put(`${environment.apiUrl}profile/update`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
   }
 
-  getLoggedUser() {
-    return this.user;
+  profilePicture(data: any) {
+    return this.http.post(`${environment.apiUrl}/profile/image`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+  }
+
+  getActivities() {
+    return this.http.get(`${environment.apiUrl}user/activities`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+  }
+
+  setUser(data: any) {
+    this.userSubject.next(data);
+  }
+
+  getLoggedUser(): any {
+    return this.userSubject.value;
   }
 
   clearUser() {
-    this.user = null;
+    this.userSubject.next(null);
   }
-  // getConvoList(userId: number){
-  //   return this.http.get(`${environment.apiUrl}get_conversation.php?userID=${userId}`);
-  // }
-
-  // getNotifs(userId:any){
-  //   return this.http.get(`${environment.apiUrl}get_notifs.php?userID=${userId}`);
-  // }
 }

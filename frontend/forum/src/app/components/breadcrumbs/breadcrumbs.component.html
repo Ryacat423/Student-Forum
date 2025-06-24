@@ -119,9 +119,9 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              @if(profile) {
+              @if(userData.profile_pic) {
                 <img
-                  src="{{ profile }}"
+                  src="{{ userData.profile_pic }}"
                   alt="Profile"
                   class="rounded-circle"
                 />
@@ -140,11 +140,11 @@
               class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile mt-5"
             >
               <li class="dropdown-header">
-                @if(profile) {
+                @if(userData.profile_pic) {
                   <img
-                    src="{{ profile }}"
+                    src="{{ userData.profile_pic }}"
                     alt="Profile"
-                    class="rounded-circle"
+                    style="border-radius: 50%;"
                   />
                 } @else {
                   <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" 
