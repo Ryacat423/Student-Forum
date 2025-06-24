@@ -109,6 +109,40 @@ export class PostDataComponent implements OnInit {
     });
   }
 
+  // idToDelete: number = 0;
+  // getDeleteId(id: number) {
+  //   this.idToDelete = id;
+  // }
+
+  deleteComment(commentId: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This comment and all associated replies will be permanently deleted.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dservice.deleteComment(commentId).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.comments = this.comments.filter((c: any) => c.post_id !== commentId);
+              Swal.fire('Deleted!', 'Comment has been deleted.', 'success');
+            } else {
+              Swal.fire('Error!', 'Something went wrong while deleting.', 'error');
+            }
+          },
+          error: () => {
+            Swal.fire('Error!', 'Could not delete the comment.', 'error');
+          }
+        });
+      }
+    });
+  }
+
   postIdToReport: number | null = null;
   @ViewChild('report') reportTemplate!: TemplateRef<any>;
 

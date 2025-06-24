@@ -1,6 +1,6 @@
 <section class="comments-section">
   <div class="section-header">
-    <h2 class="section-title">Comments ({{ comments }})</h2>
+    <h2 class="section-title">Comments ({{ commentCount }})</h2>
     <select class="sort-select" [(ngModel)]="sortOption" (change)="sortComments()">
       <option value="newest">Newest First</option>
       <option value="oldest">Oldest First</option>
@@ -58,9 +58,9 @@
               </div>
             } 
             
-            @if(comment.media && comment.media.length > 0){              
+            @if(comment.media && !isSubmitting && comment.media.length > 0){              
               @for(media of comment.media; track $index) {
-                  <img src="{{ mediaurl + media.filename }}" alt="comment photo" style="width: 30%" class="img-fluid py-3" />
+                  <img src="{{ mediaurl + media.filename }}" alt="comment photo" style="width: 20%" class="img-fluid py-3" />
               }
             }
             <p>{{ comment.content }}</p>

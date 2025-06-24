@@ -49,8 +49,8 @@ export class DataService {
     });
   }
 
-  updateTopic(id: number, data: any) {
-    return this.http.put(`${environment.apiUrl}update/${id}`, data, {
+  deleteComment(id: number) {
+    return this.http.delete(`${environment.apiUrl}comment/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }

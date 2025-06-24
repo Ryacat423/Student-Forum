@@ -6,6 +6,7 @@ import { CommentFormComponent } from '../comment-form/comment-form.component';
 import { environment } from '../../../../../../environments/environment.prod';
 import { RepliesComponent } from '../replies/replies.component';
 import Swal from 'sweetalert2';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-comments',
@@ -16,7 +17,6 @@ import Swal from 'sweetalert2';
 export class CommentsComponent implements OnInit, OnChanges {
   @Input() postId!: number;
   @Input() user_id!: number;
-  @Input() commentCount!: number;
   @Input() isToggled: boolean = false;
 
   @Input() comments: any;
@@ -27,21 +27,39 @@ export class CommentsComponent implements OnInit, OnChanges {
 
   @Output() delComment = new EventEmitter<any>();
 
-  constructor(private dservice: DataService) {}
+  constructor(
+    private dservice: DataService, 
+    private http: HttpClient
+  ) {}
   mediaurl: string = environment.mediaUrl;
 
   sortOption = 'newest';
   currentUserId: any;
 
+  mediaUrl: string = environment.mediaUrl;
+
   editingCommentId: number | null = null;
   editText = '';
   editReplyText = '';
+  commentCount: number = 0;
 
   showicon: boolean = true;
   status: any;
 
   activeReplyForms: { [key: string]: boolean } = {};
   replyingTo: any = {};
+
+  selectedFiles: File[] = [];
+  removeCurrentImages: boolean = false;
+  currentAttachment: any;
+  isSubmitting: boolean = false;
+
+  onFileSelected(event: any): void {
+    if (event.target.files.length > 0) {
+      this.selectedFiles = Array.from(event.target.files);
+      console.log('Selected files:', this.selectedFiles);
+    }
+  }
 
   ngOnInit() {
     this.currentUserId = localStorage.getItem('u_token');
@@ -50,7 +68,31 @@ export class CommentsComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['comments'] && this.comments) {
+      this.commentCount = this.comments.length;
+      this.currentAttachment = this.comments.media ? this.comments.media : [];
+      console.log(this.currentAttachment);
       this.sortComments();
+    }
+  }
+
+  saveEdit(commentId: number) {
+    if (this.editText.trim()) {
+      const formData = new FormData();
+      formData.append('_method', 'PUT');
+      formData.append('content', this.editText || '');
+      formData.append('topic_id', this.postId.toString());
+      
+      this.http.post(`${environment.apiUrl}comment/${commentId}`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }).subscribe((res: any)=>{
+        if (res.success && res.comments) {
+          this.comments = res.comments;
+          this.editingCommentId = null;
+          this.editText = '';
+        }
+      });
     }
   }
 
@@ -59,13 +101,13 @@ export class CommentsComponent implements OnInit, OnChanges {
       case 'newest':
         this.comments.sort(
           (a: any, b: any) =>
-            new Date(b.post_date).getTime() - new Date(a.post_date).getTime()
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
         break;
       case 'oldest':
         this.comments.sort(
           (a: any, b: any) =>
-            new Date(a.post_date).getTime() - new Date(b.post_date).getTime()
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
         );
         break;
     }
@@ -74,6 +116,7 @@ export class CommentsComponent implements OnInit, OnChanges {
   onCommentAdded(comment: any) {
     console.log('Comment added:', comment);
     this.comments = comment;
+    this.commentCount = this.comments.length;
     this.isToggled = false;
 
     const activeFormKey = Object.keys(this.activeReplyForms).find(key => this.activeReplyForms[key]);
@@ -99,29 +142,6 @@ export class CommentsComponent implements OnInit, OnChanges {
     } else {
       this.editingCommentId = commentId;
       this.editText = content;
-    }
-  }
-
-  saveEdit(commentId: number) {
-    if (this.editText.trim()) {
-      const commentData = {
-        id: commentId,
-        content: this.editText,
-        topic_id: this.postId,
-      };
-
-      // this.dservice.updateReply(commentData).subscribe((res: any) => {
-      //   if (res.msg == 1) {
-      //     this.editingCommentId = null;
-      //     this.editText = '';
-
-      //     this.commentUpdate.emit({
-      //       action: 'edit',
-      //       commentId: commentId,
-      //       content: this.editText
-      //     });
-      //   }
-      // });
     }
   }
 
