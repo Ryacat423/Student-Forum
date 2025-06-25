@@ -20,6 +20,7 @@ export class ConversationComponent {
   receiverID: number = 0;
   messageID: any;
 
+  isLoading: boolean = true;
   isReplying: boolean = false;
 
   constructor(private dservice: DataService, private acroute: ActivatedRoute, private modal: NgbModal) {}
@@ -27,7 +28,7 @@ export class ConversationComponent {
   reply!: FormGroup;
 
   ngOnInit(): void {
-    this.receiverID = Number(localStorage.getItem('token'));
+    this.receiverID = Number(localStorage.getItem('u_token'));
     this.acroute.paramMap.subscribe((res) => {
       this.messageID = res.get('id');
       this.getMessages();
@@ -41,10 +42,10 @@ export class ConversationComponent {
   initForm() {
     this.reply = new FormGroup({
       from: new FormControl(this.receiverID),
-      to: new FormControl(this.senderID),
+      to: new FormControl(this.message.from_user.user_id),
       subject: new FormControl(null),
       content: new FormControl(null),
-      reply_to: new FormControl(this.message.messageID)
+      reply_to: new FormControl(this.message.message_id)
     });
   }
   
@@ -61,21 +62,13 @@ export class ConversationComponent {
   }
 
   getMessages() {
-    // this.dservice.getMessages(this.messageID).subscribe((res: any) => {
-    //   console.log(res);
-    //   this.message = res.message;
-    //   this.replies = res.replies;
-    //   this.senderID = Number(this.message.sender_id);
-    //   this.initForm();
-    // });
-  }
-
-  @ViewChild('messageModal') messageModal: any;
-  showApprovalConfirmation() {
-    this.modal.open(this.messageModal, {
-      centered: true,
-      keyboard: false,
-      backdrop: false
+    this.dservice.getConversation(this.messageID).subscribe((res: any) => {
+      console.log(res);
+      this.message = res.message;
+      this.replies = res.replies;
+      this.senderID = Number(this.message.sender_id);
+      this.initForm();
+      this.isLoading = false;
     });
   }
 }

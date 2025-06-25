@@ -2,57 +2,64 @@
   <div class="conversation-header rounded">
     <div class="thread-actions">
       <button class="thread-action-btn" routerLink="/forum/messages">
-        <i class="bi bi-arrow-left"></i>
-        <span class="ms-2">Go back</span>
-      </button>
+          <i class="bi bi-arrow-left"></i>
+          <span class="ms-2">Go back</span>
+        </button>
     </div>
-
+    
     <div class="thread-actions">
-      <button class="thread-action-btn">
-        <i class="bi bi-trash"></i>
-        Delete
-      </button>
+        <button class="thread-action-btn">
+            <i class="bi bi-trash"></i>
+            Delete
+        </button>
     </div>
-  </div>
+</div>
 
-  <div class="message-wrapper">
-    <div class="message-item">
-      <div class="conversation-header">
-        <h2>{{ message?.subject }}</h2>
-      </div>
-      <div class="message-header">
-        <div class="message-sender">
-          <img src="{{ message?.profile_pic }}" alt="Avatar" />
-          <div class="sender-details">
-            <div class="d-flex gap-2">
-              <span class="sender-name">{{ message?.sender_name }}</span>
-              <span class="sender-role">{{ message?.role }}</span>
+<div class="message-wrapper">
+    @if(isLoading) {
+        <div class="ms-auto d-flex align-items-center p-5">
+            <div class="spinner-border spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
             </div>
-            <span class="sender-email">{{ message?.sender_email }}</span>
-          </div>
+        </div>
+    }
+    <div class="message-item">
+        <div class="conversation-header">
+        <h2>{{ message?.subject }}</h2>
+        </div>
+        <div class="message-header">
+        <div class="message-sender">
+            <img src="{{ message?.from_user.profile_pic }}" alt="Avatar" />
+            <div class="sender-details">
+            <div class="d-flex gap-2">
+                <span class="sender-name">{{ message?.from_user.first_name }} {{ message?.from_user.last_name }}</span>
+                <span class="sender-role">{{ message?.from_user.role }}</span>
+            </div>
+            <span class="sender-email">{{ message?.from_user.email }}</span>
+            </div>
         </div>
         <div class="message-timestamp">
-          {{ message?.date_sent | date : "MMM d, y, h:mm a" }}
+            {{ message?.created_at | date : "MMM d, y, h:mm a" }}
         </div>
-      </div>
-      <div class="message-content p-5 d-flex flex-column">
+        </div>
+        <div class="message-content p-5 d-flex flex-column">
         <p>{{ message?.content }}</p>
         <div class="message-actions align-self-end">
-          @if(!['mute', 'unmute', 'report'].includes(message?.subject.toLowerCase())){
+            @if(['muted', 'notice!', 'report'].includes(message?.to_user.status.toLowerCase())){
             @if(!isReplying){
             <button
-              class="btn btn-sm btn-outline-secondary rounded-pill"
-              (click)="toggleReply()"
+                class="btn btn-sm btn-outline-secondary rounded-pill"
+                (click)="toggleReply()"
             >
-              <i class="bi bi-reply"></i>
-              Reply
+                <i class="bi bi-reply"></i>
+                Reply
             </button>
             }
-          }@else {
+            } @else {
             <a routerLink="/forum/contact">Request Appeal</a>
-          }
+            }
         </div>
-      </div>
+        </div>
     </div>
   </div>
 
@@ -129,25 +136,3 @@
   </div>
 </form>
 }
-
-  <ng-template #messageModal let-modal>
-    <div class="message-modal-overlay" (click)="modal.dismiss('outside click')">
-      <div class="message-modal-container fade-in-modal">
-        <div class="message-modal-content">
-          <div class="message-animation">
-            <svg class="message-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-              <circle class="message-icon__circle" cx="26" cy="26" r="25" fill="none"/>
-              <path class="message-icon__envelope" fill="none" d="M16,20 L16,34 L36,34 L36,20 L16,20 Z M16,20 L26,28 L36,20"/>
-            </svg>
-          </div>
-          <div class="message-text">
-            <h2>Message Sent</h2>
-            <p>Your message has been sent successfully.</p>
-          </div>
-          <div class="message-actions">
-            <button class="message-button" (click)="modal.close('close')">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </ng-template>

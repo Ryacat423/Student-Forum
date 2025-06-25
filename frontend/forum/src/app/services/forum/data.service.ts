@@ -45,6 +45,24 @@ export class DataService {
     return this.http.get(`${environment.apiUrl}topic/${id}/comments`);
   }
 
+  getMessages() {
+    return this.http.get(`${environment.apiUrl}messages`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+  }
+
+  getConversation(messageID: number) {
+    return this.http.get(`${environment.apiUrl}messages/show`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      },
+      params: { message_id: messageID }
+    });
+  }
+
+
   like(data: any) {
     return this.http.post(`${environment.apiUrl}like`, data, {
       headers: {

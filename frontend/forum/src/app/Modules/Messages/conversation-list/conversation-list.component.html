@@ -29,31 +29,30 @@
           />
         </div>
       </div>
-      @if(convo.length > 0){
-        @for(conversation of convo | searchFilter: keyword; track $index){
+      @if(convo){
+        @for(conversation of convo | searchFilter: keyword; track conversation.message_id){
         <div
           class="conversation-item"
-          [class.unread]="conversation.unread"
-          [class.active]="conversation.selected"
-          (click)="navigateMessage(conversation.messageID)"
+          [class.unread]="conversation.status == 'unread'"
+          (click)="navigateMessage(conversation.message_id)"
         >
           <div class="avatar">
-            <img src="{{ conversation.profile_pic }}" alt="Avatar" />
+            <img src="{{ conversation.from_user.profile_pic }}" alt="Avatar" />
           </div>
           <div class="conversation-details">
             <div class="conversation-header">
               <div class="sender-info">
                 <span class="sender-name fw-bold">
-                  @if(conversation.sender_id == userID){
+                  @if(conversation.from == userID){
                     You
                   }@else {
-                    {{ conversation.sender_name }}
+                    {{ conversation.from_user.first_name }} {{conversation.from_user.last_name}}
                   }
                 </span>
-                <span class="sender-role">{{ conversation.role }}</span>
+                <span class="sender-role">{{ conversation.from_user.role }}</span>
               </div>
               <span class="timestamp">{{
-                conversation.date_sent | date : "MMM d"
+                conversation.created_at | date : "MMM d"
               }}</span>
             </div>
             <div class="message-preview">

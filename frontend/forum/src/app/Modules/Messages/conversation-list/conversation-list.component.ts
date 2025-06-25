@@ -12,7 +12,7 @@ import { DataService } from '../../../services/forum/data.service';
   styleUrl: './conversation-list.component.css'
 })
 export class ConversationListComponent implements OnInit{
-  convo: any[] = [];
+  convo: any = [];
   userID: any;
   messages: any[] = []
   keyword=''
@@ -23,11 +23,11 @@ export class ConversationListComponent implements OnInit{
   ){}
 
   ngOnInit(): void {
-    this.userID = localStorage.getItem('token');
-    // this.dservice.getConvoList(this.userID).subscribe((res: any)=>{
-    //   this.convo = res;
-    //   console.log(this.convo);
-    // })
+    this.userID = localStorage.getItem('u_token');
+    this.dservice.getMessages().subscribe((res: any)=>{
+      this.convo = res.messages;
+      console.log(this.convo);
+    })
   }
 
   navigateMessage(messageID: any){
