@@ -6,7 +6,10 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TopicController;
+use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,9 +27,12 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/applicants', [AuthController::class, 'getApplicants']);
     Route::post('/applicants/approve', [AuthController::class, 'approveApplicant']);
+    Route::put('/user/{id}/mute', [UserController::class, 'muteUser']);
+    Route::put('/user/{id}/suspend', [UserController::class, 'suspendUser']);
 });
 
 //User API
+Route::get('/members', [UserController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/user/activities', [UserController::class, 'activities']);
     Route::get('/user/{id}', [UserController::class, 'me']);
@@ -66,3 +72,16 @@ Route::get('/topic/{topic_id}/comments', [TopicController::class, 'getComments']
 Route::get('/post/{post_id}/replies', [TopicController::class, 'getReplies']);
 
 Route::post('/like', [LikeController::class, 'toggle']);
+
+//Report API
+Route::get('type', [TypeController::class, 'index']);
+Route::middleware('auth:sanctum')->group(function (){
+    Route::post('/report', [ReportController::class, 'reportPost']);
+
+});
+
+//Message API 
+Route::middleware('auth:sanctum')->group(function (){
+    Route::get('/messages', [MessageController::class, 'index']);
+    Route::get('/messages/show', [MessageController::class, 'show']);
+});

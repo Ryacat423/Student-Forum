@@ -67,5 +67,5 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Course::class, 'course_id', 'course_id');
     }
-
+    
 }

@@ -216,14 +216,11 @@ class ForumController extends Controller
 
         DB::beginTransaction();
         try {
-            // Update content if provided
             if (isset($validated['content'])) {
                 $post->update([
                     'content' => strip_tags($validated['content'])
                 ]);
             }
-
-            // Fetch updated comments
             $comments = Post::with([
                 'user.course',
                 'media',
@@ -317,7 +314,6 @@ class ForumController extends Controller
                     }
 
                     $reply->likes()->delete();
-
                     $reply->delete();
                 }
 

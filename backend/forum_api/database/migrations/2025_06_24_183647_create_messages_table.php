@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reports', function (Blueprint $table) {
-            $table->id('report_id');
-            $table->primary('report_id');
+        Schema::create('messages', function (Blueprint $table) {
+            $table->id('message_id');
+            $table->primary('message_id');
 
-            $table->integer('user_id');
-            $table->integer('post_id');
-            $table->integer('type_id');
-            $table->string('reason');
-            $table->datetime('date_reported');
+            $table->integer('from');
+            $table->integer('to');
+            $table->string('subject');
+            $table->text('content');
+            $table->integer('reply_to');
             $table->string('status');
 
             $table->timestamps();
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reports');
+        Schema::dropIfExists('messages');
     }
 };

@@ -8,13 +8,15 @@ class Like extends Model
 {
     protected $primaryKey = 'like_id';
     protected $fillable = [
+        'topic_id',
         'post_id',
         'user_id',
         'status'
     ];
 
-    public function post() {
-        return $this->belongsTo(Post::class, 'post_id', 'post_id');
+    public function topic()
+    {
+        return $this->belongsTo(Topic::class, 'topic_id');
     }
 
     public function user() {

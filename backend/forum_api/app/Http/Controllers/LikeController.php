@@ -8,22 +8,25 @@ use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
-    public function toggle(Request $request) {
+    public function toggle(Request $request)
+    {
         $request->validate([
             'userID' => 'required|integer|exists:users,user_id',
-            'postID' => 'required|integer|exists:posts,post_id',
+            'topicID' => 'required|integer|exists:topics,topic_id',
             'action' => 'required|in:like,unlike',
+            'postID' => 'integer'
         ]);
 
         $like = Like::where('user_id', $request->userID)
-                    ->where('post_id', $request->postID)
+                    ->where('topic_id', $request->topicID)
                     ->first();
 
         if (!$like) {
             $like = Like::create([
                 'user_id' => $request->userID,
-                'post_id' => $request->postID,
+                'topic_id' => $request->topicID,
                 'status' => $request->action === 'like' ? 1 : 0,
+                'post_id' => $request->postID
             ]);
         } else {
             $like->status = $request->action === 'like' ? 1 : 0;
@@ -35,7 +38,7 @@ class LikeController extends Controller
             'media',
             'likes'
         ])
-        ->where('topic_id', $request->postID)
+        ->where('topic_id', $request->topicID)
         ->whereNull('reply')
         ->first();
 

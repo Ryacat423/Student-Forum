@@ -94,6 +94,10 @@ class AuthController extends Controller
             return response()->json(['error' => 'Account not approved yet.'], 403);
         }
 
+        if ($user->status === 'suspended') {
+            return response()->json(['error' => 'Your account has been suspended. Contact Admin to get back access.'], 403);
+        }
+
         if (!auth()->attempt($validated)) {
             return response()->json(['error' => 'Invalid credentials'], 403);
         }
@@ -104,7 +108,8 @@ class AuthController extends Controller
             'access_token' => $token,
             'success' => 1,
             'message' => 'User logged in successfully',
-            'user' => $user->user_id
+            'user' => $user->user_id,
+            'status' => $user->status
         ], 200);
     }
 

@@ -2,18 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Message;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
-    public function index(Request $request) {
-        return $request->user()->load('course');
+    public function index() {
+        $users = User::with('course')
+            ->where('status', '!=', 'pending')
+            ->where('role', '!=', 'admin')
+            ->get();
+
+        return response()->json($users);
     }
 
     public function me($id) {
         $user = User::with('course')->findOrFail($id);
+        if (!Str::startsWith($user->profile_pic, ['http://', 'https://'])) {
+            $user->profile_pic = url('media/' . $user->profile_pic);
+        }
+
         return response()->json($user);
     }
 
@@ -60,5 +71,58 @@ class UserController extends Controller
         return response()->json(['activities' => $posts]);
     }
 
-    
+    public function muteUser($id) {
+        $user = User::findOrFail($id);
+
+        $newStatus = $user->status === 'muted' ? 'active' : 'muted';
+        $user->status = $newStatus;
+        $user->save();
+
+        if ($newStatus === 'muted') {
+            Message::create([
+                'from' => auth()->id() ?? 2,
+                'to' => $user->user_id,
+                'subject' => 'Notice!',
+                'content' => 'You have been muted due to breaking forum rules.',
+                'reply_to' => 0,
+                'status' => 'unread',
+            ]);
+        }
+
+        $users = User::with('course')
+            ->where('status', '!=', 'pending')
+            ->where('role', '!=', 'admin')
+            ->get();
+
+        return response()->json(['success' => true, 'users' => $users]);
+    }
+
+    public function suspendUser($id) {
+        $user = User::findOrFail($id);
+
+        $newStatus = $user->status === 'suspended' ? 'active' : 'suspended';
+        $user->status = $newStatus;
+        $user->save();
+
+        // Only send message when suspending
+        if ($newStatus === 'suspended') {
+            Message::create([
+                'from' => auth()->id() ?? 2,
+                'to' => $user->user_id,
+                'subject' => 'Notice!',
+                'content' => 'You have been suspended due to breaking forum rules.',
+                'reply_to' => 0,
+                'status' => 'unread',
+            ]);
+        }
+
+        $users = User::with('course')
+            ->where('status', '!=', 'pending')
+            ->where('role', '!=', 'admin')
+            ->get();
+
+        return response()->json(['success' => true, 'users' => $users]);
+    }
+
+
 }
