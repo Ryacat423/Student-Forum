@@ -9,6 +9,10 @@ export class DataService {
 
   constructor(private http: HttpClient) { }
 
+  getMembers() {
+    return this.http.get(`${environment.apiUrl}members`);
+  }
+
   getDashboardStats() {
     return this.http.get(`${environment.apiUrl}dashboard-stats`);
   }

@@ -28,4 +28,20 @@ export class AuthService {
       }
     });
   }
+
+  muteUser(userId: number) {
+    return this.http.put(`${environment.apiUrl}user/${userId}/mute`, {}, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+  }
+
+  suspendUser(userId: number) {
+    return this.http.put(`${environment.apiUrl}user/${userId}/suspend`, {}, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+  }
 }

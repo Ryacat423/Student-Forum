@@ -1,1 +1,81 @@
-<p>members-main works!</p>
+<div
+  class="table-header text-light p-2 shadow-sm"
+  style="background-color: var(--color-app-notif-h4)"
+>
+  <h6>Student Forum: Members</h6>
+  <div class="search-container">
+    <div class="search-bar">
+      <input [(ngModel)]="keyword" type="text" placeholder="Search Categories..." />
+      <button><i class="bi bi-search"></i></button>
+    </div>
+  </div>
+</div>
+<div class="applications-table shadow-sm">
+  <div class="table-responsive">
+    <table class="table custom-table">
+      <thead class="bg-secondary">
+        <tr>
+            <th><i class="fas fa-user me-2"></i>Student</th>
+            <th><i class="fas fa-envelope me-2"></i>Email</th>
+            <th><i class="fas fa-graduation-cap me-2"></i>Course</th>
+            <th><i class="fas fa-calendar me-2"></i>Date Joined</th>
+            <th><i class="fas fa-info-circle me-2"></i>Status</th>
+            <th><i class="fas fa-cog me-2"></i>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(member of members | searchFilter: keyword; track member.user_id) {
+            <tr
+                [ngClass]="{
+                    'table-warning': member.status === 'muted',
+                    'table-danger': member.status === 'suspended'
+                }"
+            >
+                <td>
+                    <strong>{{ member.first_name }} {{ member.last_name }}</strong><br />
+                    <small class="text-muted">ID: {{ member.user_id }}</small>
+                </td>
+                <td>{{ member.email }}</td>
+                <td>
+                  @if(member.course_id == 9) {
+                    {{ member.course.code }} -
+                  }
+                  {{ member.course.name }}
+                </td>
+                <td>{{ member.registration_date | date: 'MMMM d, y' }}</td>
+                <td><span class="status-badge status-pending">{{ member.status }}</span></td>
+                <td class="d-flex flex-column gap-2">
+                    <button class="w-100 btn btn-secondary me-2">
+                        <i class="fas fa-check me-1"></i>View
+                    </button>
+
+                    <button
+                        (click)="mute(member.user_id)"
+                        class="w-100 btn btn-action me-2"
+                        [ngClass]="{
+                            'btn-warning': !member.status || member.status === 'active',
+                            'btn-approve': member.status === 'muted'
+                        }"
+                    >
+                    <i class="fas fa-check me-1"></i>
+                    {{ member.status === 'muted' ? 'Unmute' : 'Mute' }}
+                    </button>
+
+                    <button
+                        (click)="suspend(member.user_id)"
+                        class="w-100 btn btn-action"
+                        [ngClass]="{
+                            'btn-reject': !member.status || member.status !== 'suspended',
+                            'btn-approve': member.status === 'suspended'
+                        }"
+                    >
+                    <i class="fas fa-times me-1"></i>
+                    {{ member.status === 'suspended' ? 'Unsuspend' : 'Suspend' }}
+                    </button>
+                </td>
+            </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

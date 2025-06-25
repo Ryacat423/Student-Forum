@@ -85,7 +85,6 @@
             </tr>
           </thead>
           <tbody>
-            <!-- Use your SearchFilterPipe directly -->
             @for(user of (keyword ? allApplicants : applicants) | searchFilter: keyword; track user.user_id) {
               <tr>
                 <td>
