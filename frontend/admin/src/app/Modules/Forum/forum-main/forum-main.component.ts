@@ -12,8 +12,8 @@ import { DataService } from '../../../services/forum/data.service';
 })
 export class ForumMainComponent implements OnInit {
   constructor(private sharedData: SharedDataService, private dservice: DataService) {}
-  totalCategories: any;
-  totalMembers: any;
+  totalCategories: any = 0;
+  totalMembers: any = 0;
 
   ngOnInit(): void {
     this.sharedData.currentCategoryCount.subscribe(count => {

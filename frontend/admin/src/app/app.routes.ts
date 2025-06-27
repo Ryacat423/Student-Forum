@@ -4,6 +4,7 @@ import { MainComponent } from './components/main/main.component';
 import { home } from './Modules/Home/home.routes';
 import { forum } from './Modules/Forum/forum.routes';
 import { AuthGuard } from './services/auth/auth.guard';
+import { report } from './Modules/Report/report.routes';
 
 export const routes: Routes = [
     {
@@ -22,6 +23,10 @@ export const routes: Routes = [
             {
                 path: 'forum',
                 loadChildren: ()=>import('./Modules/Forum/forum.routes').then(f=>forum)
+            },
+            {
+                path: 'report',
+                loadChildren: ()=>import('./Modules/Report/report.routes').then(r=>report)
             },
             {
                 path: '',
