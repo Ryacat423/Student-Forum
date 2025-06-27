@@ -21,7 +21,10 @@ export class BreadcrumbsComponent implements OnInit {
   isLoadingUser: boolean = false;
 
   convo: any[] = [];
-  notifs: any[] = [];
+  notifs: any;
+
+  saved: any;
+  isDark: boolean = false;
 
   constructor(
     private router: Router, 
@@ -31,9 +34,17 @@ export class BreadcrumbsComponent implements OnInit {
   ngOnInit(): void {
     const token = localStorage.getItem('token');
     this.userId = localStorage.getItem('u_token');
-    
+    this.saved = localStorage.getItem('isDark');
+    this.isDark = this.saved === 'true';
+
     if (token && this.userId) {
       this.loadUserData();
+      this.uservice.notifs$.subscribe((notif)=> {
+        if (notif?.notified) {
+          this.notifs = notif;
+        }
+      })
+
     }
     this.checkIfMobile();
   }
@@ -68,7 +79,10 @@ export class BreadcrumbsComponent implements OnInit {
       // this.getNotifications(this.userId);
     }
   }
-
+  toggleDarkMode() {
+    this.isDark = !this.isDark;
+    localStorage.setItem('isDark', this.isDark.toString());
+  }
   // Uncomment these methods when ready to use
   // getConvos(userId: number) {
   //   this.uservice.getConvoList(userId).subscribe((res: any) => {

@@ -81,6 +81,12 @@ export class PostDataComponent implements OnInit {
       this.notifyLoginRequired();
       return;
     }
+
+    if(localStorage.getItem('status') == 'muted') {
+      this.notifyMuted();
+      return;
+    }
+    
     this.showComment = !this.showComment;
   }
 
@@ -99,6 +105,10 @@ export class PostDataComponent implements OnInit {
 
   notifyLoginRequired() {
     Swal.fire('Login Required', 'You need to login to perform this action', 'info');
+  }
+
+  notifyMuted() {
+    Swal.fire('You are muted', 'Contact an admin to be unmuted to be able to comment again', 'info');
   }
 
   editTopic(postid: number) {

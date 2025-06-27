@@ -1,4 +1,5 @@
 <div class="breadcrumbs">
+
   <a [routerLink]="userData ? '/forum/home' : '/public/home'" class="breadcrumb-item" style="cursor: pointer">
     Home
   </a>
@@ -28,7 +29,7 @@
               aria-expanded="false"
             >
               <i class="bi bi-bell"></i>
-              <span class="badge bg-primary badge-number">{{ notifs.length }}</span>
+              <span class="badge bg-primary badge-number">{{ notifs?.messages.length ?? 0 }}</span>
             </a>
             <ul
               class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications mt-5"
@@ -38,12 +39,12 @@
               </li>
               <li class="notification-item">
                 <i class="bi bi-exclamation-circle text-warning"></i>
-                @if(notifs.length > 0){ 
-                  @for(n of notifs; track n.messageID){
-                    <div [routerLink]="['/forum/messages/body', n.messageID]">
+                @if(notifs?.messages.length > 0){ 
+                  @for(n of notifs?.messages; track n.message_id){
+                    <div [routerLink]="['/forum/messages/body', n.message_id]">
                       <h4>{{ n?.subject }}</h4>
                       <p>{{ n?.content }}</p>
-                      <p>{{ n?.date_sent | timeAgo }}</p>
+                      <p>{{ n?.created_at | timeAgo }}</p>
                     </div>
                     } 
                 }@else {

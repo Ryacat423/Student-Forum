@@ -10,7 +10,10 @@ import { Router } from '@angular/router';
 })
 export class UserService {
   private userSubject = new BehaviorSubject<any>(null);
+  private notification = new BehaviorSubject<any>(null);
+  
   user$: Observable<any> = this.userSubject.asObservable();
+  notifs$: Observable<any> = this.notification.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -48,7 +51,8 @@ export class UserService {
               text: 'You have been suspended. Contact Admin to gain Access again.',
               confirmButtonText: 'OK',
             }).then(()=>{
-              this.router.navigate(['/login'])
+              localStorage.clear();
+              this.router.navigate(['/'])
             });
           } else if (newStatus === 'muted') {
             Swal.fire({
@@ -94,6 +98,18 @@ export class UserService {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
+    });
+  }
+
+  getNotifications() {
+    if (this.notification.value !== null) return;
+
+    this.http.get(`${environment.apiUrl}notif`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    }).subscribe((notif: any) => {
+      this.notification.next(notif);
     });
   }
 

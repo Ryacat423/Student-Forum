@@ -48,6 +48,7 @@ export class MainComponent implements OnInit {
 
     if (this.userId) {
       this.loadUserData();
+      this.uservice.getNotifications();
     }
 
     this.checkIfMobile();
