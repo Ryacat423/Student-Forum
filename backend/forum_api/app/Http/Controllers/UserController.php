@@ -87,6 +87,10 @@ class UserController extends Controller
                 'reply_to' => 0,
                 'status' => 'unread',
             ]);
+        }else {
+            Message::where('to', $user->user_id)
+                ->where('subject', 'Notice!')
+                ->delete();
         }
 
         $users = User::with('course')

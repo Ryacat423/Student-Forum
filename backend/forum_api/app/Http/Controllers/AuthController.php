@@ -126,19 +126,20 @@ class AuthController extends Controller
         $perPage = $request->query('per_page', 5);
 
         $paginated = User::with('course')
-                        ->where('status', 'pending')
-                        ->paginate($perPage);
+            ->where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
 
         $allApplicants = User::with('course')
-                        ->where('status', 'pending')
-                        ->get();
+            ->where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return response()->json([
             'paginated' => $paginated,
             'applicants' => $allApplicants
         ], 200);
     }
-
 
     public function approveApplicant(Request $request) {
         $validator = Validator::make($request->all(), [

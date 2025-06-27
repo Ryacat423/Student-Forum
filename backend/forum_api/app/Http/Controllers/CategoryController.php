@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Validator;
 class CategoryController extends Controller
 {
     public function index() {
-        $categories = Category::all();
+        $categories = Category::latest()->get();
+
         $total_categories = $categories->count();
 
         return response()->json([

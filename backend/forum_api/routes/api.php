@@ -39,6 +39,8 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::put('/profile/update', [UserController::class, 'update']);
     Route::post('/profile/image', [UserController::class, 'updateProfileImage']);
+
+    Route::get('/notif', [MessageController::class, 'getNotifications']);
 });
 
 //Course API

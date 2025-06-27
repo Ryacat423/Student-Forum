@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Message;
+use App\Models\Report;
+use App\Models\Post;
 
 class MessageController extends Controller
 {
@@ -39,7 +41,6 @@ class MessageController extends Controller
             ->orderBy('created_at', 'asc')
             ->get();
 
-        // Format profile_pic for from and to
         $formatProfilePic = function ($msg) {
             foreach (['fromUser', 'toUser'] as $role) {
                 if ($msg->$role && $msg->$role->profile_pic) {
@@ -60,4 +61,19 @@ class MessageController extends Controller
         ]);
     }
 
+    public function getNotifications(Request $request) {
+        $user = $request->user();
+        $userPostIds = Post::where('user_id', $user->user_id)->pluck('post_id');
+
+        $hasReportedPost = Report::whereIn('post_id', $userPostIds)->exists();
+        $noticeMessages = Message::where('to', $user->user_id)
+            ->where('subject', 'Notice!')
+            ->get();
+
+        return response()->json([
+            'reported' => $hasReportedPost,
+            'notified' => $noticeMessages->isNotEmpty(),
+            'messages' => $noticeMessages
+        ]);
+    }
 }
