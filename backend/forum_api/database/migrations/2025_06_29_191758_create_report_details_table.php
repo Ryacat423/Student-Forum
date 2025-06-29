@@ -11,7 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('report_details', function (Blueprint $table) {
+            $table->id('detail_id');
+            $table->primary('detail_id');
+
+            $table->integer('report_id');
+            $table->integer('type_id');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('report_details');
     }
 };

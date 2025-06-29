@@ -27,6 +27,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/applicants', [AuthController::class, 'getApplicants']);
     Route::post('/applicants/approve', [AuthController::class, 'approveApplicant']);
+
+    Route::get('/reports', [ReportController::class, 'getAllReports']);
     Route::put('/user/{id}/mute', [UserController::class, 'muteUser']);
     Route::put('/user/{id}/suspend', [UserController::class, 'suspendUser']);
 });

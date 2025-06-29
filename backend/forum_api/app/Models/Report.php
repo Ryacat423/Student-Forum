@@ -25,7 +25,15 @@ class Report extends Model
         return $this->belongsTo(Post::class, 'post_id');
     }
 
-    public function type() {
-        return $this->belongsTo(Type::class, 'type_id');
+    public function details() {
+        return $this->hasMany(ReportDetail::class, 'report_id');
+    }
+
+    public function types() {
+        return $this->belongsToMany(Type::class, 'report_details', 'report_id', 'type_id');
+    }
+
+    public function duplicates() {
+        return $this->hasMany(Report::class, 'post_id', 'post_id');
     }
 }

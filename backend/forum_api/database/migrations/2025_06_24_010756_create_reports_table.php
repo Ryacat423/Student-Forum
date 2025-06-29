@@ -17,9 +17,7 @@ return new class extends Migration
 
             $table->integer('user_id');
             $table->integer('post_id');
-            $table->integer('type_id');
             $table->string('reason');
-            $table->datetime('date_reported');
             $table->string('status');
 
             $table->timestamps();
