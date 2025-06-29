@@ -5,6 +5,7 @@ import { home } from './Modules/Home/home.routes';
 import { forum } from './Modules/Forum/forum.routes';
 import { AuthGuard } from './services/auth/auth.guard';
 import { report } from './Modules/Report/report.routes';
+import { PostViewComponent } from './Modules/Report/Posts/post-view/post-view.component';
 
 export const routes: Routes = [
     {
@@ -27,6 +28,10 @@ export const routes: Routes = [
             {
                 path: 'report',
                 loadChildren: ()=>import('./Modules/Report/report.routes').then(r=>report)
+            },
+            {
+                path: 'view/:id',
+                component: PostViewComponent
             },
             {
                 path: '',

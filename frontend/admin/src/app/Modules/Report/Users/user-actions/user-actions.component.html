@@ -1,0 +1,92 @@
+@if(user) {
+    @if(showNoticeForm) {
+        <div class="container bg-white rounded p-4 shadow-sm">
+            <form [formGroup]="notice" >
+                <p>
+                    Send Notice to:
+                    <span class="text-success">{{user.post.user.first_name}} {{user.post.user.last_name}}</span>
+                </p>
+              <div class="mb-3">
+                <div class="d-flex align-items-center gap-2">
+                  <label for="subject" class="form-label">Subject
+                  </label>
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="subject"
+                  placeholder="Enter notice subject"
+                  formControlName="subject"
+                >
+              </div>
+              <div class="mb-3">
+                <label for="content" class="form-label">Content</label>
+                <textarea
+                  class="form-control"
+                  id="content"
+                  rows="4"
+                  placeholder="Enter content"
+                  formControlName="content"
+                ></textarea>
+              </div>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-send me-1"></i>
+                    Send
+                </button>
+              </div>
+            </form>
+        </div>
+    } @else {
+        <div class="card shadow-sm p-3 mb-4">
+          <div class="d-flex align-items-center mb-3">
+            <img src="/storage/profile/default.png" class="rounded-circle me-3" alt="Profile Picture" width="60" height="60" />
+            <div>
+              <h5 class="mb-0">{{ user.post.user.first_name }} {{ user.post.user.last_name }}</h5>
+              <small class="text-muted">{{ user.post.user.course.code }} - {{ user.post.user.course.name }}</small><br>
+              <small class="text-muted">{{ user.post.user.email }}</small>
+            </div>
+          </div>
+        
+          <div class="mb-3">
+            <h6 class="fw-bold">Bio</h6>
+            <p class="mb-0">{{ user.post.user.bio }}</p>
+          </div>
+        
+          <hr>
+        
+          <div class="mb-3">
+            <h6 class="fw-bold">Reported Post</h6>
+            <p class="mb-1"><strong>Topic:</strong> {{ user.post.topic.title }}</p>
+            <p class="mb-1"><strong>Content:</strong> {{ user.post.content }}</p>
+            <p class="text-muted"><small>Reported {{ user.duplicates_count }} time(s)</small></p>
+            <button class="btn btn-sm btn-outline-secondary" (click)="viewReportedPost(user.post.post_id)">
+                View Post
+            </button>
+          </div>
+        
+          <hr>
+        
+          <div class="mb-3">
+            <h6 class="fw-bold">Report Details</h6>
+            <p class="mb-1"><strong>Status:</strong> 
+              <span class="badge bg-warning text-dark text-uppercase">{{ user.status }}</span>
+            </p>
+            <p class="mb-2"><strong>Explanation:</strong> {{ user.reason }}</p>
+        
+            <ul class="list-group">
+                @for(detail of user.details; track detail.detail_id) {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ detail.type.label }}
+                    <span class="badge bg-primary rounded-pill">#{{ detail.type.type_id }}</span>
+                    </li>
+                }
+            </ul>
+          </div>
+        </div>
+    }
+} @else {
+    <div class="card shadow-sm p-3 mb-4">
+        No users selected
+    </div>
+}

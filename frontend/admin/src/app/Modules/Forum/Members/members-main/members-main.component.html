@@ -15,15 +15,19 @@
     <table class="table custom-table">
       <thead class="bg-secondary">
         <tr>
-            <th><i class="fas fa-user me-2"></i>Student</th>
-            <th><i class="fas fa-envelope me-2"></i>Email</th>
-            <th><i class="fas fa-graduation-cap me-2"></i>Course</th>
-            <th><i class="fas fa-calendar me-2"></i>Date Joined</th>
-            <th><i class="fas fa-info-circle me-2"></i>Status</th>
-            <th><i class="fas fa-cog me-2"></i>Actions</th>
+            <th><i class="me-2"></i>Student</th>
+            <th><i class="me-2"></i>Email</th>
+            <th><i class="me-2"></i>Course</th>
+            <th><i class="me-2"></i>Date Joined</th>
+            <th><i class="me-2"></i>Status</th>
+            <th><i class="me-2"></i>Actions</th>
         </tr>
       </thead>
       <tbody>
+        @if(members?.length == 0) {
+          <p class="lead p-5 text-center w-100">No members yet</p>
+        }
+
         @for(member of members | searchFilter: keyword; track member.user_id) {
             <tr
                 [ngClass]="{

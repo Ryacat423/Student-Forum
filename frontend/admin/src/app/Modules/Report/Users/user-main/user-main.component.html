@@ -1,0 +1,19 @@
+  <div class="row ">
+    <div class="col-md-7 col-sm-12">
+        <app-user-view
+            [reportedUsers]="users"
+
+            (selectUser)="getSelectedUser($event)"
+            (updateCount)="getUserCount($event)"
+        >
+        </app-user-view>
+    </div>
+
+    <div class="col-md-5 col-sm-12">
+        <app-user-actions
+            [user]="selectedUser"
+            [showNoticeForm]="showNoticeForm"
+        >
+        </app-user-actions>
+    </div>
+  </div>

@@ -1,0 +1,32 @@
+h6 {
+    color: #012970;
+}
+
+form .form-label {
+    font-weight: 600;
+    color: #012970;
+}
+
+form .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    transition: all 0.3s ease;
+}
+
+form .form-control:focus {
+    outline: none;
+    border-color: #0250c5;
+    box-shadow: 0 0 0 3px rgba(2, 80, 197, 0.1);
+}
+
+@media (max-width: 576px) {
+    form .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    form .d-flex {
+        flex-direction: column;
+    }
+}

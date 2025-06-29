@@ -1,0 +1,43 @@
+<div
+  class="table-header text-light p-2 shadow-sm"
+  style="background-color: var(--color-app-notif-h4)"
+>
+  <h6>Student Forum: Reported Users</h6>
+  <div class="search-container">
+    <div class="search-bar">
+      <input [(ngModel)]="keyword" type="text" placeholder="Search Categories..." />
+      <button><i class="bi bi-search"></i></button>
+    </div>
+  </div>
+</div>
+<div class="applications-table shadow-sm">
+  <div class="table-responsive">
+    <table class="table custom-table">
+      <thead class="bg-secondary">
+        <tr>
+          <th><i class="me-2"></i>Name</th>
+          <th><i class="me-2"></i>Topic Title</th>
+          <th><i class="me-2"></i>Report Count</th>
+          <th><i class="me-2"></i>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(rep of reportedUsers | searchFilter: keyword; track rep.report_id) {
+            <tr>
+              <td>{{rep.post.user.first_name}} {{rep.post.user.last_name}}</td>
+              <td>{{rep.post.topic.title}}</td>
+              <td>{{rep.duplicates_count}}</td>
+              <td class="d-flex">
+                <button class="btn btn-action btn-outline-secondary text-dark me-2" (click)="select(rep)">
+                  <i class="bi bi-eye"></i> View
+                </button>
+                <button class="btn btn-action btn-outline-secondary text-dark" (click)="select(rep, true)">
+                  <i class="bi bi-send"></i> Send Notice
+                </button>
+              </td>
+            </tr>   
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

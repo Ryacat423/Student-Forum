@@ -25,6 +25,14 @@ export class DataService {
     });
   }
 
+  getUserReports() {
+    return this.http.get(`${environment.apiUrl}reports`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+  }
+
   getCategories() {
     return this.http.get(`${environment.apiUrl}get_categories`);
   }
