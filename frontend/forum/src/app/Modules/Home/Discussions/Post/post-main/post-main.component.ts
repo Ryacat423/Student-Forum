@@ -5,7 +5,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DataService } from '../../../../../services/forum/data.service';
 import { PostDataComponent } from '../post-data/post-data.component';
 import { CommonModule } from '@angular/common';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/dist/sweetalert2.all.js';
 
 @Component({
   selector: 'app-post-main',
@@ -98,7 +98,11 @@ export class PostMainComponent implements OnInit {
         this.dservice.reportPost(data).subscribe({
           next: (res: any) => {
             if (res.success) {
-              Swal.fire('Reported!', res.message, 'success');
+              Swal.fire({
+                title: 'Status:',
+                text: res.message,
+                icon: res.message.startsWith('You') ? 'info' : 'success',
+              });
             } else {
               Swal.fire('Error', 'Failed to submit report.', 'error');
             }

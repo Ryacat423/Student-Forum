@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DataService } from '../../../../../services/forum/data.service';
 import { CommonModule } from '@angular/common';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/dist/sweetalert2.all.js';
 import { environment } from '../../../../../../environments/environment.prod';
 import { CommentsComponent } from '../comments/comments.component';
 import { FormsModule } from '@angular/forms';

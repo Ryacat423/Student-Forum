@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user/user.service';
 import { TimeAgoPipe } from '../../Pipe/time/time-ago.pipe';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/dist/sweetalert2.all.js';
 import { AuthService } from '../../services/auth/auth.service';
 
 @Component({

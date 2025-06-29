@@ -6,7 +6,7 @@ import { BreadcrumbsComponent } from '../../../../components/breadcrumbs/breadcr
 import { DataService } from '../../../../services/forum/data.service';
 import { environment } from '../../../../../environments/environment.prod';
 import { HttpClient, HttpEventType } from '@angular/common/http';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/dist/sweetalert2.all.js';
 
 @Component({
   selector: 'app-edit-topic',

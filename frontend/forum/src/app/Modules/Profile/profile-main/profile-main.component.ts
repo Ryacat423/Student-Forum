@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BreadcrumbsComponent } from '../../../components/breadcrumbs/breadcrumbs.component';
 import { UserService } from '../../../services/user/user.service';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { environment } from '../../../../environments/environment.prod';
 import { Router, RouterModule } from '@angular/router';

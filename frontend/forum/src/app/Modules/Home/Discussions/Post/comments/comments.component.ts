@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommentFormComponent } from '../comment-form/comment-form.component';
 import { environment } from '../../../../../../environments/environment.prod';
 import { RepliesComponent } from '../replies/replies.component';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/dist/sweetalert2.all.js';
 import { HttpClient } from '@angular/common/http';
 
 @Component({

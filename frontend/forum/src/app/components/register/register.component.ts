@@ -4,7 +4,7 @@ import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModu
 import { RouterModule } from '@angular/router';
 import { DataService } from '../../services/forum/data.service';
 import { CommonModule } from '@angular/common';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/dist/sweetalert2.all.js';
 import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
